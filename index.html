@@ -1,0 +1,2838 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a1628">
+<meta name="author" content="Dr. Eduardo Acuña De La Rosa">
+<meta name="copyright" content="© 2026 Dr. Eduardo Acuña De La Rosa. Todos los derechos reservados.">
+<meta name="description" content="LIMDA Edu — Curso de Educación Continua en Desnutrición Aguda Pediátrica">
+<title>LIMDA Edu — Desnutrición Aguda en Pediatría</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+
+/* ══ DESIGN TOKENS ══
+   Palette: Deep navy (#0a1628) + clinical white (#f8fafc) + 
+            medical teal (#00b4a6) + warning amber (#f59e0b) + alert red (#ef4444)
+   Type: Sora (display, bold identity) + DM Sans (body, legible at all sizes)
+   Signature: Animated progress "vital sign" line that runs across the header
+*/
+
+:root {
+  --navy: #0a1628;
+  --navy2: #0f2040;
+  --navy3: #162952;
+  --teal: #00b4a6;
+  --teal2: #00d4c4;
+  --teal-light: #e0faf8;
+  --teal-dim: rgba(0,180,166,0.15);
+  --amber: #f59e0b;
+  --amber-light: #fef3c7;
+  --red: #ef4444;
+  --red-light: #fee2e2;
+  --green: #22c55e;
+  --green-light: #dcfce7;
+  --white: #f8fafc;
+  --text: #1e293b;
+  --text2: #475569;
+  --muted: #94a3b8;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --r: 16px; --r-sm: 10px; --r-xs: 6px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+* { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior: smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--text); overflow-x:hidden; }
+
+/* ══ SCREENS ══ */
+.screen { display:none; min-height:100vh; }
+.screen.active { display:block; }
+
+/* ══════════════════════════════════
+   LANDING / HOME
+══════════════════════════════════ */
+#s-home {
+  background: var(--navy);
+  position: relative; overflow:hidden;
+}
+
+/* Vital sign SVG background */
+.vitals-bg {
+  position:absolute; top:0; left:0; right:0; height:100%;
+  pointer-events:none; z-index:0; opacity:0.06;
+}
+
+.home-inner {
+  position:relative; z-index:1;
+  min-height:100vh;
+  display:flex; flex-direction:column;
+}
+
+/* HEADER BAR */
+.home-topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 28px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-logo {
+  width:38px; height:38px; border-radius:10px;
+  background:linear-gradient(135deg,var(--teal),var(--teal2));
+  display:flex; align-items:center; justify-content:center;
+}
+.brand-logo svg { width:20px; height:20px; fill:none; stroke:white; stroke-width:2.2; stroke-linecap:round; }
+.brand-name { font-family:'Sora',sans-serif; font-size:18px; font-weight:700; color:white; }
+.brand-name span { color:var(--teal2); }
+.brand-tag { font-size:11px; font-weight:400; color:rgba(255,255,255,0.45); margin-left:4px; }
+.home-badge {
+  background:rgba(0,180,166,0.12); border:1px solid rgba(0,180,166,0.3);
+  color:var(--teal2); font-size:11px; font-weight:600;
+  padding:5px 12px; border-radius:20px; letter-spacing:.04em;
+}
+
+/* HERO */
+.hero {
+  flex:1; display:flex; flex-direction:column; justify-content:center;
+  padding:60px 28px 40px;
+  max-width:700px; margin:0 auto; width:100%;
+  text-align:center;
+}
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(0,180,166,0.1); border:1px solid rgba(0,180,166,0.25);
+  color:var(--teal2); font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  padding:6px 14px; border-radius:20px; margin-bottom:28px;
+}
+.hero-eyebrow::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--teal2); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.hero h1 {
+  font-family:'Sora',sans-serif;
+  font-size:clamp(28px,6vw,52px);
+  font-weight:800; color:white; line-height:1.1;
+  letter-spacing:-0.02em; margin-bottom:20px;
+}
+.hero h1 em { font-style:normal; color:var(--teal2); }
+.hero p {
+  font-size:16px; color:rgba(255,255,255,0.6); line-height:1.7;
+  max-width:480px; margin:0 auto 36px;
+}
+
+/* COURSE STATS */
+.hero-stats {
+  display:flex; justify-content:center; gap:0;
+  border:1px solid rgba(255,255,255,0.1); border-radius:var(--r);
+  background:rgba(255,255,255,0.04);
+  margin-bottom:36px; overflow:hidden;
+}
+.stat-item {
+  flex:1; padding:18px 12px; text-align:center;
+  border-right:1px solid rgba(255,255,255,0.08);
+}
+.stat-item:last-child { border-right:none; }
+.stat-num { font-family:'Sora',sans-serif; font-size:22px; font-weight:700; color:var(--teal2); }
+.stat-label { font-size:11px; color:rgba(255,255,255,0.4); margin-top:3px; }
+
+.btn-start {
+  display:inline-flex; align-items:center; gap:10px;
+  background:linear-gradient(135deg,var(--teal),#009e92);
+  color:white; font-family:'Sora',sans-serif; font-size:16px; font-weight:700;
+  padding:16px 36px; border-radius:var(--r-sm); border:none; cursor:pointer;
+  transition:all .2s; box-shadow:0 4px 20px rgba(0,180,166,0.4);
+  letter-spacing:.01em;
+}
+.btn-start:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,180,166,0.5); }
+.btn-start svg { width:18px; height:18px; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; }
+
+/* MODULES PREVIEW */
+.modules-preview {
+  padding:32px 28px 48px;
+  max-width:700px; margin:0 auto; width:100%;
+}
+.modules-preview h2 {
+  font-family:'Sora',sans-serif; font-size:13px; font-weight:600;
+  color:rgba(255,255,255,0.35); letter-spacing:.08em; text-transform:uppercase;
+  margin-bottom:16px; text-align:center;
+}
+.module-pills {
+  display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+}
+.module-pill {
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.65); font-size:12px; font-weight:500;
+  padding:8px 14px; border-radius:20px; cursor:pointer; transition:all .2s;
+  display:flex; align-items:center; gap:6px;
+}
+.module-pill:hover { background:rgba(0,180,166,0.12); border-color:rgba(0,180,166,0.3); color:var(--teal2); }
+.module-pill .pill-num { font-family:'DM Mono',monospace; font-size:10px; opacity:.6; }
+
+/* FOOTER HOME */
+.home-footer {
+  padding:20px 28px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  text-align:center;
+}
+.home-footer p { font-size:11px; color:rgba(255,255,255,0.25); line-height:1.6; }
+.home-footer strong { color:rgba(255,255,255,0.45); }
+
+/* ══════════════════════════════════
+   COURSE APP (modules, content, quiz)
+══════════════════════════════════ */
+#s-course {
+  background:var(--white);
+  flex-direction:column;
+}
+#s-course.active { display:flex; }
+#s-course.active .continue-bar { display:flex; }
+#s-course.active .continue-bar { display:none; }
+
+/* COURSE HEADER */
+.course-header {
+  background:var(--navy);
+  padding:0 20px;
+  position:sticky; top:0; z-index:100;
+}
+.course-topbar {
+  height:56px; display:flex; align-items:center; gap:12px;
+}
+.back-btn {
+  width:34px; height:34px; border-radius:var(--r-xs);
+  background:rgba(255,255,255,0.08); border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition:background .15s;
+}
+.back-btn:hover { background:rgba(255,255,255,0.14); }
+.back-btn svg { width:16px; height:16px; fill:none; stroke:white; stroke-width:2.2; stroke-linecap:round; }
+.course-title { font-family:'Sora',sans-serif; font-size:14px; font-weight:700; color:white; flex:1; truncate:ellipsis; }
+.course-progress-text { font-size:11px; color:rgba(255,255,255,0.45); font-family:'DM Mono',monospace; white-space:nowrap; }
+
+/* PROGRESS BAR */
+.progress-track { height:3px; background:rgba(255,255,255,0.1); }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--teal),var(--teal2)); transition:width .5s ease; }
+
+/* CONTENT AREA */
+.course-body { flex:1; overflow-y:auto; }
+
+/* MODULE NAV */
+.module-nav {
+  display:flex; gap:0; overflow-x:auto; padding:0 20px;
+  border-bottom:1px solid var(--border);
+  background:white;
+}
+.module-nav::-webkit-scrollbar { display:none; }
+.mnav-btn {
+  flex-shrink:0; padding:14px 16px;
+  font-size:12px; font-weight:600; cursor:pointer;
+  border:none; background:none; color:var(--muted);
+  border-bottom:2px solid transparent; margin-bottom:-1px;
+  font-family:'DM Sans',sans-serif; transition:all .15s; white-space:nowrap;
+  display:flex; align-items:center; gap:6px;
+}
+.mnav-btn:hover { color:var(--text); }
+.mnav-btn.active { color:var(--teal); border-bottom-color:var(--teal); }
+.mnav-btn.completed { color:var(--green); }
+.mnav-btn.locked { opacity:.4; cursor:not-allowed; }
+.mnav-badge { width:16px; height:16px; border-radius:50%; background:var(--green); display:flex; align-items:center; justify-content:center; }
+.mnav-badge svg { width:9px; height:9px; fill:none; stroke:white; stroke-width:3; stroke-linecap:round; }
+
+/* MODULE CONTENT */
+.module-content { display:none; max-width:720px; margin:0 auto; padding:28px 20px 80px; }
+.module-content.active { display:block; animation:fadeUp .25s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* MODULE HEADER */
+.mod-eyebrow { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--teal); margin-bottom:8px; }
+.mod-title { font-family:'Sora',sans-serif; font-size:clamp(20px,4vw,28px); font-weight:800; color:var(--navy); line-height:1.2; margin-bottom:8px; }
+.mod-sub { font-size:14px; color:var(--text2); line-height:1.6; margin-bottom:24px; }
+.mod-divider { height:1px; background:var(--border); margin:24px 0; }
+
+/* CONTENT BLOCKS */
+.content-section { margin-bottom:28px; }
+.content-section h3 {
+  font-family:'Sora',sans-serif; font-size:16px; font-weight:700;
+  color:var(--navy); margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+}
+.content-section h3::before {
+  content:''; width:4px; height:18px; border-radius:2px;
+  background:var(--teal); display:inline-block; flex-shrink:0;
+}
+.content-section p { font-size:14px; color:var(--text2); line-height:1.8; margin-bottom:10px; }
+.content-section ul { padding-left:0; list-style:none; }
+.content-section ul li {
+  font-size:14px; color:var(--text2); line-height:1.7;
+  padding:6px 0 6px 20px; position:relative; border-bottom:1px solid var(--border);
+}
+.content-section ul li:last-child { border-bottom:none; }
+.content-section ul li::before {
+  content:''; position:absolute; left:0; top:14px;
+  width:6px; height:6px; border-radius:50%; background:var(--teal);
+}
+
+/* CALLOUT BOXES */
+.callout {
+  border-radius:var(--r-sm); padding:16px 18px; margin:16px 0;
+  display:flex; gap:12px; align-items:flex-start;
+}
+.callout-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+.callout-body { flex:1; }
+.callout-title { font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; margin-bottom:5px; }
+.callout-text { font-size:13px; line-height:1.7; }
+.callout.danger { background:var(--red-light); border-left:3px solid var(--red); }
+.callout.danger .callout-title { color:var(--red); }
+.callout.danger .callout-text { color:#7f1d1d; }
+.callout.warn { background:var(--amber-light); border-left:3px solid var(--amber); }
+.callout.warn .callout-title { color:#92400e; }
+.callout.warn .callout-text { color:#78350f; }
+.callout.info { background:var(--teal-light); border-left:3px solid var(--teal); }
+.callout.info .callout-title { color:#0f766e; }
+.callout.info .callout-text { color:#134e4a; }
+.callout.success { background:var(--green-light); border-left:3px solid var(--green); }
+.callout.success .callout-title { color:#15803d; }
+.callout.success .callout-text { color:#14532d; }
+
+/* STAT CARDS */
+.stat-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin:16px 0; }
+.stat-card {
+  background:white; border:1px solid var(--border); border-radius:var(--r-sm);
+  padding:16px; text-align:center; box-shadow:var(--shadow);
+}
+.stat-card .sc-num { font-family:'Sora',sans-serif; font-size:26px; font-weight:800; color:var(--navy); }
+.stat-card .sc-unit { font-size:12px; color:var(--teal); font-weight:600; }
+.stat-card .sc-label { font-size:11px; color:var(--muted); margin-top:4px; line-height:1.4; }
+
+/* COMPARISON TABLE */
+.comp-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13px; }
+.comp-table th { background:var(--navy); color:white; padding:10px 14px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; }
+.comp-table th:first-child { border-radius:var(--r-xs) 0 0 0; }
+.comp-table th:last-child { border-radius:0 var(--r-xs) 0 0; }
+.comp-table td { padding:10px 14px; border-bottom:1px solid var(--border); color:var(--text2); vertical-align:top; }
+.comp-table tr:last-child td { border-bottom:none; }
+.comp-table tr:hover td { background:var(--teal-light); }
+.comp-table .highlight { color:var(--teal); font-weight:600; }
+.comp-table .danger-cell { color:var(--red); font-weight:600; }
+
+/* TIMELINE */
+.timeline { position:relative; padding-left:32px; margin:16px 0; }
+.timeline::before { content:''; position:absolute; left:11px; top:4px; bottom:4px; width:2px; background:var(--border); border-radius:1px; }
+.tl-item { position:relative; margin-bottom:20px; }
+.tl-item:last-child { margin-bottom:0; }
+.tl-dot {
+  position:absolute; left:-32px; top:2px;
+  width:22px; height:22px; border-radius:50%;
+  background:white; border:2px solid var(--teal);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'DM Mono',monospace; font-size:9px; font-weight:500; color:var(--teal);
+}
+.tl-dot.filled { background:var(--teal); color:white; }
+.tl-title { font-size:14px; font-weight:700; color:var(--navy); margin-bottom:4px; }
+.tl-body { font-size:13px; color:var(--text2); line-height:1.7; }
+
+/* DOSE TABLE */
+.dose-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:13px; border-radius:var(--r-sm); overflow:hidden; }
+.dose-table th { background:var(--navy3); color:white; padding:9px 12px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+.dose-table td { padding:9px 12px; border-bottom:1px solid var(--border); color:var(--text2); }
+.dose-table tr:last-child td { border-bottom:none; }
+.dose-table .mono { font-family:'DM Mono',monospace; color:var(--teal); font-weight:500; }
+.dose-table tr:hover td { background:#f8fafc; }
+
+/* INTERACTIVE CASE */
+.case-box {
+  background:var(--navy); border-radius:var(--r); padding:24px; margin:20px 0;
+  border:1px solid rgba(0,180,166,0.2);
+}
+.case-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--teal2); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.case-label::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.1); }
+.case-patient {
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
+  border-radius:var(--r-sm); padding:16px; margin-bottom:20px;
+}
+.case-patient h4 { font-family:'Sora',sans-serif; font-size:16px; font-weight:700; color:white; margin-bottom:10px; }
+.case-patient .vitals { display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:8px; }
+.vital-chip {
+  background:rgba(255,255,255,0.06); border-radius:var(--r-xs);
+  padding:8px 10px; text-align:center;
+}
+.vital-chip .vc-val { font-family:'DM Mono',monospace; font-size:15px; font-weight:500; color:var(--teal2); }
+.vital-chip .vc-label { font-size:10px; color:rgba(255,255,255,0.4); margin-top:2px; }
+.case-question { font-size:15px; font-weight:600; color:white; margin-bottom:16px; }
+.case-options { display:flex; flex-direction:column; gap:8px; }
+.case-option {
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+  border-radius:var(--r-sm); padding:12px 16px;
+  font-size:14px; color:rgba(255,255,255,0.8);
+  cursor:pointer; transition:all .18s; text-align:left;
+  font-family:'DM Sans',sans-serif;
+}
+.case-option:hover { background:rgba(0,180,166,0.12); border-color:rgba(0,180,166,0.3); color:white; }
+.case-option.correct { background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.4); color:var(--green); }
+.case-option.wrong { background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.4); color:var(--red); }
+.case-option.disabled { cursor:default; }
+.case-feedback {
+  display:none; margin-top:16px; padding:14px; border-radius:var(--r-sm);
+  font-size:13px; line-height:1.7;
+}
+.case-feedback.show { display:block; animation:fadeUp .2s ease; }
+.case-feedback.correct-fb { background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.3); color:#dcfce7; }
+.case-feedback.wrong-fb { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#fee2e2; }
+.case-feedback strong { display:block; margin-bottom:4px; font-size:14px; }
+
+/* QUIZ */
+.quiz-box { background:white; border:1px solid var(--border); border-radius:var(--r); padding:24px; margin:20px 0; box-shadow:var(--shadow); }
+.quiz-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.quiz-title { font-family:'Sora',sans-serif; font-size:16px; font-weight:700; color:var(--navy); }
+.quiz-counter { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); }
+.quiz-question { font-size:15px; font-weight:600; color:var(--text); margin-bottom:16px; line-height:1.5; }
+.quiz-options { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.quiz-option {
+  border:1.5px solid var(--border); border-radius:var(--r-sm);
+  padding:12px 16px; font-size:14px; color:var(--text2);
+  cursor:pointer; transition:all .15s; text-align:left;
+  background:white; font-family:'DM Sans',sans-serif;
+  display:flex; align-items:center; gap:10px;
+}
+.quiz-option:hover { border-color:var(--teal); color:var(--text); background:var(--teal-light); }
+.quiz-option.selected { border-color:var(--teal); background:var(--teal-light); color:var(--text); }
+.quiz-option.correct { border-color:var(--green); background:var(--green-light); color:#15803d; }
+.quiz-option.wrong { border-color:var(--red); background:var(--red-light); color:#991b1b; }
+.quiz-option.disabled { cursor:default; }
+.quiz-option .opt-letter {
+  width:24px; height:24px; border-radius:6px; flex-shrink:0;
+  background:var(--border); display:flex; align-items:center; justify-content:center;
+  font-family:'DM Mono',monospace; font-size:11px; font-weight:500; color:var(--muted);
+}
+.quiz-option.selected .opt-letter { background:var(--teal); color:white; }
+.quiz-option.correct .opt-letter { background:var(--green); color:white; }
+.quiz-option.wrong .opt-letter { background:var(--red); color:white; }
+
+.quiz-feedback {
+  display:none; padding:12px 14px; border-radius:var(--r-sm); margin-bottom:16px;
+  font-size:13px; line-height:1.7;
+}
+.quiz-feedback.show { display:block; }
+.quiz-feedback.correct { background:var(--green-light); color:#14532d; border-left:3px solid var(--green); }
+.quiz-feedback.wrong { background:var(--red-light); color:#7f1d1d; border-left:3px solid var(--red); }
+.quiz-feedback strong { font-size:14px; display:block; margin-bottom:4px; }
+
+.btn-quiz {
+  padding:12px 24px; border-radius:var(--r-sm); font-size:14px; font-weight:700;
+  border:none; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s;
+}
+.btn-quiz.primary { background:var(--navy); color:white; }
+.btn-quiz.primary:hover { background:var(--navy2); }
+.btn-quiz.teal { background:var(--teal); color:white; }
+.btn-quiz.teal:hover { background:#009e92; }
+.btn-quiz:disabled { opacity:.4; cursor:not-allowed; }
+
+.quiz-result {
+  display:none; text-align:center; padding:24px;
+}
+.quiz-result.show { display:block; animation:fadeUp .3s ease; }
+.result-score {
+  font-family:'Sora',sans-serif; font-size:56px; font-weight:800;
+  line-height:1;
+}
+.result-score.pass { color:var(--green); }
+.result-score.fail { color:var(--red); }
+.result-label { font-size:14px; color:var(--muted); margin:8px 0 20px; }
+.result-msg { font-size:16px; font-weight:600; color:var(--text); margin-bottom:8px; }
+.result-sub { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:20px; }
+
+/* CONTINUE BUTTON */
+.continue-bar {
+  position:fixed; bottom:0; left:0; right:0; z-index:50;
+  display:none;
+  background:white; border-top:1px solid var(--border);
+  padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 -4px 16px rgba(0,0,0,0.06);
+}
+.continue-bar .mod-name { font-size:12px; color:var(--muted); }
+.btn-continue {
+  background:linear-gradient(135deg,var(--teal),#009e92);
+  color:white; font-family:'Sora',sans-serif; font-size:14px; font-weight:700;
+  padding:12px 24px; border:none; border-radius:var(--r-sm); cursor:pointer;
+  transition:all .18s; display:flex; align-items:center; gap:8px;
+}
+.btn-continue:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,180,166,0.35); }
+.btn-continue svg { width:16px; height:16px; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; }
+
+/* ══ CERTIFICATE ══ */
+#s-cert {
+  background:linear-gradient(135deg,#f0fdf4,#e0faf8,#f8fafc);
+  min-height:100vh; flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 20px;
+}
+#s-cert.active { display:flex; }
+.cert-wrapper { width:100%; max-width:680px; }
+.cert-card {
+  background:white;
+  border:2px solid var(--teal);
+  border-radius:var(--r);
+  padding:48px 40px;
+  box-shadow:0 8px 40px rgba(0,180,166,0.15);
+  position:relative; overflow:hidden;
+  text-align:center;
+}
+.cert-card::before {
+  content:'';
+  position:absolute; inset:8px;
+  border:1px solid rgba(0,180,166,0.2);
+  border-radius:10px; pointer-events:none;
+}
+.cert-corner {
+  position:absolute; width:60px; height:60px;
+  border-color:var(--teal); border-style:solid; opacity:.3;
+}
+.cert-corner.tl { top:16px; left:16px; border-width:2px 0 0 2px; }
+.cert-corner.tr { top:16px; right:16px; border-width:2px 2px 0 0; }
+.cert-corner.bl { bottom:16px; left:16px; border-width:0 0 2px 2px; }
+.cert-corner.br { bottom:16px; right:16px; border-width:0 2px 2px 0; }
+
+.cert-logo-row { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:28px; }
+.cert-brand { font-family:'Sora',sans-serif; font-size:20px; font-weight:800; color:var(--navy); }
+.cert-brand span { color:var(--teal); }
+.cert-eyebrow { font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.cert-headline { font-family:'Sora',sans-serif; font-size:28px; font-weight:800; color:var(--navy); margin-bottom:8px; line-height:1.2; }
+.cert-headline em { font-style:normal; color:var(--teal); }
+.cert-body { font-size:14px; color:var(--text2); line-height:1.7; margin-bottom:24px; }
+.cert-name-line {
+  font-family:'Sora',sans-serif; font-size:32px; font-weight:800;
+  color:var(--navy); padding:12px 0;
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  margin:20px 0;
+}
+.cert-course { font-size:16px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.cert-sub { font-size:13px; color:var(--muted); margin-bottom:24px; }
+.cert-details { display:flex; justify-content:center; gap:32px; margin-bottom:28px; flex-wrap:wrap; }
+.cert-detail { text-align:center; }
+.cert-detail .cd-val { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--navy); }
+.cert-detail .cd-label { font-size:10px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:.06em; }
+.cert-sig { margin-top:24px; padding-top:20px; border-top:1px solid var(--border); }
+.cert-sig-name { font-family:'Sora',sans-serif; font-size:15px; font-weight:700; color:var(--navy); }
+.cert-sig-role { font-size:12px; color:var(--muted); margin-top:2px; }
+.cert-sig-inst { font-size:12px; color:var(--teal); font-weight:600; margin-top:2px; }
+.cert-code { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); margin-top:16px; letter-spacing:.1em; }
+
+.cert-actions { display:flex; gap:12px; justify-content:center; margin-top:24px; flex-wrap:wrap; }
+.btn-cert {
+  padding:12px 24px; border-radius:var(--r-sm); font-size:14px; font-weight:700;
+  border:none; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s;
+  display:flex; align-items:center; gap:8px;
+}
+.btn-cert.primary { background:var(--teal); color:white; }
+.btn-cert.primary:hover { background:#009e92; }
+.btn-cert.outline { background:white; color:var(--text); border:1.5px solid var(--border); }
+.btn-cert.outline:hover { background:var(--white); }
+
+/* ══ NAME INPUT SCREEN ══ */
+#s-name {
+  background:var(--navy); min-height:100vh;
+  align-items:center; justify-content:center; padding:28px;
+}
+#s-name.active { display:flex; }
+.name-card {
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12);
+  border-radius:var(--r); padding:40px 32px; max-width:440px; width:100%; text-align:center;
+}
+.name-card h2 { font-family:'Sora',sans-serif; font-size:22px; font-weight:800; color:white; margin-bottom:8px; }
+.name-card p { font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:28px; line-height:1.6; }
+.name-input {
+  width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);
+  border-radius:var(--r-sm); padding:14px 16px; font-size:16px; color:white;
+  font-family:'DM Sans',sans-serif; outline:none; text-align:center; margin-bottom:16px;
+}
+.name-input:focus { border-color:var(--teal2); box-shadow:0 0 0 3px rgba(0,180,166,0.15); }
+.name-input::placeholder { color:rgba(255,255,255,0.25); }
+
+/* RESPONSIVE */
+@media (max-width:480px) {
+  .hero { padding:40px 20px 32px; }
+  .cert-card { padding:32px 20px; }
+  .cert-name-line { font-size:22px; }
+  .hero-stats { flex-direction:column; }
+  .stat-item { border-right:none; border-bottom:1px solid rgba(255,255,255,0.08); }
+  .stat-item:last-child { border-bottom:none; }
+}
+
+/* ══ READING SECTION ══ */
+.reading-section {
+  background: white; border:1px solid var(--border);
+  border-radius: var(--r); margin: 20px 0; overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.reading-header {
+  background: var(--navy); padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+}
+.reading-header h3 {
+  font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700;
+  color: white; margin: 0; display: flex; align-items: center; gap: 10px;
+}
+.reading-header .reading-badge {
+  background: rgba(0,180,166,0.2); border: 1px solid rgba(0,180,166,0.4);
+  color: var(--teal2); font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px;
+}
+.reading-toggle { color: rgba(255,255,255,0.6); font-size: 20px; transition: transform .3s; }
+.reading-section.open .reading-toggle { transform: rotate(180deg); }
+.reading-body { display: none; padding: 24px 24px 28px; }
+.reading-section.open .reading-body { display: block; }
+.reading-body .rd-h1 {
+  font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 800;
+  color: var(--navy); margin: 28px 0 10px;
+  padding-bottom: 8px; border-bottom: 2px solid var(--teal);
+}
+.reading-body .rd-h1:first-child { margin-top: 0; }
+.reading-body .rd-h2 {
+  font-size: 15px; font-weight: 700; color: var(--teal); margin: 20px 0 8px;
+}
+.reading-body .rd-h3 {
+  font-size: 14px; font-weight: 700; color: var(--navy); margin: 14px 0 6px;
+}
+.reading-body .rd-p {
+  font-size: 13px; color: var(--text2); line-height: 1.8;
+  margin-bottom: 10px; text-align: justify;
+}
+.reading-body .rd-ul { padding-left: 0; list-style: none; margin-bottom: 12px; }
+.reading-body .rd-ul li {
+  font-size: 13px; color: var(--text2); line-height: 1.7;
+  padding: 5px 0 5px 18px; position: relative; border-bottom: 1px solid var(--border);
+}
+.reading-body .rd-ul li:last-child { border-bottom: none; }
+.reading-body .rd-ul li::before {
+  content: ''; position: absolute; left: 0; top: 13px;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--teal);
+}
+.rd-callout {
+  border-radius: var(--r-sm); padding: 14px 16px; margin: 14px 0;
+  border-left: 3px solid; font-size: 13px; line-height: 1.7;
+}
+.rd-callout.danger { background: var(--red-light); border-color: var(--red); color: #7f1d1d; }
+.rd-callout.warn { background: var(--amber-light); border-color: var(--amber); color: #78350f; }
+.rd-callout.info { background: var(--teal-light); border-color: var(--teal); color: #134e4a; }
+.rd-callout.success { background: var(--green-light); border-color: var(--green); color: #14532d; }
+.rd-callout strong { display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.rd-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12px; border-radius: var(--r-sm); overflow: hidden; }
+.rd-table th { background: var(--navy); color: white; padding: 8px 12px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.rd-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+.rd-table tr:last-child td { border-bottom: none; }
+.rd-table tr:hover td { background: var(--teal-light); }
+.reading-confirm {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 20px; padding: 14px; background: var(--teal-light);
+  border: 1px solid rgba(0,180,166,0.3); border-radius: var(--r-sm);
+}
+.reading-confirm label { font-size: 13px; font-weight: 600; color: var(--teal); cursor: pointer; }
+.reading-confirmed { background: var(--green-light); border-color: var(--green); }
+.reading-confirmed label { color: #15803d; }
+
+</style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<!-- PDF libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<!-- ══════════════ HOME ══════════════ -->
+<div class="screen active" id="s-home">
+  <svg class="vitals-bg" viewBox="0 0 1200 600" preserveAspectRatio="none">
+    <polyline points="0,300 100,300 150,200 200,400 250,150 300,350 350,300 500,300 550,180 600,350 650,280 700,300 900,300 950,200 1000,380 1050,260 1100,300 1200,300" fill="none" stroke="#00b4a6" stroke-width="2"/>
+  </svg>
+
+  <div class="home-inner">
+    <div class="home-topbar">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div>
+          <div class="brand-name">LIMDA <span>Edu</span></div>
+        </div>
+      </div>
+      <div class="home-badge">Educación Continua</div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-eyebrow">Curso activo · 2026</div>
+      <h1>Desnutrición Aguda<br>en <em>Pediatría</em></h1>
+      <p>Identifica, clasifica, maneja y recupera niños con desnutrición aguda. Basado en el Lineamiento MIDA, Res. 2350/2020 y Res. 115/2026.</p>
+
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">Módulos</div></div>
+        <div class="stat-item"><div class="stat-num">35h</div><div class="stat-label">Intensidad</div></div>
+        <div class="stat-item"><div class="stat-num">80%</div><div class="stat-label">Para aprobar</div></div>
+        <div class="stat-item"><div class="stat-num">PDF</div><div class="stat-label">Certificado</div></div>
+      </div>
+
+      <button class="btn-start" onclick="startCourse()">
+        Comenzar el curso
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <div class="modules-preview">
+      <h2>Contenido del curso</h2>
+      <div class="module-pills">
+        <div class="module-pill"><span class="pill-num">M1</span> ¿Por qué importa?</div>
+        <div class="module-pill"><span class="pill-num">M2</span> Reconocer</div>
+        <div class="module-pill"><span class="pill-num">M3</span> Decidir</div>
+        <div class="module-pill"><span class="pill-num">M4</span> Tratar</div>
+        <div class="module-pill"><span class="pill-num">M5</span> Recuperar</div>
+      </div>
+    </div>
+
+    <div class="home-footer">
+      <p><strong>Dr. Eduardo Acuña De La Rosa</strong> · Hospital Regional de Zipaquirá<br>
+      © 2026 Todos los derechos reservados · LIMDA Edu v1.0</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ACCESS GATE ══════════════ -->
+<div class="screen" id="s-name">
+  <div class="name-card" id="gate-card">
+    <!-- TAB SWITCHER -->
+    <div style="display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);">
+      <button id="tab-login" onclick="showGateTab('login')" style="flex:1;padding:10px;background:rgba(0,180,166,0.25);border:none;color:white;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;">
+        Tengo código de acceso
+      </button>
+      <button id="tab-register" onclick="showGateTab('register')" style="flex:1;padding:10px;background:transparent;border:none;color:rgba(255,255,255,0.5);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;">
+        Solicitar acceso
+      </button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div id="panel-login">
+      <div style="font-size:28px;margin-bottom:12px;">🔑</div>
+      <h2 style="margin-bottom:6px;">Acceder al curso</h2>
+      <p style="margin-bottom:20px;">Ingresa tus datos y el código de acceso que recibiste.</p>
+      <input type="text" class="name-input" id="login-name" placeholder="Nombre completo" autocomplete="name" style="margin-bottom:10px;">
+      <input type="text" class="name-input" id="login-cedula" placeholder="Número de cédula" inputmode="numeric" style="margin-bottom:10px;">
+      <input type="text" class="name-input" id="login-code" placeholder="Código de acceso (ej: LIMDA-XXXX)" autocomplete="off" style="margin-bottom:16px;text-transform:uppercase;letter-spacing:.08em;">
+      <button class="btn-start" style="width:100%;justify-content:center;" onclick="doLogin()">
+        Ingresar al curso
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div id="login-error" style="display:none;margin-top:12px;padding:10px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:8px;font-size:12px;color:#fca5a5;text-align:center;"></div>
+      <div id="login-loading" style="display:none;margin-top:12px;text-align:center;font-size:13px;color:rgba(255,255,255,0.5);">Verificando acceso...</div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div id="panel-register" style="display:none;">
+      <div style="font-size:28px;margin-bottom:12px;">📋</div>
+      <h2 style="margin-bottom:6px;">Solicitar acceso</h2>
+      <p style="margin-bottom:20px;">Completa el formulario. Recibirás tu código de acceso una vez aprobado.</p>
+      <input type="text" class="name-input" id="reg-name" placeholder="Nombre completo" autocomplete="name" style="margin-bottom:10px;">
+      <input type="text" class="name-input" id="reg-cedula" placeholder="Número de cédula" inputmode="numeric" style="margin-bottom:10px;">
+      <input type="email" class="name-input" id="reg-email" placeholder="Correo electrónico" autocomplete="email" style="margin-bottom:10px;">
+      <select id="reg-perfil" style="width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:14px 16px;font-size:15px;color:white;font-family:inherit;outline:none;margin-bottom:10px;-webkit-appearance:none;">
+        <option value="" style="background:#0a1628;">Perfil profesional...</option>
+        <option value="medico" style="background:#0a1628;">Médico(a)</option>
+        <option value="residente" style="background:#0a1628;">Médico(a) residente</option>
+        <option value="interno" style="background:#0a1628;">Interno(a) de medicina</option>
+        <option value="enfermeria" style="background:#0a1628;">Enfermero(a) / Auxiliar</option>
+        <option value="estudiante" style="background:#0a1628;">Estudiante de medicina (La Sabana)</option>
+        <option value="otro" style="background:#0a1628;">Otro personal de salud</option>
+      </select>
+      <input type="text" class="name-input" id="reg-institucion" placeholder="Institución donde trabaja o estudia" style="margin-bottom:16px;">
+      <button class="btn-start" style="width:100%;justify-content:center;" onclick="doRegister()">
+        Enviar solicitud
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div id="reg-msg" style="display:none;margin-top:12px;padding:12px;border-radius:8px;font-size:13px;text-align:center;"></div>
+    </div>
+
+    <p style="margin-top:20px;font-size:11px;color:rgba(255,255,255,0.25);text-align:center;">
+      Curso LIMDA Edu · Centro MIDA — Hospital Regional de Zipaquirá<br>
+      Dr. Eduardo Acuña De La Rosa · © 2026
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════ COURSE ══════════════ -->
+<div class="screen" id="s-course">
+  <div class="course-header">
+    <div class="course-topbar">
+      <button class="back-btn" onclick="goHome()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="course-title" id="course-title">LIMDA Edu</div>
+      <div class="course-progress-text" id="progress-text">0 / 5</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="course-body">
+    <!-- MODULE NAV -->
+    <div class="module-nav" id="module-nav">
+      <button class="mnav-btn active" id="mnav-0" onclick="showModule(0)">M1 · Epidemiología</button>
+      <button class="mnav-btn locked" id="mnav-1" onclick="showModule(1)">M2 · Diagnóstico</button>
+      <button class="mnav-btn locked" id="mnav-2" onclick="showModule(2)">M3 · Decisión</button>
+      <button class="mnav-btn locked" id="mnav-3" onclick="showModule(3)">M4 · Tratamiento</button>
+      <button class="mnav-btn locked" id="mnav-4" onclick="showModule(4)">M5 · Recuperación</button>
+    </div>
+
+    <!-- ═══ MODULE 1 ═══ -->
+    <div class="module-content active" id="mod-0">
+      <div class="mod-eyebrow">Módulo 1 de 5</div>
+      <div class="mod-title">¿Por qué importa?<br>Epidemiología y marco normativo</div>
+      <div class="mod-sub">Entiende el impacto real de la desnutrición aguda en Colombia y por qué su manejo correcto salva vidas.</div>
+      <div class="mod-divider"></div>
+
+      <div class="content-section">
+        <h3>La magnitud del problema</h3>
+        <p>La desnutrición aguda en menores de cinco años es una de las principales causas de mortalidad infantil evitable en Colombia y en el mundo. La OMS estima que cada año mueren más de 3 millones de niños por causas directa o indirectamente relacionadas con la desnutrición.</p>
+        <div class="stat-cards">
+          <div class="stat-card"><div class="sc-num">45%</div><div class="sc-unit">de muertes infantiles</div><div class="sc-label">relacionadas con la desnutrición a nivel mundial</div></div>
+          <div class="stat-card"><div class="sc-num">8-16%</div><div class="sc-unit">letalidad</div><div class="sc-label">con protocolo correcto vs 59% sin él</div></div>
+          <div class="stat-card"><div class="sc-num">0-59</div><div class="sc-unit">meses</div><div class="sc-label">grupo de mayor vulnerabilidad</div></div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Colombia: territorios priorizados</h3>
+        <p>En Colombia, la desnutrición aguda severa tiene una distribución territorial marcadamente inequitativa. Los departamentos con mayor carga son:</p>
+        <ul>
+          <li><strong>La Guajira</strong> — mayor prevalencia del país, comunidades wayuu con acceso limitado a servicios</li>
+          <li><strong>Chocó</strong> — dispersión geográfica, barreras de acceso al sistema de salud</li>
+          <li><strong>Vichada</strong> — zonas de frontera, comunidades indígenas, infraestructura insuficiente</li>
+          <li><strong>Magdalena, Bolívar, Córdoba</strong> — zonas rurales con alta pobreza multidimensional</li>
+        </ul>
+        <div class="callout info">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <div class="callout-title">Resolución 115 de 2026</div>
+            <div class="callout-text">La nueva norma prioriza intervención temprana en La Guajira, Chocó y Vichada con la nueva categoría de "riesgo de desnutrición aguda" (P/T entre -1 y -2 DE), buscando actuar antes de que la enfermedad progrese.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>El cambio de paradigma</h3>
+        <p>Durante décadas, el manejo de la desnutrición aguda severa fue exclusivamente hospitalario. El Lineamiento MIDA introduce un cambio fundamental: el <strong>manejo ambulatorio en casa</strong>, con participación activa de la familia y la comunidad.</p>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot">1</div><div class="tl-title">Antes del Lineamiento MIDA</div><div class="tl-body">Todo niño con DAS se hospitalizaba. Tasas de mortalidad intrahospitalaria del 25-30%. Familias alejadas de sus hogares. Costos elevados para el sistema.</div></div>
+          <div class="tl-item"><div class="tl-dot filled">2</div><div class="tl-title">Con el Lineamiento MIDA (Res. 2350/2020)</div><div class="tl-body">80% de los niños con DAS pueden manejarse ambulatoriamente. Tasas de mortalidad del 8-16%. Familia como protagonista del tratamiento. FTLC como herramienta clave.</div></div>
+          <div class="tl-item"><div class="tl-dot filled">3</div><div class="tl-title">Con la Resolución 115 de 2026</div><div class="tl-body">Nueva categoría de riesgo. F-100 incorporada. Criterio de egreso más exigente (P/T ≥ -1 DE). Atención declarada urgencia sin autorización previa.</div></div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Marco normativo vigente</h3>
+        <table class="comp-table">
+          <tr><th>Norma</th><th>¿Qué establece?</th><th>Estado</th></tr>
+          <tr><td><strong>Res. 2465/2016</strong></td><td>Indicadores antropométricos y puntos de corte OMS para Colombia</td><td class="highlight">Vigente</td></tr>
+          <tr><td><strong>Lineamiento MIDA</strong></td><td>Protocolo técnico completo de manejo de DAM y DAS en 0-59 meses</td><td class="highlight">Vigente</td></tr>
+          <tr><td><strong>Res. 2350/2020</strong></td><td>Adopta el lineamiento MIDA como norma obligatoria</td><td class="highlight">Vigente</td></tr>
+          <tr><td><strong>Res. 115/2026</strong></td><td>Modifica Res. 2350/2020. Introduce F-100, nuevo egreso, categoría de riesgo</td><td class="highlight">Vigente (más reciente)</td></tr>
+        </table>
+      </div>
+
+      <div class="callout danger">
+        <div class="callout-icon">🚨</div>
+        <div class="callout-body">
+          <div class="callout-title">Urgencia vital — sin excepciones</div>
+          <div class="callout-text">La desnutrición aguda moderada y severa es una URGENCIA VITAL desde el primer contacto con el sistema de salud. La estabilización debe iniciarse en el sitio donde se capta al niño, independientemente del nivel de complejidad de la IPS. No se requiere autorización previa de la EPS.</div>
+        </div>
+      </div>
+
+      <!-- CASE 1 -->
+      <div class="case-box">
+        <div class="case-label">Caso clínico 1</div>
+        <div class="case-patient">
+          <h4>Sebastián, 2 años</h4>
+          <div class="vitals">
+            <div class="vital-chip"><div class="vc-val">24 m</div><div class="vc-label">Edad</div></div>
+            <div class="vital-chip"><div class="vc-val">7.8 kg</div><div class="vc-label">Peso</div></div>
+            <div class="vital-chip"><div class="vc-val">La Guajira</div><div class="vc-label">Procedencia</div></div>
+            <div class="vital-chip"><div class="vc-val">Rural</div><div class="vc-label">Zona</div></div>
+          </div>
+          <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:10px;line-height:1.6;">La madre refiere que el niño "come poco" desde hace 2 meses. No tiene fiebre. Está activo pero se ve delgado. La IPS más cercana es de primer nivel y no tiene pediatra.</p>
+        </div>
+        <div class="case-question">¿Qué debe hacer el médico de primer nivel al identificar posible desnutrición aguda en Sebastián?</div>
+        <div class="case-options">
+          <button class="case-option" onclick="answerCase(this,'wrong','mod0-q1')">A. Remitir de inmediato a un hospital de segundo nivel sin hacer nada más</button>
+          <button class="case-option" onclick="answerCase(this,'correct','mod0-q1')">B. Iniciar la evaluación y estabilización en el mismo sitio, independientemente del nivel de complejidad</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod0-q1')">C. Solicitar autorización a la EPS antes de cualquier intervención</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod0-q1')">D. Esperar resultados de laboratorio antes de clasificar</button>
+        </div>
+        <div class="case-feedback correct-fb" id="mod0-q1-fb-correct">
+          <strong>✓ Correcto</strong>
+          La desnutrición aguda es una urgencia vital. El médico debe iniciar la evaluación y estabilización en el mismo sitio de captación. La Resolución 115/2026 establece explícitamente que no se requiere autorización previa. Remitir sin estabilizar es una práctica que el lineamiento prohíbe por asociarse a mortalidad.
+        </div>
+        <div class="case-feedback wrong-fb" id="mod0-q1-fb-wrong">
+          <strong>✗ Incorrecto</strong>
+          El lineamiento MIDA y la Resolución 115/2026 son claros: la desnutrición aguda es una urgencia vital que debe atenderse en el sitio de captación, sin importar el nivel de complejidad y sin autorización previa de la EPS. Remitir sin estabilizar o esperar autorización son prácticas que se asocian a mayor mortalidad.
+        </div>
+      </div>
+
+      
+      <!-- READING SECTION mod-1 -->
+
+      <!-- QUIZ M1 -->
+      
+      <!-- READING M0 -->
+      <div class="reading-section" id="rd-0">
+        <div class="reading-header" onclick="toggleReading('rd-0')">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Documento de lectura — Módulo 1
+            <span class="reading-badge">Epidemiología, marco normativo y cambio de paradigma</span>
+          </h3>
+          <span class="reading-toggle">▾</span>
+        </div>
+        <div class="reading-body">
+          
+<div class="rd-h1">Objetivos de aprendizaje</div>
+<ul class="rd-ul">
+<li>Comprender la magnitud del problema de la desnutrición aguda en Colombia y en el mundo.</li>
+<li>Identificar los territorios priorizados por la Resolución 115 de 2026 y las razones de su priorización.</li>
+<li>Reconocer el cambio de paradigma que introduce el Lineamiento MIDA frente al manejo tradicional.</li>
+<li>Conocer el marco normativo vigente y la jerarquía de las normas aplicables.</li>
+<li>Identificar las prácticas nocivas que el lineamiento busca eliminar.</li>
+<li>Comprender por qué la desnutrición aguda es una urgencia vital desde el primer contacto con el sistema de salud.</li>
+</ul>
+
+<div class="rd-h1">1. La desnutrición aguda: una crisis silenciosa</div>
+<div class="rd-h2">1.1 Magnitud del problema a nivel global</div>
+<p class="rd-p">La desnutrición es una de las principales causas de mortalidad infantil a nivel mundial. Según la OMS y UNICEF, la desnutrición en todas sus formas contribuye a aproximadamente el <strong>45% de las muertes en niños menores de cinco años</strong>.</p>
+<p class="rd-p">La desnutrición aguda es la forma más grave y de mayor riesgo de mortalidad a corto plazo. Se define por una pérdida de peso reciente o incapacidad para ganarlo, reflejada en el indicador Peso para la Talla/Longitud (P/T-L) por debajo de -2 desviaciones estándar de la mediana de la población de referencia OMS 2006.</p>
+<table class="rd-table">
+<tr><th>Indicador</th><th>Cifra</th><th>Fuente</th></tr>
+<tr><td>Muertes infantiles relacionadas con desnutrición</td><td>45% del total global</td><td>OMS/UNICEF 2023</td></tr>
+<tr><td>Reducción de mortalidad con protocolo MIDA</td><td>Del 59% usual al 8-16%</td><td>Lineamiento MIDA</td></tr>
+<tr><td>Niños &lt;5 años con DAS a nivel global</td><td>~13 millones</td><td>UNICEF 2023</td></tr>
+<tr><td>Edad de mayor vulnerabilidad</td><td>0 a 59 meses</td><td>OMS/Lineamiento MIDA</td></tr>
+</table>
+
+<div class="rd-h2">1.2 La situación en Colombia</div>
+<p class="rd-p">En Colombia, la desnutrición aguda tiene una distribución territorial marcadamente inequitativa. Los departamentos con mayor carga son:</p>
+<table class="rd-table">
+<tr><th>Departamento</th><th>Razón principal de priorización</th></tr>
+<tr><td><strong>La Guajira</strong></td><td>Mayor prevalencia del país. Comunidades wayuu con barreras geográficas, culturales y de acceso al sistema de salud. Tasas de mortalidad infantil muy superiores al promedio nacional.</td></tr>
+<tr><td><strong>Chocó</strong></td><td>Alta dispersión geográfica, comunidades afrodescendientes e indígenas. Acceso muy limitado a servicios de primer nivel. Altas tasas de mortalidad infantil asociada a desnutrición.</td></tr>
+<tr><td><strong>Vichada</strong></td><td>Zonas de frontera, comunidades indígenas con prácticas culturales específicas de alimentación, infraestructura de salud insuficiente y difícil acceso por vías fluviales.</td></tr>
+<tr><td><strong>Magdalena, Bolívar, Córdoba</strong></td><td>Zonas rurales con alta pobreza multidimensional, desplazamiento y acceso irregular a los servicios de salud.</td></tr>
+<tr><td><strong>Cundinamarca</strong></td><td>El Hospital Regional de Zipaquirá — como Centro MIDA certificado — atiende casos provenientes de municipios del norte del departamento con condiciones de vulnerabilidad.</td></tr>
+</table>
+<div class="rd-callout warn"><strong>⚠️ Dato clave — Resolución 115/2026:</strong>La nueva norma prioriza la identificación y atención de niños con "riesgo de desnutrición aguda" (P/T entre -1 y -2 DE) en La Guajira, Chocó y Vichada, reconociendo que la intervención temprana antes de que la enfermedad progrese es la estrategia más efectiva para reducir la mortalidad.</div>
+
+<div class="rd-h1">2. Marco normativo vigente</div>
+<div class="rd-h2">2.1 Jerarquía de las normas aplicables</div>
+<table class="rd-table">
+<tr><th>Norma</th><th>Contenido principal</th><th>Estado</th></tr>
+<tr><td><strong>Res. 2465/2016</strong></td><td>Adopta indicadores antropométricos y puntos de corte OMS para Colombia. Base para la clasificación nutricional.</td><td>Vigente</td></tr>
+<tr><td><strong>Lineamiento MIDA</strong></td><td>Protocolo técnico completo: fisiopatología, diagnóstico, fases de tratamiento, criterios de manejo ambulatorio y hospitalario, seguimiento y monitoreo.</td><td>Vigente</td></tr>
+<tr><td><strong>Res. 2350/2020</strong></td><td>Adopta el Lineamiento MIDA como norma de obligatorio cumplimiento para todas las IPS y EPS del país.</td><td>Vigente (con modificaciones)</td></tr>
+<tr><td><strong>Res. 115/2026</strong></td><td>Modifica parcialmente la Res. 2350/2020. Introduce F-100 obligatoria, nuevo criterio de egreso (P/T ≥ -1 DE), categoría "riesgo DA", atención sin autorización previa.</td><td><strong>Vigente — más reciente</strong></td></tr>
+</table>
+
+<div class="rd-h2">2.2 Propósito del Lineamiento MIDA</div>
+<p class="rd-p">El lineamiento es "una herramienta de trabajo dirigida a los profesionales de la salud para la adecuada identificación, tratamiento y seguimiento de la desnutrición aguda moderada y severa en niños de cero (0) a 59 meses de edad." Su objetivo central es reducir la mortalidad asociada a la desnutrición aguda, garantizando un abordaje integral que incluya identificación oportuna, estabilización cautelosa, tratamiento basado en evidencia y seguimiento sistemático.</p>
+
+<div class="rd-h2">2.3 Alcance del lineamiento</div>
+<p class="rd-p">El lineamiento aplica a niños de 0 a 59 meses con desnutrición aguda moderada o severa de etiología primaria (carencia de alimentos, asociada o no con infecciones recurrentes).</p>
+<p class="rd-p"><strong>No aplica a:</strong> niños con retraso en talla sin desnutrición aguda, galactosemia, alergia al maní, ni desnutrición de etiología secundaria (aunque la Res. 115/2026 introduce criterios específicos para este grupo).</p>
+
+<div class="rd-h1">3. El cambio de paradigma</div>
+<table class="rd-table">
+<tr><th>Aspecto</th><th>Antes del Lineamiento MIDA</th><th>Con el Lineamiento MIDA</th></tr>
+<tr><td>Escenario de manejo</td><td>Todo DAS: hospitalario</td><td>80% DAS y 95% DAM: ambulatorio</td></tr>
+<tr><td>Mortalidad intrahospitalaria</td><td>25-30% en muchos centros</td><td>8-16% con protocolo correcto</td></tr>
+<tr><td>Fórmula terapéutica</td><td>F-75 exclusivamente hospitalaria</td><td>FTLC ambulatoria + F-75 hospitalaria</td></tr>
+<tr><td>Rol de la familia</td><td>Observadores pasivos</td><td>Protagonistas del tratamiento</td></tr>
+<tr><td>Duración promedio de hospitalización</td><td>Semanas a meses</td><td>Días (solo fase de estabilización)</td></tr>
+</table>
+
+<div class="rd-h2">Cambios clave — Resolución 115/2026</div>
+<ul class="rd-ul">
+<li><strong>Nueva categoría:</strong> "Riesgo de desnutrición aguda" (P/T entre -1 y -2 DE). Prioridad en La Guajira, Chocó y Vichada.</li>
+<li><strong>F-100 obligatoria</strong> en transición y rehabilitación hospitalaria. EPS debe garantizar F-75 Y F-100.</li>
+<li><strong>Criterio de egreso cambia:</strong> P/T ≥ -2 DE → P/T ≥ -1 DE.</li>
+<li><strong>Atención como urgencia:</strong> sin autorización previa de la EPS en ningún nivel de complejidad.</li>
+<li><strong>FTLC y F-100 son APME:</strong> no requieren MIPRES. La IPS entrega directamente.</li>
+<li><strong>Seguimiento post-egreso obligatorio</strong> dentro de los 15 días siguientes al alta.</li>
+<li>Sin recuperación en el 3° o 4° control ambulatorio → <strong>remisión obligatoria a pediatría.</strong></li>
+</ul>
+
+<div class="rd-h1">4. Urgencia vital y prácticas nocivas</div>
+<div class="rd-callout danger"><strong>🚨 Principio fundamental:</strong>Todo profesional que identifique un niño con desnutrición aguda moderada o severa tiene la obligación de iniciar la evaluación y la fase de estabilización de inmediato, sin importar si la IPS es de primer, segundo o tercer nivel. Esperar autorización, exámenes o remisión sin estabilizar es contrario al lineamiento y puede costar la vida del niño.</div>
+
+<div class="rd-h3">Prácticas prohibidas — errores clínicos:</div>
+<ul class="rd-ul">
+<li>No reconocer la desnutrición aguda como urgencia vital.</li>
+<li>Remitir al paciente sin haber iniciado la fase de estabilización.</li>
+<li>Realizar toma innecesaria de exámenes en urgencias que demoran el tratamiento.</li>
+<li>Usar esquemas rápidos de hidratación endovenosa.</li>
+<li>Tratar el edema nutricional con diuréticos (salvo la indicación específica ante/post transfusión de GRE).</li>
+<li>Suministrar hierro en la fase inicial del tratamiento.</li>
+<li>Administrar albúmina para "mejorar" la presión oncótica.</li>
+<li>No identificar tempranamente procesos infecciosos.</li>
+<li>No reconocer los signos del síndrome de realimentación.</li>
+<li>Diluir la Fórmula Terapéutica Lista para el Consumo (FTLC).</li>
+<li>Iniciar alimentación de forma rápida y en grandes cantidades.</li>
+<li>Ofrecer leche de vaca a niños menores de 1 año.</li>
+</ul>
+
+<div class="rd-h1">5. El Hospital Regional de Zipaquirá como Centro MIDA</div>
+<p class="rd-p">La Gobernación de Cundinamarca certifica a los hospitales que cumplen con los estándares técnicos, de recurso humano, de equipamiento y de protocolo establecidos para el manejo integral de la desnutrición aguda. Esta certificación — denominada <strong>Centro MIDA</strong> — reconoce que la institución está en capacidad de ofrecer atención de calidad basada en el Lineamiento MIDA.</p>
+<p class="rd-p">Este curso — LIMDA Edu — es la herramienta de formación y certificación del personal del hospital en dicho estándar. Al completarlo satisfactoriamente, el participante demuestra competencia en identificación, clasificación, manejo y seguimiento de la desnutrición aguda según la normativa vigente.</p>
+
+<div class="rd-h1">Referencias bibliográficas</div>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">1. MinSalud — UNICEF Colombia. Lineamiento para el manejo integrado de la desnutrición aguda moderada y severa en niños de 0 a 59 meses. Res. 2350/2020. Bogotá: MinSalud; 2021.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">2. MinSalud. Resolución 0115 de 2026. Por la cual se modifica parcialmente la Resolución 2350 de 2020. Bogotá: MinSalud; 2026.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">3. MinSalud. Resolución 2465 de 2016. Indicadores antropométricos OMS para Colombia. Bogotá: MinSalud; 2016.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">4. UNICEF, WHO, World Bank. Levels and Trends in Child Malnutrition: Joint Malnutrition Estimates 2023. Geneva: WHO; 2023.</p>
+
+          <div class="reading-confirm" id="conf-box-rd-0">
+            <input type="checkbox" id="confirm-rd-0" style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;" onchange="confirmReading('rd-0', 0)">
+            <label for="confirm-rd-0">Confirmo que leí el documento de este módulo y estoy listo para la evaluación.</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-box" id="quiz-0">
+        <div class="quiz-header">
+          <div class="quiz-title">Evaluación — Módulo 1</div>
+          <div class="quiz-counter" id="qcounter-0">Pregunta 1 de 5</div>
+        </div>
+        <div id="quiz-0-content"></div>
+      </div>
+
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 1 · Epidemiología y marco normativo</div>
+        <button class="btn-continue" id="btn-continue-0" onclick="completeModule(0)">
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ MODULE 2 ═══ -->
+    <div class="module-content" id="mod-1">
+      <div class="mod-eyebrow">Módulo 2 de 5</div>
+      <div class="mod-title">Reconocer:<br>Diagnóstico y clasificación</div>
+      <div class="mod-sub">Aprende a identificar y clasificar correctamente la desnutrición aguda usando los indicadores antropométricos y clínicos del lineamiento.</div>
+      <div class="mod-divider"></div>
+
+      <div class="content-section">
+        <h3>Indicadores antropométricos</h3>
+        <p>El diagnóstico de la desnutrición aguda se basa en tres indicadores complementarios. Ninguno por sí solo es suficiente — deben interpretarse en conjunto.</p>
+        <table class="comp-table">
+          <tr><th>Indicador</th><th>¿Qué mide?</th><th>Puntos de corte</th><th>Nota clave</th></tr>
+          <tr><td><strong>P/T-L</strong></td><td>Peso para la talla/longitud</td><td>DAM: -2 a -3 DE<br>DAS: &lt; -3 DE</td><td class="highlight">Indicador principal</td></tr>
+          <tr><td><strong>PB</strong></td><td>Perímetro del brazo</td><td>11.5-12.4 cm: riesgo<br>&lt;11.5 cm: DAS</td><td>Solo en 6-59 meses</td></tr>
+          <tr><td><strong>Edema bilateral</strong></td><td>Retención de líquidos por kwashiorkor</td><td>Cualquier grado = DAS</td><td class="danger-cell">Independiente del P/T-L</td></tr>
+        </table>
+      </div>
+
+      <div class="content-section">
+        <h3>Técnica correcta de medición del PB</h3>
+        <ul>
+          <li>Seleccionar el brazo <strong>NO dominante</strong></li>
+          <li>Identificar el punto medio entre el acromion y el olécranon con el codo a 90°</li>
+          <li>Con el brazo caído naturalmente, enrollar la cinta de forma horizontal</li>
+          <li>La cinta no debe estar ni muy apretada ni muy suelta</li>
+          <li>Leer al milímetro más cercano</li>
+        </ul>
+        <div class="callout warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body">
+            <div class="callout-title">Error frecuente</div>
+            <div class="callout-text">Medir el PB en el brazo dominante o en posición incorrecta puede dar valores hasta 1 cm más altos, llevando a clasificar erroneamente a un niño con DAS como DAM.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Clasificación del edema nutricional</h3>
+        <p>Técnica: presionar el dorso del pie con los pulgares durante 3 segundos. Si la depresión persiste = edema positivo (signo de Godet).</p>
+        <table class="comp-table">
+          <tr><th>Grado</th><th>Localización</th><th>Implicación</th></tr>
+          <tr><td><strong>Grado I (+)</strong></td><td>Solo pies y tobillos</td><td>DAS · ambulatorio posible</td></tr>
+          <tr><td><strong>Grado II (++)</strong></td><td>Pies + manos + parte inferior de piernas y brazos</td><td>DAS · ambulatorio posible</td></tr>
+          <tr><td><strong>Grado III (+++)</strong></td><td>Generalizado (anasarca, incluye cara)</td><td class="danger-cell">DAS · SIEMPRE hospitalario</td></tr>
+        </table>
+      </div>
+
+      <div class="content-section">
+        <h3>Fenotipos de la DAS</h3>
+        <div class="stat-cards">
+          <div class="stat-card"><div class="sc-num" style="font-size:18px;">Marasmo</div><div class="sc-unit">Sin edema</div><div class="sc-label">Emaciación extrema, piel seca, pérdida de masa muscular y grasa. Albúmina normal o casi normal.</div></div>
+          <div class="stat-card"><div class="sc-num" style="font-size:18px;">Kwashiorkor</div><div class="sc-unit">Con edema</div><div class="sc-label">Edema bilateral, lesiones en piel, cabello frágil, hepatomegalia. Mayor riesgo de mortalidad.</div></div>
+          <div class="stat-card"><div class="sc-num" style="font-size:18px;">Mixto</div><div class="sc-unit">Marasmo-Kwashiorkor</div><div class="sc-label">Emaciación severa con edema superpuesto. Generalmente desencadenado por infección.</div></div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>La prueba de apetito</h3>
+        <p>Es el criterio más importante para definir el escenario de manejo. Es una prueba <strong>diagnóstica</strong>, no de tolerancia a la vía oral.</p>
+        <ul>
+          <li>Solo en niños <strong>mayores de 6 meses</strong> con peso <strong>mayor a 4 kg</strong></li>
+          <li>Sin complicaciones médicas activas</li>
+          <li>Se realiza <strong>siempre con FTLC</strong> — nunca con otro alimento</li>
+          <li>En área tranquila, sin presión, de forma <strong>voluntaria</strong></li>
+          <li>Se realiza en <strong>cada</strong> valoración (inicio y seguimiento)</li>
+        </ul>
+        <table class="dose-table">
+          <tr><th>Peso del niño</th><th>Cantidad mínima para prueba positiva</th></tr>
+          <tr><td>4.0 – 6.9 kg</td><td class="mono">¼ de sobre (23 g)</td></tr>
+          <tr><td>7.0 – 9.9 kg</td><td class="mono">⅓ de sobre (31 g)</td></tr>
+          <tr><td>10.0 – 14.9 kg</td><td class="mono">½ sobre (46 g)</td></tr>
+        </table>
+      </div>
+
+      <!-- CASE 2 -->
+      <div class="case-box">
+        <div class="case-label">Caso clínico 2</div>
+        <div class="case-patient">
+          <h4>Valentina, 18 meses</h4>
+          <div class="vitals">
+            <div class="vital-chip"><div class="vc-val">18 m</div><div class="vc-label">Edad</div></div>
+            <div class="vital-chip"><div class="vc-val">F</div><div class="vc-label">Sexo</div></div>
+            <div class="vital-chip"><div class="vc-val">7.2 kg</div><div class="vc-label">Peso</div></div>
+            <div class="vital-chip"><div class="vc-val">73 cm</div><div class="vc-label">Talla</div></div>
+            <div class="vital-chip"><div class="vc-val">11.2 cm</div><div class="vc-label">PB</div></div>
+            <div class="vital-chip"><div class="vc-val">Grado I</div><div class="vc-label">Edema</div></div>
+          </div>
+        </div>
+        <div class="case-question">Con estos datos, ¿cuál es el diagnóstico nutricional correcto de Valentina?</div>
+        <div class="case-options">
+          <button class="case-option" onclick="answerCase(this,'wrong','mod1-q1')">A. Desnutrición Aguda Moderada (DAM) — P/T entre -2 y -3 DE</button>
+          <button class="case-option" onclick="answerCase(this,'correct','mod1-q1')">B. Desnutrición Aguda Severa (DAS) — por presencia de edema bilateral</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod1-q1')">C. Riesgo de desnutrición aguda — PB entre 11.5 y 12.5 cm</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod1-q1')">D. No se puede clasificar sin el Z-score calculado</button>
+        </div>
+        <div class="case-feedback correct-fb" id="mod1-q1-fb-correct">
+          <strong>✓ Correcto</strong>
+          La presencia de edema bilateral nutricional de cualquier grado clasifica automáticamente al niño como DAS, independientemente del valor del P/T-L o del PB. Este es uno de los criterios más importantes del lineamiento. Valentina tiene DAS tipo Kwashiorkor.
+        </div>
+        <div class="case-feedback wrong-fb" id="mod1-q1-fb-wrong">
+          <strong>✗ Incorrecto</strong>
+          Aunque el PB (11.2 cm &lt; 11.5) y el P/T podrían orientar hacia DAM, la presencia de edema bilateral grado I es suficiente para clasificar como DAS, sin importar los demás valores. El edema nutricional bilateral = DAS siempre.
+        </div>
+      </div>
+
+      
+      
+      <!-- VIDEO OMS M2 -->
+      <div class="reading-section" id="video-m2" style="border-color:rgba(0,180,166,0.3);">
+        <div class="reading-header" onclick="toggleReading('video-m2')" style="background:linear-gradient(135deg,#0d3028,#0a1628);">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            Video obligatorio — OMS
+            <span class="reading-badge" style="background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.4);color:#fca5a5;">Requiere internet</span>
+          </h3>
+          <span class="reading-toggle">▾</span>
+        </div>
+        <div class="reading-body" style="padding:20px;">
+          <p class="rd-p" style="margin-bottom:14px;">
+            <strong>Medición antropométrica en niños — Organización Mundial de la Salud</strong><br>
+            Este video oficial de la OMS muestra la técnica correcta para medir peso, talla/longitud y perímetro del brazo en niños menores de 5 años. La técnica correcta es fundamental para el diagnóstico preciso de la desnutrición aguda.
+          </p>
+          <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;margin-bottom:16px;">
+            <iframe
+              id="oms-video"
+              src="https://www.youtube.com/embed/R73tLpmMnF4"
+              title="OMS — Medición antropométrica en niños"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:10px;"
+            ></iframe>
+          </div>
+          <div style="background:var(--teal-light);border:1px solid rgba(0,180,166,0.3);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:6px;">🎯 Mientras ves el video, presta atención a:</div>
+            <ul class="rd-ul" style="margin-bottom:0;">
+              <li>Posición correcta del niño para medir longitud (&lt;2 años) vs. talla (≥2 años)</li>
+              <li>Técnica de medición del perímetro del brazo: punto medio y posición de la cinta</li>
+              <li>Cómo sostener y posicionar al niño para pesar con precisión</li>
+              <li>Errores frecuentes que pueden alterar los resultados</li>
+            </ul>
+          </div>
+          <div class="reading-confirm" id="conf-box-video-m2">
+            <input type="checkbox" id="confirm-video-m2" style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;" onchange="confirmVideo()">
+            <label for="confirm-video-m2">Confirmo que vi el video de la OMS sobre medición antropométrica.</label>
+          </div>
+        </div>
+      </div>
+
+<!-- READING M1 -->
+      <div class="reading-section" id="rd-1">
+        <div class="reading-header" onclick="toggleReading('rd-1')">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Documento de lectura — Módulo 2
+            <span class="reading-badge">Diagnóstico, clasificación y prueba de apetito</span>
+          </h3>
+          <span class="reading-toggle">▾</span>
+        </div>
+        <div class="reading-body">
+          
+<div class="rd-h1">Objetivos de aprendizaje</div>
+<ul class="rd-ul">
+<li>Clasificar correctamente la desnutrición aguda usando el indicador P/T-L y los puntos de corte de la Res. 2465/2016.</li>
+<li>Identificar los tres fenotipos de la DAS: marasmo, kwashiorkor y mixto.</li>
+<li>Aplicar correctamente la técnica de medición del PB e interpretar sus valores.</li>
+<li>Evaluar el edema nutricional y clasificarlo en grados I, II y III.</li>
+<li>Realizar e interpretar la prueba de apetito con FTLC.</li>
+<li>Distinguir los criterios de manejo ambulatorio vs. hospitalario.</li>
+</ul>
+
+<div class="rd-h1">1. Los tres pilares del diagnóstico</div>
+<p class="rd-p">El lineamiento MIDA establece que el reto diagnóstico inicial se compone de tres elementos fundamentales que deben abordarse en orden:</p>
+<ul class="rd-ul">
+<li><strong>1.</strong> Diagnosticar la existencia y severidad de la desnutrición aguda.</li>
+<li><strong>2.</strong> Establecer la presencia concomitante de complicaciones o comorbilidades.</li>
+<li><strong>3.</strong> Seleccionar el escenario adecuado para el manejo: hospitalario o ambulatorio.</li>
+</ul>
+
+<div class="rd-h1">2. Clasificación antropométrica</div>
+<div class="rd-h2">2.1 Indicador Peso para la Talla/Longitud (P/T-L)</div>
+<p class="rd-p">El indicador P/T-L es el principal indicador para el diagnóstico de la desnutrición aguda. Se interpreta mediante el puntaje Z utilizando la población de referencia OMS 2006 adoptada por la Resolución 2465/2016.</p>
+<table class="rd-table">
+<tr><th>Puntaje Z (P/T-L)</th><th>Clasificación</th><th>Acción inmediata</th></tr>
+<tr><td>≥ -1 a ≤ +1 DE</td><td>Peso adecuado para la talla</td><td>Seguimiento en controles de crecimiento y desarrollo</td></tr>
+<tr><td>≥ -2 a &lt; -1 DE</td><td><strong>Riesgo de desnutrición aguda</strong> (Res. 115/2026)</td><td>Intervención temprana. Prioritario en La Guajira, Chocó y Vichada.</td></tr>
+<tr><td>&lt; -2 a ≥ -3 DE</td><td>Desnutrición Aguda Moderada (DAM)</td><td>Iniciar manejo. Evaluar criterios ambulatorio/hospitalario.</td></tr>
+<tr><td>&lt; -3 DE</td><td>Desnutrición Aguda Severa (DAS)</td><td>URGENCIA VITAL. Iniciar estabilización inmediata.</td></tr>
+<tr><td>Edema bilateral (cualquier grado)</td><td>DAS — independiente del P/T-L</td><td>URGENCIA VITAL. Siempre clasifica como DAS.</td></tr>
+</table>
+<div class="rd-callout danger"><strong>⚠️ Regla fundamental:</strong>La presencia de EDEMA BILATERAL NUTRICIONAL de cualquier grado clasifica automáticamente al niño como DAS, sin importar el valor del P/T-L ni del PB. Este es el error más frecuente en la práctica clínica.</div>
+
+<div class="rd-h2">2.2 Perímetro del Brazo (PB)</div>
+<p class="rd-p">El PB es un indicador complementario utilizado en niños de 6 a 59 meses. No reemplaza al P/T-L.</p>
+<table class="rd-table">
+<tr><th>Valor del PB</th><th>Interpretación</th><th>Conducta</th></tr>
+<tr><td>≥ 12.5 cm</td><td>Normal</td><td>Seguimiento rutinario</td></tr>
+<tr><td>11.5 – 12.4 cm</td><td>Riesgo moderado — zona amarilla</td><td>Monitoreo estrecho, evaluar con P/T-L</td></tr>
+<tr><td>&lt; 11.5 cm</td><td>Predictor de riesgo de muerte</td><td>Clasificar como DAS independientemente del P/T-L</td></tr>
+</table>
+
+<div class="rd-h3">Técnica correcta de medición del PB (paso a paso):</div>
+<ul class="rd-ul">
+<li><strong>Paso 1:</strong> Identificar el brazo NO dominante del niño.</li>
+<li><strong>Paso 2:</strong> Con el codo a 90°, identificar el punto medio entre el acromion (hombro) y el olécranon (codo).</li>
+<li><strong>Paso 3:</strong> Marcar el punto medio con un lápiz dérmico.</li>
+<li><strong>Paso 4:</strong> Dejar caer el brazo de forma natural al lado del cuerpo.</li>
+<li><strong>Paso 5:</strong> Enrollar horizontalmente la cinta antropométrica sobre la marca.</li>
+<li><strong>Paso 6:</strong> Verificar que la cinta NO esté ni muy apretada ni muy suelta.</li>
+<li><strong>Paso 7:</strong> Leer al milímetro más cercano.</li>
+</ul>
+<div class="rd-callout warn"><strong>💡 Error frecuente:</strong>Medir el PB con el brazo levantado, en posición incorrecta o en el brazo dominante puede dar valores hasta 1 cm más altos, llevando a clasificar erróneamente un niño con DAS como DAM o normal.</div>
+
+<div class="rd-h1">3. Valoración del edema nutricional</div>
+<div class="rd-h2">3.1 Técnica del signo de Godet</div>
+<p class="rd-p">Presionar el dorso del pie del niño con ambos pulgares durante <strong>3 segundos</strong>. Si la depresión generada se mantiene al retirar la presión, se confirma la presencia de edema (signo de Godet positivo).</p>
+<table class="rd-table">
+<tr><th>Grado</th><th>Denominación</th><th>Localización</th><th>Implicación</th></tr>
+<tr><td><strong>Grado I (+)</strong></td><td>Edema leve</td><td>Solo en pies y tobillos</td><td>DAS — ambulatorio posible si cumple otros criterios</td></tr>
+<tr><td><strong>Grado II (++)</strong></td><td>Edema moderado</td><td>Pies + manos + parte inferior de piernas y brazos</td><td>DAS — ambulatorio posible si cumple otros criterios</td></tr>
+<tr><td><strong>Grado III (+++) Anasarca</strong></td><td>Edema severo</td><td>Generalizado: pies, piernas, manos, brazos y cara</td><td>DAS — <strong>SIEMPRE hospitalario, sin excepciones</strong></td></tr>
+</table>
+
+<div class="rd-h1">4. Valoración clínica y fenotipos</div>
+<div class="rd-h2">4.1 Examen físico comparativo por fenotipos</div>
+<table class="rd-table">
+<tr><th>Segmento</th><th>Marasmo</th><th>Kwashiorkor</th></tr>
+<tr><td>Cara</td><td>Lívida, delgada, pérdida de grasa malar</td><td>Fascies lunar (cara redondeada por edema)</td></tr>
+<tr><td>Cabello</td><td>Atrófico, escaso, quebradizo</td><td>Despigmentado, fino, seco, opaco, alopecia</td></tr>
+<tr><td>Piel</td><td>Seca, plegadiza ("le sobra piel"), sin dermatosis</td><td>Dermatosis pelagroide, hiper/hipopigmentación difusa</td></tr>
+<tr><td>Edema</td><td>Ausente</td><td>SIEMPRE presente (criterio diagnóstico)</td></tr>
+<tr><td>Músculo</td><td>Hipotrofia/atrofia muscular generalizada</td><td>Hipotrofia con edema superpuesto</td></tr>
+<tr><td>Hígado</td><td>Normal</td><td>Hepatomegalia, esteatosis hepática</td></tr>
+<tr><td>Albúmina</td><td>Normal o casi normal</td><td>Baja (&lt; 2.5 g/dl) — hipoalbuminemia</td></tr>
+<tr><td>Conducta</td><td>Irritable, llora mucho, activo</td><td>Adinamia, apatía, indiferencia, tristeza</td></tr>
+</table>
+
+<div class="rd-h1">5. La prueba de apetito con FTLC</div>
+<div class="rd-h2">5.1 Concepto y propósito</div>
+<p class="rd-p">La prueba de apetito es el criterio más importante para definir el escenario de manejo. Es una prueba <strong>DIAGNÓSTICA</strong>, no de tolerancia a la vía oral. La pérdida del apetito puede ser el único síntoma de complicación o comorbilidad en un niño desnutrido.</p>
+
+<div class="rd-h2">5.2 Indicaciones y contraindicaciones</div>
+<p class="rd-p"><strong>Indicada en:</strong> niños de 6 a 59 meses, peso &gt; 4 kg, sin complicaciones médicas activas, en cada valoración (inicio y seguimiento).</p>
+<p class="rd-p"><strong>Contraindicada en:</strong> menores de 6 meses, mayores de 6 meses con peso &lt; 4 kg, niños con complicaciones activas (choque, convulsiones, alteración de conciencia, dificultad respiratoria).</p>
+
+<div class="rd-h2">5.3 Procedimiento paso a paso</div>
+<ul class="rd-ul">
+<li>Explicar a la madre/cuidador el objetivo de la prueba.</li>
+<li>Lavado de manos de la madre/cuidador con agua y jabón.</li>
+<li>La madre se sienta cómodamente con el niño sobre sus piernas.</li>
+<li>Ofrecer la FTLC con cuchara (nunca con la mano directamente).</li>
+<li>Observar la aceptación durante 15 minutos en área tranquila y aislada.</li>
+<li>El niño debe consumir <strong>voluntariamente</strong>, sin presión ni obligación.</li>
+<li>Cuantificar la cantidad consumida y comparar con la tabla de cantidades mínimas.</li>
+</ul>
+<table class="rd-table">
+<tr><th>Peso del niño</th><th>Cantidad mínima para prueba POSITIVA</th></tr>
+<tr><td>4.0 – 6.9 kg</td><td>¼ de sobre de FTLC (≈ 23 g)</td></tr>
+<tr><td>7.0 – 9.9 kg</td><td>⅓ de sobre de FTLC (≈ 31 g)</td></tr>
+<tr><td>10.0 – 14.9 kg</td><td>½ sobre de FTLC (≈ 46 g)</td></tr>
+</table>
+<div class="rd-callout success"><strong>✅ Prueba POSITIVA → Manejo AMBULATORIO</strong><br><strong>⛔ Prueba NEGATIVA → Manejo HOSPITALARIO</strong><br>Si el niño rechaza la FTLC, verificar si ha comido recientemente. Reintentar en ambiente diferente. Si persiste el rechazo → prueba negativa.</div>
+
+<div class="rd-h1">6. Criterios de manejo ambulatorio vs. hospitalario</div>
+<div class="rd-h2">6.1 Criterios de manejo AMBULATORIO — deben cumplirse TODOS</div>
+<ul class="rd-ul">
+<li>Paciente activo, reactivo y consciente.</li>
+<li>Sin complicaciones médicas ni comorbilidades agudas.</li>
+<li>Prueba de apetito POSITIVA.</li>
+<li>Solo UNO de los siguientes: P/T &lt; -2 DE · edema grado I o II · PB &lt; 11.5 cm.</li>
+</ul>
+
+<div class="rd-h2">6.2 Criterios de manejo HOSPITALARIO — basta con UNO</div>
+<ul class="rd-ul">
+<li>Niño menor de 6 meses (SIEMPRE hospitalario).</li>
+<li>Mayor de 6 meses con peso &lt; 4 kg.</li>
+<li>Inconsciente, letárgico, hipoactivo o con convulsiones.</li>
+<li>Edema grado III (anasarca) — SIEMPRE hospitalario.</li>
+<li>Diarrea, vómito persistente con riesgo de deshidratación.</li>
+<li>FR aumentada: &lt;2m: &gt;60 rpm · 2-11m: &gt;50 rpm · 12m-5a: &gt;40 rpm.</li>
+<li>Temperatura axilar &lt; 35.5°C o &gt; 38°C.</li>
+<li>Lesiones ulcerativas/liquenoides en &gt;30% de la superficie cutánea.</li>
+<li>Hemoglobina &lt; 4 g/dl o &lt; 6 g/dl con dificultad respiratoria.</li>
+<li>Prueba de apetito NEGATIVA.</li>
+<li>Condición médica o social que requiera evaluación e intervención.</li>
+</ul>
+
+<div class="rd-h1">Referencias bibliográficas</div>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">1. MinSalud — UNICEF Colombia. Lineamiento MIDA. Res. 2350/2020. Bogotá: MinSalud; 2021.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">2. MinSalud. Resolución 0115 de 2026. Bogotá: MinSalud; 2026.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">3. MinSalud. Resolución 2465 de 2016. Indicadores antropométricos OMS para Colombia. Bogotá: MinSalud; 2016.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">4. OMS. Child Growth Standards. Ginebra: OMS; 2006.</p>
+
+          <div class="reading-confirm" id="conf-box-rd-1">
+            <input type="checkbox" id="confirm-rd-1" style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;" onchange="confirmReading('rd-1', 1)">
+            <label for="confirm-rd-1">Confirmo que leí el documento de este módulo y estoy listo para la evaluación.</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-box" id="quiz-1">
+        <div class="quiz-header">
+          <div class="quiz-title">Evaluación — Módulo 2</div>
+          <div class="quiz-counter" id="qcounter-1">Pregunta 1 de 5</div>
+        </div>
+        <div id="quiz-1-content"></div>
+      </div>
+
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 2 · Diagnóstico y clasificación</div>
+        <button class="btn-continue" id="btn-continue-1" onclick="completeModule(1)">
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ MODULE 3 ═══ -->
+    <div class="module-content" id="mod-2">
+      <div class="mod-eyebrow">Módulo 3 de 5</div>
+      <div class="mod-title">Decidir:<br>¿Hospitalizar o manejo ambulatorio?</div>
+      <div class="mod-sub">Aprende a tomar la decisión correcta en el primer contacto usando los criterios exactos del lineamiento.</div>
+      <div class="mod-divider"></div>
+
+      <div class="content-section">
+        <h3>Criterios para manejo ambulatorio</h3>
+        <p>Deben cumplirse <strong>TODOS</strong> simultáneamente. Si falla uno solo, el niño va a hospitalización.</p>
+        <ul>
+          <li>Paciente <strong>activo, reactivo y consciente</strong></li>
+          <li><strong>Sin</strong> complicaciones médicas ni comorbilidades agudas</li>
+          <li>Prueba de apetito <strong>positiva</strong></li>
+          <li>Solo <strong>uno</strong> de: P/T &lt; -2 DS · edema grado 1 o 2 · PB &lt; 11.5 cm</li>
+        </ul>
+        <div class="callout success">
+          <div class="callout-icon">🏠</div>
+          <div class="callout-body">
+            <div class="callout-title">Dato importante</div>
+            <div class="callout-text">El 80% de los niños de 6-59 meses con DAS y el 95% con DAM pueden manejarse ambulatoriamente cuando se aplican correctamente estos criterios.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Criterios de hospitalización</h3>
+        <p>Basta con que se cumpla <strong>UNO</strong> de estos criterios para hospitalizar:</p>
+        <ul>
+          <li>Niño <strong>menor de 6 meses</strong> (siempre hospitalario)</li>
+          <li>Mayor de 6 meses con peso <strong>menor a 4 kg</strong></li>
+          <li>Inconsciente, letárgico, hipoactivo o con <strong>convulsiones</strong></li>
+          <li>Edema nutricional <strong>grado III</strong> (anasarca)</li>
+          <li>Diarrea, vómito persistente con riesgo de <strong>deshidratación</strong></li>
+          <li>FR aumentada: &lt;2m: &gt;60 rpm · 2-11m: &gt;50 rpm · 1-5a: &gt;40 rpm</li>
+          <li>Temperatura &lt;35.5°C o &gt;38°C</li>
+          <li>Hemoglobina &lt;4 g/dl o &lt;6 g/dl con dificultad respiratoria</li>
+          <li>Prueba de apetito <strong>negativa</strong></li>
+          <li>Condición médica o social que requiera intervención</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h3>Síndrome de realimentación — anticiparlo</h3>
+        <p>El síndrome de realimentación es una de las principales causas de deterioro y muerte durante el tratamiento. Ocurre cuando se reinicia la alimentación de forma rápida en un niño que ha tenido ayuno prolongado.</p>
+        <table class="comp-table">
+          <tr><th>Electrolito</th><th>Consecuencia del déficit</th><th>Cuándo aparece</th></tr>
+          <tr><td><strong>Fósforo</strong></td><td>Debilidad muscular, falla respiratoria, arritmias</td><td>Días 1-7</td></tr>
+          <tr><td><strong>Potasio</strong></td><td>Arritmias, íleo paralítico, debilidad</td><td>Días 1-5</td></tr>
+          <tr><td><strong>Magnesio</strong></td><td>Tetania, convulsiones, arritmias</td><td>Días 2-7</td></tr>
+          <tr><td><strong>Tiamina</strong></td><td>Encefalopatía de Wernicke, falla cardíaca</td><td>Días 1-3</td></tr>
+        </table>
+        <div class="callout danger">
+          <div class="callout-icon">🚨</div>
+          <div class="callout-body">
+            <div class="callout-title">Señal de alarma</div>
+            <div class="callout-text">Aumento de la FC en más de 10 latidos/min o de la FR en más de 5 rpm durante la alimentación = sospechar síndrome de realimentación. Reducir el aporte a la mitad inmediatamente.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CASE 3 -->
+      <div class="case-box">
+        <div class="case-label">Caso clínico 3</div>
+        <div class="case-patient">
+          <h4>Miguel, 3 años</h4>
+          <div class="vitals">
+            <div class="vital-chip"><div class="vc-val">DAS</div><div class="vc-label">Diagnóstico</div></div>
+            <div class="vital-chip"><div class="vc-val">Activo</div><div class="vc-label">Estado</div></div>
+            <div class="vital-chip"><div class="vc-val">Positiva</div><div class="vc-label">Prueba apetito</div></div>
+            <div class="vital-chip"><div class="vc-val">Grado II</div><div class="vc-label">Edema</div></div>
+            <div class="vital-chip"><div class="vc-val">37.2°C</div><div class="vc-label">Temperatura</div></div>
+            <div class="vital-chip"><div class="vc-val">Sin</div><div class="vc-label">Complicaciones</div></div>
+          </div>
+        </div>
+        <div class="case-question">Miguel cumple todos los criterios clínicos favorables. ¿Cuál es el escenario de manejo correcto?</div>
+        <div class="case-options">
+          <button class="case-option" onclick="answerCase(this,'wrong','mod2-q1')">A. Hospitalización obligatoria por tener DAS</button>
+          <button class="case-option" onclick="answerCase(this,'correct','mod2-q1')">B. Manejo ambulatorio — cumple todos los criterios</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod2-q1')">C. Hospitalización porque tiene edema grado II</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod2-q1')">D. Necesita más exámenes antes de decidir</button>
+        </div>
+        <div class="case-feedback correct-fb" id="mod2-q1-fb-correct">
+          <strong>✓ Correcto</strong>
+          Miguel cumple TODOS los criterios para manejo ambulatorio: activo/reactivo, sin complicaciones, prueba de apetito positiva, y edema grado II (no grado III). El edema grado III es el único que obliga a hospitalización. Iniciará FTLC ambulatoria con esquema para DAS.
+        </div>
+        <div class="case-feedback wrong-fb" id="mod2-q1-fb-wrong">
+          <strong>✗ Incorrecto</strong>
+          Tener DAS no obliga automáticamente a hospitalizar. El edema grado II tampoco es criterio de hospitalización. Solo el edema grado III (anasarca) obliga a hospitalizar. Miguel cumple todos los criterios para manejo ambulatorio seguro.
+        </div>
+      </div>
+
+      
+      <!-- READING M2 -->
+      <div class="reading-section" id="rd-2">
+        <div class="reading-header" onclick="toggleReading('rd-2')">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Documento de lectura — Módulo 3
+            <span class="reading-badge">Complicaciones, síndrome de realimentación y decisión clínica</span>
+          </h3>
+          <span class="reading-toggle">▾</span>
+        </div>
+        <div class="reading-body">
+          
+<div class="rd-h1">Objetivos de aprendizaje</div>
+<ul class="rd-ul">
+<li>Identificar las complicaciones y comorbilidades que aumentan el riesgo de mortalidad en la desnutrición aguda.</li>
+<li>Comprender la fisiopatología del síndrome de realimentación y sus manifestaciones clínicas por electrolito.</li>
+<li>Reconocer las señales de alarma del síndrome de realimentación durante el tratamiento.</li>
+<li>Aplicar el algoritmo de decisión hospitalario vs. ambulatorio en casos clínicos reales.</li>
+<li>Conocer las consideraciones especiales en niños prematuros y menores de 6 meses.</li>
+</ul>
+
+<div class="rd-h1">1. Complicaciones que aumentan la mortalidad</div>
+<p class="rd-p">En el marco de la evaluación de niños con desnutrición aguda, es obligatorio estar alerta sobre las siguientes condiciones. Cada una de ellas, junto al diagnóstico de desnutrición aguda, se considera una urgencia vital y requiere tratamiento inmediato desde el mismo momento de la captación del niño.</p>
+<table class="rd-table">
+<tr><th>Complicación</th><th>Signos clave que alertan</th><th>Acción inmediata</th></tr>
+<tr><td><strong>Estado de choque</strong></td><td>Pulso débil, llenado capilar &gt;2 seg, hipotensión, extremidades frías, alt. conciencia</td><td>Lactato de Ringer 15 ml/kg en 1h (SNG o EV). NO solución salina rápida.</td></tr>
+<tr><td><strong>Hipoglicemia</strong></td><td>Glucosa &lt;54 mg/dl, letargia, convulsiones, palidez, sudoración</td><td>DAD 10% 5 ml/kg VO/SNG o EV según nivel de conciencia.</td></tr>
+<tr><td><strong>Infección respiratoria / Sepsis</strong></td><td>FR aumentada para edad, fiebre, tiraje, cianosis, SpO₂ baja</td><td>ATB empírico inmediato. Oxígeno si SpO₂ &lt;90%.</td></tr>
+<tr><td><strong>Compromiso severo de piel</strong></td><td>Lesiones ulcerativas/liquenoides &gt;30% SCT</td><td>SCORDoK. Pomada de zinc. Baño permanganato K.</td></tr>
+<tr><td><strong>Anemia grave</strong></td><td>Hb &lt;4 g/dl o &lt;6 g/dl con dificultad respiratoria. Hcto &lt;12%.</td><td>GRE 10 ml/kg en 3h + furosemida antes y después.</td></tr>
+<tr><td><strong>Signos de enfermedad grave</strong></td><td>Vomita todo, no come nada, letárgico, inconsciente, convulsiona, T &lt;35.5°C o &gt;38°C</td><td>Hospitalización inmediata. Estabilizar en el sitio.</td></tr>
+</table>
+
+<div class="rd-h1">2. Fisiopatología del síndrome de realimentación</div>
+<div class="rd-h2">2.1 Mecanismo</div>
+<p class="rd-p">El síndrome de realimentación es una de las principales causas de deterioro y mortalidad en niños con DAS al iniciar el soporte nutricional de forma inadecuada. Durante el ayuno prolongado, el organismo depleta sus reservas intracelulares de fósforo, potasio y magnesio. Al reintroducir carbohidratos, la secreción de insulina activa el anabolismo celular, causando un desplazamiento masivo de estos electrolitos del espacio extracelular al intracelular, con caída súbita de sus concentraciones séricas.</p>
+<p class="rd-p">Simultáneamente, la activación del metabolismo de carbohidratos aumenta la demanda de tiamina (vitamina B1), cofactor esencial en la glucólisis.</p>
+
+<div class="rd-h2">2.2 Manifestaciones clínicas por electrolito</div>
+<table class="rd-table">
+<tr><th>Alteración</th><th>Sistema cardiovascular</th><th>Sistema muscular</th><th>Sistema neurológico</th></tr>
+<tr><td><strong>Hipofosfatemia</strong></td><td>Muerte súbita, arritmia, falla cardíaca, hipotensión</td><td>Debilidad, mialgia, rabdomiólisis, falla respiratoria</td><td>Confusión, delirio, parálisis, convulsiones, coma</td></tr>
+<tr><td><strong>Hipocalemia</strong></td><td>Arritmia grave, paro cardíaco</td><td>Debilidad, necrosis muscular, íleo paralítico</td><td>Parálisis, muerte</td></tr>
+<tr><td><strong>Hipomagnesemia</strong></td><td>Arritmia</td><td>Debilidad</td><td>Temblor, tetania, convulsiones, alt. conciencia</td></tr>
+<tr><td><strong>Def. tiamina</strong></td><td>Encefalopatía, falla cardíaca</td><td>—</td><td>Wernicke, acidosis láctica, muerte</td></tr>
+<tr><td><strong>Sobrecarga hídrica</strong></td><td>Falla cardíaca congestiva</td><td>Edema generalizado</td><td>—</td></tr>
+</table>
+
+<div class="rd-h2">2.3 Señales de alarma durante el tratamiento</div>
+<div class="rd-callout danger"><strong>🚨 SEÑALES DE ALARMA — Síndrome de realimentación:</strong>• Aumento de FC en más de 10 latidos/min durante la alimentación<br>• Aumento de FR en más de 5 rpm<br>• Aparición o aumento del edema<br>• Hiperglicemia (glucosa &gt;200 mg/dl)<br>• Alteración del estado de conciencia<br>• Arritmia cardíaca<br><br>Si aparece cualquiera de estos signos: <strong>REDUCIR el aporte calórico a la mitad inmediatamente.</strong></div>
+
+<div class="rd-h2">2.4 Ventana de aparición y prevención</div>
+<p class="rd-p">El síndrome de realimentación puede aparecer dentro de los <strong>primeros 5 a 7 días</strong> del inicio del manejo. Se previene cumpliendo los esquemas de inicio cauteloso del lineamiento:</p>
+<ul class="rd-ul">
+<li>NUNCA iniciar alimentación rápidamente ni en grandes cantidades.</li>
+<li>NUNCA dar cargas de glucosa por vía EV en períodos cortos.</li>
+<li>Seguir los esquemas de F-75 por peso, diagnóstico y fase.</li>
+<li>Monitorear peso diariamente durante la hospitalización.</li>
+<li>Vigilar FC y FR como centinelas durante cada toma.</li>
+</ul>
+
+<div class="rd-h2">2.5 Manejo del síndrome establecido</div>
+<p class="rd-p">Reposición EV de electrolitos — SOLO en solución salina, nunca en DAD:</p>
+<ul class="rd-ul">
+<li><strong>Potasio:</strong> 0.3-0.5 mEq/kg/dosis IV en 1 hora.</li>
+<li><strong>Magnesio:</strong> 25-50 mg/kg/dosis IV en 4 horas.</li>
+<li><strong>Fósforo:</strong> 0.08-0.24 mmol/kg en 6-12 horas.</li>
+<li><strong>Tiamina:</strong> 10-20 mg/día IV o IM. Si grave: 10-50 mg/día VO × 2 semanas.</li>
+<li>Control de K y P entre 2 y 4 horas después de la primera infusión.</li>
+</ul>
+
+<div class="rd-h1">3. Consideraciones especiales</div>
+<div class="rd-h2">3.1 Niños con antecedente de prematurez</div>
+<p class="rd-p">La definición del escenario de manejo en niños prematuros se realiza con base en la <strong>edad corregida</strong> (edad cronológica menos las semanas que faltaron para las 40 semanas de gestación):</p>
+<ul class="rd-ul">
+<li>Si edad corregida &lt; 6 meses → hospitalizar siempre.</li>
+<li>Si edad corregida ≥ 6 meses → aplicar criterios normales de 6 a 59 meses.</li>
+</ul>
+<div class="rd-callout danger"><strong>Regla absoluta — menores de 6 meses:</strong>Todo niño menor de 6 meses con desnutrición aguda es UNA URGENCIA VITAL y el tratamiento es SIEMPRE hospitalario, sin excepción. El pilar del tratamiento en este grupo es la lactancia materna y la relactancia.</div>
+
+<div class="rd-h1">4. Algoritmo de decisión clínica</div>
+<table class="rd-table">
+<tr><th>Pregunta clave</th><th>Sí → acción</th><th>No → siguiente</th></tr>
+<tr><td>¿Es menor de 6 meses?</td><td><strong>HOSPITALIZAR</strong></td><td>¿Tiene peso &lt;4 kg?</td></tr>
+<tr><td>¿Tiene peso &lt;4 kg (si &gt;6m)?</td><td><strong>HOSPITALIZAR</strong></td><td>¿Inconsciente/letárgico/convulsiones?</td></tr>
+<tr><td>¿Inconsciente/letárgico/convulsiona?</td><td><strong>HOSPITALIZAR</strong></td><td>¿Tiene edema grado III?</td></tr>
+<tr><td>¿Edema grado III?</td><td><strong>HOSPITALIZAR</strong></td><td>¿Tiene complicaciones médicas?</td></tr>
+<tr><td>¿Complicaciones (FR alta, T anormal, Hb baja)?</td><td><strong>HOSPITALIZAR</strong></td><td>¿Prueba de apetito?</td></tr>
+<tr><td>¿Prueba de apetito NEGATIVA?</td><td><strong>HOSPITALIZAR</strong></td><td>¿Activo + sin complic. + edema ≤ II?</td></tr>
+<tr><td>¿Activo + sin complic. + prueba positiva + edema ≤ II?</td><td><strong>AMBULATORIO</strong></td><td>Reevaluar criterios</td></tr>
+</table>
+
+<div class="rd-h1">Referencias bibliográficas</div>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">1. MinSalud — UNICEF Colombia. Lineamiento MIDA. Res. 2350/2020. Bogotá: MinSalud; 2021.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">2. MinSalud. Resolución 0115 de 2026. Bogotá: MinSalud; 2026.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">3. Crook MA. Refeeding syndrome: problems with definition and management. Nutrition. 2014;30:1448-55.</p>
+
+          <div class="reading-confirm" id="conf-box-rd-2">
+            <input type="checkbox" id="confirm-rd-2" style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;" onchange="confirmReading('rd-2', 2)">
+            <label for="confirm-rd-2">Confirmo que leí el documento de este módulo y estoy listo para la evaluación.</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-box" id="quiz-2">
+        <div class="quiz-header">
+          <div class="quiz-title">Evaluación — Módulo 3</div>
+          <div class="quiz-counter" id="qcounter-2">Pregunta 1 de 5</div>
+        </div>
+        <div id="quiz-2-content"></div>
+      </div>
+
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 3 · Decisión clínica</div>
+        <button class="btn-continue" id="btn-continue-2" onclick="completeModule(2)">
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ MODULE 4 ═══ -->
+    <div class="module-content" id="mod-3">
+      <div class="mod-eyebrow">Módulo 4 de 5</div>
+      <div class="mod-title">Tratar:<br>Protocolo hospitalario ABCDARIO</div>
+      <div class="mod-sub">Domina el protocolo de manejo hospitalario: estabilización, transición y rehabilitación, con las fórmulas y dosis exactas.</div>
+      <div class="mod-divider"></div>
+
+      <div class="content-section">
+        <h3>Las tres fases del manejo hospitalario</h3>
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-dot filled">1</div><div class="tl-title">Estabilización (días 1-2)</div><div class="tl-body">Corregir hipoglicemia, deshidratación e infecciones. F-75 a bajas dosis. Objetivo: mantener vivo al niño con el mínimo aporte metabólico.</div></div>
+          <div class="tl-item"><div class="tl-dot filled">2</div><div class="tl-title">Transición (días 2-7, 2-5 días de duración)</div><div class="tl-body">Paso gradual de F-75 a FTLC o F-100 (Res. 115/2026). Inicio cuando recupera apetito y las complicaciones se resuelven. Cauteloso para evitar síndrome de realimentación.</div></div>
+          <div class="tl-item"><div class="tl-dot filled">3</div><div class="tl-title">Rehabilitación (hasta 60 días)</div><div class="tl-body">Ingesta hipercalórica e hiperproteica. Meta: 150-200 kcal/kg/día. Ganancia mínima 12 g/día en mayores de 3 meses.</div></div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>F-75: fase de estabilización</h3>
+        <table class="dose-table">
+          <tr><th>Diagnóstico</th><th>Primeras 24h (ml/kg/toma c/3h)</th><th>Horas 25-48h</th></tr>
+          <tr><td>DAM</td><td class="mono">10 ml/kg</td><td class="mono">14 ml/kg</td></tr>
+          <tr><td>DAS sin edema</td><td class="mono">7 ml/kg</td><td class="mono">10 ml/kg</td></tr>
+          <tr><td>DAS con edema</td><td class="mono">4 ml/kg</td><td class="mono">7 ml/kg</td></tr>
+        </table>
+        <div class="callout danger">
+          <div class="callout-icon">⛔</div>
+          <div class="callout-body">
+            <div class="callout-title">Contraindicaciones absolutas en estabilización</div>
+            <div class="callout-text">NUNCA usar: diuréticos para el edema · albúmina · hierro · hidratación EV rápida · F-75 antes de comprobar diuresis · inicio rápido de la alimentación.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Antibióticos al ingreso</h3>
+        <p>Todos los niños hospitalizados por desnutrición aguda reciben antibiótico empírico. La anorexia es el signo más sensible de infección — los signos clásicos pueden estar ausentes.</p>
+        <table class="dose-table">
+          <tr><th>Situación</th><th>Esquema</th></tr>
+          <tr><td>Sin complicaciones</td><td class="mono">Amoxicilina 90 mg/kg/día c/12h VO + Gentamicina 5 mg/kg/día c/24h IM × 7 días</td></tr>
+          <tr><td>Con complicaciones</td><td class="mono">Ampicilina 200 mg/kg/día IV c/6h × 2 días + Gentamicina IV × 7 días → luego Amoxicilina VO × 5 días</td></tr>
+          <tr><td>Sin mejoría a 48h</td><td class="mono">Ceftriaxona 100 mg/kg/día IV c/8h × 7-10 días</td></tr>
+          <tr><td>&lt; 2 meses</td><td class="mono">Ampicilina 50 mg/kg/dosis IM/IV c/8h + Gentamicina 4 mg/kg/día × 7 días</td></tr>
+        </table>
+      </div>
+
+      <div class="content-section">
+        <h3>Micronutrientes — cuándo y cuáles</h3>
+        <ul>
+          <li><strong>Ácido fólico:</strong> 2.5 mg dosis única al ingreso en DAS hospitalaria</li>
+          <li><strong>Zinc y vitamina A:</strong> cubiertos por F-75 y FTLC. No suplementar rutinariamente</li>
+          <li><strong>Hierro:</strong> CONTRAINDICADO en estabilización y transición. Solo cuando termina FTLC y Hb ≥ 11 g/dl</li>
+          <li><strong>Vitamina A adicional:</strong> solo en sarampión con daño ocular</li>
+        </ul>
+      </div>
+
+      <!-- CASE 4 -->
+      <div class="case-box">
+        <div class="case-label">Caso clínico 4</div>
+        <div class="case-patient">
+          <h4>Sofía, 14 meses · DAS con edema grado II</h4>
+          <div class="vitals">
+            <div class="vital-chip"><div class="vc-val">Día 1</div><div class="vc-label">Hospitalización</div></div>
+            <div class="vital-chip"><div class="vc-val">Letárgica</div><div class="vc-label">Estado</div></div>
+            <div class="vital-chip"><div class="vc-val">38 mg/dl</div><div class="vc-label">Glucosa</div></div>
+            <div class="vital-chip"><div class="vc-val">Presente</div><div class="vc-label">Diuresis</div></div>
+          </div>
+        </div>
+        <div class="case-question">Sofía tiene hipoglicemia con alteración de conciencia y ya tiene diuresis. ¿Cuál es el orden correcto de manejo?</div>
+        <div class="case-options">
+          <button class="case-option" onclick="answerCase(this,'wrong','mod3-q1')">A. Iniciar F-75 directamente a 4 ml/kg/toma c/3h</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod3-q1')">B. Dar DAD 10% EV y esperar 4 horas antes de cualquier otra intervención</button>
+          <button class="case-option" onclick="answerCase(this,'correct','mod3-q1')">C. DAD 10% 5 ml/kg EV en 5 min → glucometría c/15 min → al mejorar: F-75 SNG 4 ml/kg c/30 min × 2h → luego esquema habitual</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod3-q1')">D. Suero glucosado EV de mantenimiento por 24 horas antes de iniciar F-75</button>
+        </div>
+        <div class="case-feedback correct-fb" id="mod3-q1-fb-correct">
+          <strong>✓ Correcto</strong>
+          Con alteración de conciencia: DAD 10% 5 ml/kg EV en 5 min, glucometría a los 15 min. Al recuperar: F-75 por SNG 4 ml/kg c/30 min × 2h con glucometría cada hora. Luego continuar F-75 a 4 ml/kg c/3h (DAS con edema, primeras 24h). La diuresis ya presente es condición favorable para iniciar F-75.
+        </div>
+        <div class="case-feedback wrong-fb" id="mod3-q1-fb-wrong">
+          <strong>✗ Incorrecto</strong>
+          Con hipoglicemia y alteración de conciencia, el primer paso es corregir la glucosa con DAD 10% EV (5 ml/kg en 5 min), verificar con glucometría, y al mejorar iniciar F-75 SNG. La F-75 se da a 4 ml/kg c/30 min × 2h primero, luego se pasa al esquema habitual de DAS con edema.
+        </div>
+      </div>
+
+      
+      <!-- READING M3 -->
+      <div class="reading-section" id="rd-3">
+        <div class="reading-header" onclick="toggleReading('rd-3')">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Documento de lectura — Módulo 4
+            <span class="reading-badge">Protocolo hospitalario ABCDARIO y fases de tratamiento</span>
+          </h3>
+          <span class="reading-toggle">▾</span>
+        </div>
+        <div class="reading-body">
+          
+<div class="rd-h1">Objetivos de aprendizaje</div>
+<ul class="rd-ul">
+<li>Ejecutar correctamente el protocolo ABCDARIO en las fases de estabilización, transición y rehabilitación.</li>
+<li>Aplicar los esquemas de F-75 por diagnóstico y edad en las primeras 24-48 horas.</li>
+<li>Prescribir antibióticos empíricos y por foco según los esquemas del lineamiento.</li>
+<li>Conocer el rol de la F-100 según la Resolución 115/2026.</li>
+<li>Administrar micronutrientes de forma correcta y oportuna.</li>
+</ul>
+
+<div class="rd-h1">1. Las tres fases del manejo hospitalario</div>
+<table class="rd-table">
+<tr><th>Fase</th><th>Duración</th><th>Objetivo principal</th><th>Fórmula</th></tr>
+<tr><td><strong>1 — Estabilización</strong></td><td>24-72 horas</td><td>Corregir condiciones agudas potencialmente mortales. Inicio cauteloso del soporte nutricional.</td><td>F-75</td></tr>
+<tr><td><strong>2 — Transición</strong></td><td>3-7 días (2-5 días duración)</td><td>Paso progresivo de F-75 a la alimentación de rehabilitación. Aumento cauteloso del aporte.</td><td>F-75 → F-100 / FTLC</td></tr>
+<tr><td><strong>3 — Rehabilitación</strong></td><td>Hasta 60 días</td><td>Ingesta hipercalórica e hiperproteica para recuperación nutricional completa.</td><td>FTLC + alim. complementaria</td></tr>
+</table>
+<div class="rd-callout info"><strong>💡 Importante:</strong>Los niños con criterios de manejo AMBULATORIO inician directamente en la Fase 3 (rehabilitación). Las Fases 1 y 2 son exclusivamente hospitalarias.</div>
+
+<div class="rd-h1">2. El ABCDARIO terapéutico completo</div>
+<table class="rd-table">
+<tr><th>Letra</th><th>Acción</th><th>Acciones específicas clave</th></tr>
+<tr><td><strong>A</strong></td><td>Controle hipoxemia</td><td>SpO₂ &lt;90% → oxígeno. Evaluar FR y esfuerzo respiratorio.</td></tr>
+<tr><td><strong>B</strong></td><td>Hipoglicemia + Hidratación cautelosa</td><td>DAD 10% 5 ml/kg VO/SNG o EV. SRO-75 para deshidratación.</td></tr>
+<tr><td><strong>C</strong></td><td>Detecte choque</td><td>Lactato de Ringer 15 ml/kg en 1h. NO solución salina rápida.</td></tr>
+<tr><td><strong>D</strong></td><td>Vigile función renal (diuresis)</td><td>Cuantificar gasto urinario. F-75 solo cuando hay diuresis confirmada.</td></tr>
+<tr><td><strong>F</strong></td><td>Función intestinal</td><td>SRO-75 enteral. F-75 cuando hay diuresis + ruidos intestinales + sin distensión.</td></tr>
+<tr><td><strong>G</strong></td><td>Corrija anemia grave</td><td>GRE 10 ml/kg en 3h. Furosemida 1 mg/kg antes y después (única indicación).</td></tr>
+<tr><td><strong>H</strong></td><td>Hipotermia</td><td>Abrigar. Piel a piel. T ambiente &gt;18°C si hay AC. Medir c/2h.</td></tr>
+<tr><td><strong>I</strong></td><td>Inicie ATB empírico</td><td>Todos los hospitalizados. La anorexia es el signo más sensible de infección.</td></tr>
+<tr><td><strong>L</strong></td><td>Lactancia materna</td><td>Pilar del tratamiento. F-75 antes de colocar al seno para garantizar el aporte.</td></tr>
+<tr><td><strong>M</strong></td><td>Micronutrientes</td><td>Ácido fólico 2.5 mg al ingreso en DAS. Hierro CONTRAINDICADO en estabilización.</td></tr>
+<tr><td><strong>N</strong></td><td>Nutrición — inicio cauteloso</td><td>F-75 según tabla por diagnóstico y peso. SOLO con diuresis confirmada.</td></tr>
+<tr><td><strong>P</strong></td><td>Piel — SCORDoK</td><td>Pomada de zinc. Baño permanganato K 0.01%. Zonas aireadas y secas.</td></tr>
+<tr><td><strong>R</strong></td><td>Síndrome de Realimentación</td><td>Anticipar. Inicio progresivo. FC y FR como centinelas durante cada toma.</td></tr>
+<tr><td><strong>S</strong></td><td>Estimulación sensorial y emocional</td><td>15-30 min/día. Afecto, juego, comunicación verbal y no verbal.</td></tr>
+<tr><td><strong>V</strong></td><td>Vacunación</td><td>Actualizar esquema PAI en cada contacto con el sistema de salud.</td></tr>
+</table>
+
+<div class="rd-h1">3. Corrección de hipoglicemia (paso B)</div>
+<div class="rd-h2">Sin alteración de conciencia (glucosa &lt;54 mg/dl):</div>
+<ul class="rd-ul">
+<li>DAD 10% a 5 ml/kg/dosis VO o SNG. Glucometría a los 30 minutos.</li>
+<li>Con mejoría: F-75 a 3 ml/kg/toma c/30 min × 2 horas. Glucometría c/hora.</li>
+<li>Si persiste hipoglicemia: repetir bolo de DAD 10%.</li>
+</ul>
+<div class="rd-h2">Con alteración de conciencia, letargia o convulsiones:</div>
+<ul class="rd-ul">
+<li>DAD 10% a 5 ml/kg EV en 5 minutos. Glucometría a los 15 minutos.</li>
+<li>Con mejoría: F-75 SNG 3 ml/kg c/30 min × 2 horas. Glucometría c/hora.</li>
+<li>Si persiste: repetir bolo. Sin mejoría → sospechar sepsis, enterocolitis o síndrome de realimentación.</li>
+</ul>
+
+<div class="rd-h1">4. Esquemas de F-75 — Fase de estabilización (6-59 meses)</div>
+<table class="rd-table">
+<tr><th>Diagnóstico</th><th>1ras 24h post-diuresis (ml/kg/toma c/3h)</th><th>Horas 25-48h (ml/kg/toma c/3h)</th><th>kcal/kg día 1</th><th>kcal/kg día 2</th></tr>
+<tr><td>DAM</td><td>10</td><td>14</td><td>60</td><td>84</td></tr>
+<tr><td>DAS sin edema</td><td>7</td><td>10</td><td>42</td><td>60</td></tr>
+<tr><td>DAS con edema</td><td>4</td><td>7</td><td>24</td><td>42</td></tr>
+</table>
+<div class="rd-callout danger"><strong>⛔ NUNCA iniciar F-75 sin confirmar diuresis.</strong>El inicio de F-75 sin diuresis puede precipitar insuficiencia cardíaca congestiva en el niño desnutrido. La diuresis confirma perfusión renal adecuada.</div>
+
+<div class="rd-h1">5. Antibióticos al ingreso</div>
+<div class="rd-h2">5.1 Antibiótico empírico (todos los hospitalizados)</div>
+<table class="rd-table">
+<tr><th>Situación</th><th>Esquema de primera línea</th></tr>
+<tr><td>Sin complicaciones (6-59m)</td><td>Amoxicilina 90 mg/kg/día VO c/12h × 7 días + Gentamicina 5 mg/kg/día IM c/24h × 7 días</td></tr>
+<tr><td>Con complicaciones (6-59m)</td><td>Ampicilina 200 mg/kg/día IV c/6h × 2 días + Gentamicina IV → luego Amoxicilina VO c/8h × 5 días</td></tr>
+<tr><td>Sin mejoría a 48h</td><td>Ceftriaxona 100 mg/kg/día IV c/8h × 7-10 días</td></tr>
+<tr><td>Menores de 2 meses</td><td>Ampicilina 50 mg/kg/dosis IM/IV c/8h × 7 días + Gentamicina 4 mg/kg/día c/24h × 7 días</td></tr>
+<tr><td>2 a 6 meses</td><td>Amoxicilina 90 mg/kg/día VO c/12h × 7 días + Gentamicina 5 mg/kg/día c/24h × 7 días</td></tr>
+</table>
+
+<div class="rd-h2">5.2 Antibiótico por foco infeccioso</div>
+<table class="rd-table">
+<tr><th>Foco</th><th>Esquema recomendado</th></tr>
+<tr><td>Neumonía</td><td>Penicilina cristalina 200.000 UI/kg/día IV c/4h × 7 días o Ampicilina 200 mg/kg/día c/6h</td></tr>
+<tr><td>Infección urinaria</td><td>Gentamicina 5 mg/kg/día IV c/24h × 7 días</td></tr>
+<tr><td>Infección de piel</td><td>Clindamicina 30 mg/kg/día IV c/8h + Gentamicina 5 mg/kg c/8h × 3-5 días</td></tr>
+<tr><td>Meningitis</td><td>Ceftriaxona 100 mg/kg/día IV c/8h + Vancomicina 60 mg/kg/día c/6h × 7-10 días</td></tr>
+<tr><td>Diarrea con sangre</td><td>Ceftriaxona 100 mg/kg/día c/8h × 5 días</td></tr>
+<tr><td>Diarrea persistente (&gt;14 días)</td><td>Metronidazol 30 mg/kg/día c/8h × 7 días (Giardia/E. histolytica)</td></tr>
+</table>
+
+<div class="rd-h1">6. Micronutrientes</div>
+<table class="rd-table">
+<tr><th>Micronutriente</th><th>Cuándo</th><th>Dosis</th><th>Observación clave</th></tr>
+<tr><td>Ácido fólico (hospitalario)</td><td>Al ingreso en DAS</td><td>2.5 mg dosis única VO</td><td>En fase de estabilización</td></tr>
+<tr><td>Ácido fólico (ambulatorio)</td><td>Día 1 del manejo</td><td>5 mg dosis única, luego 1 mg/día</td><td>Durante todo el tratamiento</td></tr>
+<tr><td>Vitamina A</td><td>Solo en sarampión con daño ocular</td><td>Dosis única según peso</td><td>No suplementar rutinariamente</td></tr>
+<tr><td><strong>Hierro</strong></td><td>Solo al terminar FTLC y Hb ≥11 g/dl</td><td>3-6 mg/kg/día elemental VO</td><td><strong>⛔ CONTRAINDICADO en estabilización y transición</strong></td></tr>
+</table>
+
+<div class="rd-h1">7. F-100 — Novedad Resolución 115/2026</div>
+<p class="rd-p">La Resolución 115/2026 incorpora formalmente la fórmula terapéutica F-100 (100 kcal/100 ml) para las fases de transición y rehabilitación hospitalaria. Diferencia con F-75: mayor contenido calórico y proteico para la fase de recuperación.</p>
+<div class="rd-callout warn"><strong>CAMBIO CLAVE — Res. 115/2026:</strong>La F-100 es OBLIGATORIA en las fases de transición y rehabilitación hospitalaria. Las EPS deben garantizar el suministro inmediato de F-75 Y F-100. La IPS que prescribe es responsable de su entrega directa. No requiere MIPRES.</div>
+
+<div class="rd-h1">8. Criterios de egreso hospitalario → Ambulatorio</div>
+<table class="rd-table">
+<tr><th>Criterio</th><th>Detalle</th></tr>
+<tr><td>Clínicamente bien</td><td>Sin alteración de conciencia, sin infecciones activas</td></tr>
+<tr><td>Buen apetito</td><td>Consume ≥75% de la FTLC prescrita × 1-2 días consecutivos</td></tr>
+<tr><td>Ganancia de peso</td><td>Por 2-3 días consecutivos (meta: 12-16 g/día en &gt;3 meses)</td></tr>
+<tr><td>Prueba de apetito</td><td>Positiva el día del egreso</td></tr>
+<tr><td>Seguimiento programado</td><td>En los próximos 5 días (Res. 115/2026)</td></tr>
+<tr><td>Vacunación</td><td>Completa para la edad</td></tr>
+<tr><td>FTLC entregada</td><td>Suficiente para el período hasta el próximo control</td></tr>
+<tr><td>Documentación</td><td>Historia clínica completa + ficha SIVIGILA diligenciada</td></tr>
+</table>
+
+<div class="rd-h1">Referencias bibliográficas</div>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">1. MinSalud — UNICEF Colombia. Lineamiento MIDA. Res. 2350/2020. Bogotá: MinSalud; 2021.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">2. MinSalud. Resolución 0115 de 2026. Bogotá: MinSalud; 2026.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">3. WHO. Guideline: Updates on the management of severe acute malnutrition in infants and children. Geneva: WHO; 2013.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">4. UNICEF. Community-based management of severe acute malnutrition. Geneva: WHO/WFP/UNSCN/UNICEF; 2007.</p>
+
+          <div class="reading-confirm" id="conf-box-rd-3">
+            <input type="checkbox" id="confirm-rd-3" style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;" onchange="confirmReading('rd-3', 3)">
+            <label for="confirm-rd-3">Confirmo que leí el documento de este módulo y estoy listo para la evaluación.</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-box" id="quiz-3">
+        <div class="quiz-header">
+          <div class="quiz-title">Evaluación — Módulo 4</div>
+          <div class="quiz-counter" id="qcounter-3">Pregunta 1 de 5</div>
+        </div>
+        <div id="quiz-3-content"></div>
+      </div>
+
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 4 · Protocolo hospitalario</div>
+        <button class="btn-continue" id="btn-continue-3" onclick="completeModule(3)">
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ MODULE 5 ═══ -->
+    <div class="module-content" id="mod-4">
+      <div class="mod-eyebrow">Módulo 5 de 5</div>
+      <div class="mod-title">Recuperar:<br>FTLC, seguimiento y egreso</div>
+      <div class="mod-sub">Aprende a prescribir la FTLC correctamente, hacer seguimiento semanal efectivo y definir cuándo dar el alta definitiva.</div>
+      <div class="mod-divider"></div>
+
+      <div class="content-section">
+        <h3>La FTLC — qué es y cómo funciona</h3>
+        <p>La Fórmula Terapéutica Lista para el Consumo (FTLC) — conocida internacionalmente como RUTF — es el pilar del manejo ambulatorio. Es un Alimento para Propósito Médico Especial (APME).</p>
+        <div class="stat-cards">
+          <div class="stat-card"><div class="sc-num">500</div><div class="sc-unit">kcal/sobre</div><div class="sc-label">Un sobre de 92 g aporta 500 kcal</div></div>
+          <div class="stat-card"><div class="sc-num">5×</div><div class="sc-unit">al día</div><div class="sc-label">Mínimo 5 tomas diarias</div></div>
+          <div class="stat-card"><div class="sc-num">-1 DE</div><div class="sc-unit">suspender</div><div class="sc-label">Cuando P/T ≥ -1 DE (Res. 115/2026)</div></div>
+        </div>
+        <div class="callout danger">
+          <div class="callout-icon">⛔</div>
+          <div class="callout-body">
+            <div class="callout-title">Errores que nunca deben cometerse</div>
+            <div class="callout-text">NUNCA diluir la FTLC · NUNCA mezclarla con otros alimentos · NUNCA dar leche de vaca en menores de 12 meses · NUNCA iniciar con jugos, caldos o sopas · Contraindicada en galactosemia y alergia al maní.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Esquema de FTLC — DAM ambulatoria</h3>
+        <table class="dose-table">
+          <tr><th>Período</th><th>kcal/kg/día</th><th>Agua</th><th>Alimentación complementaria</th></tr>
+          <tr><td>Días 1-7</td><td class="mono">150</td><td>100-150 ml/kg</td><td>No (solo leche materna)</td></tr>
+          <tr><td>Días 8-15</td><td class="mono">200</td><td>100-150 ml/kg</td><td>Sí — cantidades pequeñas</td></tr>
+          <tr><td>Día 15 - egreso</td><td class="mono">200</td><td>100-150 ml/kg</td><td>Sí — progresión por edad</td></tr>
+        </table>
+      </div>
+
+      <div class="content-section">
+        <h3>Esquema de FTLC — DAS ambulatoria</h3>
+        <table class="dose-table">
+          <tr><th>Período</th><th>kcal/kg/día</th><th>Nota especial</th></tr>
+          <tr><td>Días 1-3</td><td class="mono">80</td><td>Restar 5-10% del peso si hay edema</td></tr>
+          <tr><td>Días 4-7</td><td class="mono">100</td><td>Solo leche materna adicional</td></tr>
+          <tr><td>Días 8-15</td><td class="mono">135-150</td><td>Inicio de alimentación complementaria</td></tr>
+          <tr><td>Día 15 - egreso</td><td class="mono">150-200</td><td>Progresión completa</td></tr>
+        </table>
+      </div>
+
+      <div class="content-section">
+        <h3>Criterios de egreso hospitalario → ambulatorio</h3>
+        <ul>
+          <li>Clínicamente bien, sin alteración de conciencia</li>
+          <li>Sin complicaciones ni infecciones activas</li>
+          <li>Consume ≥ 75% de la FTLC prescrita × 1-2 días</li>
+          <li>Ganancia de peso × 2-3 días consecutivos (12-16 g/día)</li>
+          <li>Prueba de apetito positiva el día del egreso</li>
+          <li>Seguimiento ambulatorio en los próximos <strong>5 días</strong></li>
+          <li>Vacunación completa para la edad</li>
+        </ul>
+      </div>
+
+      <div class="content-section">
+        <h3>Alta ambulatoria definitiva (Res. 115/2026)</h3>
+        <div class="callout info">
+          <div class="callout-icon">📋</div>
+          <div class="callout-body">
+            <div class="callout-title">Cambio clave — Resolución 115 de 2026</div>
+            <div class="callout-text">El criterio de egreso cambió de P/T ≥ -2 DE a P/T ≥ -1 DE. Este criterio más exigente busca asegurar recuperación nutricional completa y reducir recaídas. Además, el seguimiento post-egreso debe realizarse obligatoriamente dentro de los 15 días siguientes.</div>
+          </div>
+        </div>
+        <ul>
+          <li>P/T ≥ -1 DE (Res. 115/2026)</li>
+          <li>Sin edema en 2 seguimientos consecutivos</li>
+          <li>Clínicamente estable y bien</li>
+          <li>Control dentro de los próximos 15 días</li>
+          <li>Vacunación actualizada</li>
+          <li>Si no hay recuperación en 3° o 4° control → remitir a pediatría</li>
+        </ul>
+      </div>
+
+      <!-- CASE 5 -->
+      <div class="case-box">
+        <div class="case-label">Caso clínico 5 · Seguimiento</div>
+        <div class="case-patient">
+          <h4>Carlos, 3 años · Semana 4 de tratamiento ambulatorio por DAM</h4>
+          <div class="vitals">
+            <div class="vital-chip"><div class="vc-val">11.2 kg</div><div class="vc-label">Peso actual</div></div>
+            <div class="vital-chip"><div class="vc-val">-1.8 DE</div><div class="vc-label">P/T actual</div></div>
+            <div class="vital-chip"><div class="vc-val">Sin edema</div><div class="vc-label">Edema</div></div>
+            <div class="vital-chip"><div class="vc-val">Positiva</div><div class="vc-label">Prueba apetito</div></div>
+            <div class="vital-chip"><div class="vc-val">Estable</div><div class="vc-label">Clínica</div></div>
+          </div>
+        </div>
+        <div class="case-question">Carlos tiene P/T de -1.8 DE, sin edema, clínicamente estable. ¿Es momento de dar el alta definitiva según la Resolución 115 de 2026?</div>
+        <div class="case-options">
+          <button class="case-option" onclick="answerCase(this,'wrong','mod4-q1')">A. Sí — ya superó -2 DE que era el criterio anterior</button>
+          <button class="case-option" onclick="answerCase(this,'correct','mod4-q1')">B. No — debe continuar hasta alcanzar P/T ≥ -1 DE según la Res. 115/2026</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod4-q1')">C. Sí — si tiene más de 4 semanas de tratamiento puede darse el alta</button>
+          <button class="case-option" onclick="answerCase(this,'wrong','mod4-q1')">D. Depende del criterio del médico tratante</button>
+        </div>
+        <div class="case-feedback correct-fb" id="mod4-q1-fb-correct">
+          <strong>✓ Correcto</strong>
+          La Resolución 115 de 2026 cambió el criterio de egreso ambulatorio de P/T ≥ -2 DE a P/T ≥ -1 DE. Carlos está en -1.8 DE, por lo que debe continuar el tratamiento con FTLC hasta alcanzar -1 DE. Este es uno de los cambios más importantes de la nueva norma.
+        </div>
+        <div class="case-feedback wrong-fb" id="mod4-q1-fb-wrong">
+          <strong>✗ Incorrecto</strong>
+          La Resolución 115 de 2026 establece que el egreso ambulatorio definitivo requiere P/T ≥ -1 DE, no -2 DE como era antes. Carlos está en -1.8 DE y debe continuar el tratamiento. Este cambio busca asegurar una recuperación nutricional completa y reducir las recaídas.
+        </div>
+      </div>
+
+      
+      <!-- READING SECTION mod-0 -->
+
+      
+      <!-- READING SECTION mod-2 -->
+
+      
+      <!-- READING SECTION mod-3 -->
+
+      
+      <!-- READING SECTION mod-4 -->
+
+      <!-- FINAL QUIZ -->
+      
+      <!-- READING M4 -->
+      <div class="reading-section" id="rd-4">
+        <div class="reading-header" onclick="toggleReading('rd-4')">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            Documento de lectura — Módulo 5
+            <span class="reading-badge">FTLC, seguimiento ambulatorio y criterios de egreso</span>
+          </h3>
+          <span class="reading-toggle">▾</span>
+        </div>
+        <div class="reading-body">
+          
+<div class="rd-h1">Objetivos de aprendizaje</div>
+<ul class="rd-ul">
+<li>Prescribir correctamente la FTLC en DAM y DAS ambulatoria, incluyendo cálculo de dosis por peso.</li>
+<li>Conocer el esquema de alimentación complementaria por grupo de edad.</li>
+<li>Identificar las señales de recuperación nutricional en cada control semanal.</li>
+<li>Aplicar los criterios de egreso hospitalario y egreso ambulatorio definitivo según Res. 115/2026.</li>
+<li>Reconocer las señales de alarma que obligan a remitir desde el manejo ambulatorio.</li>
+</ul>
+
+<div class="rd-h1">1. La FTLC — Todo lo que el médico debe saber</div>
+<div class="rd-h2">1.1 ¿Qué es la FTLC?</div>
+<p class="rd-p">La Fórmula Terapéutica Lista para el Consumo (FTLC) — también conocida como RUTF — es un Alimento para Propósito Médico Especial (APME) diseñado para el tratamiento ambulatorio de la desnutrición aguda. Es el pilar del manejo ambulatorio en el Lineamiento MIDA.</p>
+<table class="rd-table">
+<tr><th>Característica</th><th>Detalle</th></tr>
+<tr><td>Aporte calórico</td><td>Un sobre de <strong>92 g aporta 500 kcal</strong> (~520-550 kcal/100 g)</td></tr>
+<tr><td>Proteína</td><td>12.5-15 g/sobre. Al menos 50% de origen lácteo.</td></tr>
+<tr><td>Contenido de lactosa</td><td>Muy bajo — segura incluso con diarrea.</td></tr>
+<tr><td>Preparación</td><td>Ninguna — lista para consumir sin agua, cocción ni refrigeración.</td></tr>
+<tr><td>Indicación principal</td><td>Tratamiento ambulatorio de niños de 6-59 meses con DAM o DAS sin complicaciones.</td></tr>
+<tr><td>Frecuencia mínima</td><td>5 tomas al día.</td></tr>
+<tr><td>Suspender cuando</td><td>P/T ≥ <strong>-1 DE</strong> (Resolución 115/2026).</td></tr>
+</table>
+<div class="rd-callout danger"><strong>⛔ Errores que NUNCA se deben cometer:</strong>• NUNCA diluir la FTLC — reduce densidad calórica y aumenta riesgo de contaminación.<br>• NUNCA mezclarla con otros alimentos.<br>• NUNCA dar leche de vaca en menores de 12 meses.<br>• NUNCA iniciar con jugos, caldos, sopas o alimentos de baja densidad.<br>• NUNCA orientar hacia ganancia rápida de peso.<br>• Contraindicada en: galactosemia · alergia al maní.</div>
+
+<div class="rd-h1">2. Esquemas de FTLC por diagnóstico</div>
+<div class="rd-h2">2.1 DAM — Esquema ambulatorio</div>
+<table class="rd-table">
+<tr><th>Período</th><th>kcal/kg/día</th><th>Agua</th><th>Alimentación complementaria</th></tr>
+<tr><td>Días 1-7</td><td>150</td><td>100-150 ml/kg/día</td><td>Solo leche materna. NO otros alimentos.</td></tr>
+<tr><td>Días 8-15</td><td>200 (si queda con hambre)</td><td>100-150 ml/kg/día</td><td>Iniciar en cantidades pequeñas (Tabla 28 lineamiento).</td></tr>
+<tr><td>Día 15 hasta egreso</td><td>200</td><td>100-150 ml/kg/día</td><td>Progresión completa por edad (Tabla 27 lineamiento).</td></tr>
+</table>
+
+<div class="rd-h2">2.2 DAS — Esquema ambulatorio</div>
+<p class="rd-p"><strong>Nota:</strong> Si hay edema, restar 5-10% al peso registrado para el cálculo de la dosis (compensar el peso del edema).</p>
+<table class="rd-table">
+<tr><th>Período</th><th>kcal/kg/día</th><th>Agua</th><th>Alimentación complementaria</th></tr>
+<tr><td>Días 1-3</td><td>80 (ajustar por edema)</td><td>90-150 ml/kg/día</td><td>Solo leche materna. NO otros alimentos.</td></tr>
+<tr><td>Días 4-7</td><td>100</td><td>90-150 ml/kg/día</td><td>Solo leche materna. NO otros alimentos.</td></tr>
+<tr><td>Días 8-15</td><td>135-150</td><td>150 ml/kg/día</td><td>Iniciar alimentación complementaria (Tabla 29).</td></tr>
+<tr><td>Día 15 hasta egreso</td><td>150-200</td><td>150 ml/kg/día</td><td>Progresión completa por edad.</td></tr>
+</table>
+
+<div class="rd-h1">3. Cálculo práctico de la dosis de FTLC</div>
+<p class="rd-p"><strong>Fórmula:</strong> Peso (kg) × kcal objetivo = kcal totales diarias. Dividir / 500 = sobres por día. Dividir / 5 tomas = sobres por toma.</p>
+<div class="rd-callout info"><strong>Ejemplo práctico:</strong>Niño de 3 años, 11 kg, DAM, días 1-7:<br>11 kg × 150 kcal/kg = 1.650 kcal/día<br>1.650 / 500 kcal por sobre = <strong>3.3 sobres/día</strong><br>3.3 / 5 tomas = 0.66 sobres por toma (≈ ⅔ de sobre por toma)<br>Agua: 11 × 100-150 ml = 1.100 a 1.650 ml/día</div>
+
+<div class="rd-h1">4. Alimentación complementaria</div>
+<table class="rd-table">
+<tr><th>Edad</th><th>Consistencia</th><th>Frecuencia mínima</th><th>Ejemplos de alimentos</th></tr>
+<tr><td>6-8 meses</td><td>Puré fino, papillas</td><td>2-3 veces/día + leche materna</td><td>Frutas blandas, verduras cocidas, cereal de arroz</td></tr>
+<tr><td>9-11 meses</td><td>Aplastados, trozos pequeños</td><td>3-4 veces/día + leche materna</td><td>Lo anterior + legumbres, huevo, carne blanda</td></tr>
+<tr><td>12-23 meses</td><td>Familia modificada</td><td>4-5 veces/día</td><td>Comida familiar adaptada sin sal excesiva ni picante</td></tr>
+<tr><td>24-59 meses</td><td>Familiar</td><td>5 veces/día</td><td>Comida familiar variada y rica en nutrientes</td></tr>
+</table>
+<div class="rd-callout danger"><strong>⛔ NUNCA ofrecer:</strong>Jugos, caldos, sopas (baja densidad nutricional) · Gelatinas · Leche de vaca en &lt;12 meses · Alimentos muy salados, picantes o fritos · Bebidas azucaradas.</div>
+
+<div class="rd-h1">5. Seguimiento ambulatorio semanal</div>
+<div class="rd-h2">5.1 Qué evaluar en cada control</div>
+<table class="rd-table">
+<tr><th>Componente</th><th>Qué verificar</th></tr>
+<tr><td>Cumplimiento</td><td>¿Tomó la FTLC? ¿Cuántos sobres? Recordatorio de 24 horas.</td></tr>
+<tr><td>Antropometría</td><td>Peso, talla/longitud, PB. Calcular P/T-L. Graficar en curva de crecimiento.</td></tr>
+<tr><td>Edema</td><td>Presencia, grado, evolución (debe disminuir progresivamente).</td></tr>
+<tr><td>Prueba de apetito</td><td>Realizarla en CADA control semanal.</td></tr>
+<tr><td>Comorbilidades</td><td>¿Nuevas enfermedades? ¿Fiebre, diarrea, tos en las últimas semanas?</td></tr>
+<tr><td>Alimentación complementaria</td><td>Variedad, consistencia, frecuencia, introducción de nuevos alimentos.</td></tr>
+<tr><td>Vacunación</td><td>Actualizar esquema PAI en cada contacto.</td></tr>
+</table>
+
+<div class="rd-h2">5.2 Señales de recuperación nutricional</div>
+<table class="rd-table">
+<tr><th>Signo</th><th>Evolución esperada</th></tr>
+<tr><td>Edema</td><td>Disminuye progresivamente. Desaparece en ≤ 2 semanas.</td></tr>
+<tr><td>Apetito</td><td>Aumenta progresivamente. Prueba de apetito positiva en cada control.</td></tr>
+<tr><td>Peso</td><td>Puede bajar inicialmente (resolución del edema), luego sube gradualmente.</td></tr>
+<tr><td>Cabello</td><td>Crece más rápido, se vuelve más oscuro y brillante.</td></tr>
+<tr><td>Masa muscular</td><td>Aumenta. Las extremidades recuperan volumen y tono.</td></tr>
+<tr><td>Conducta</td><td>Más alerta, sociable, responde al juego, llora menos.</td></tr>
+</table>
+
+<div class="rd-h2">5.3 Señales de alarma — Remitir a hospitalización</div>
+<div class="rd-callout danger"><strong>🚨 Remitir a hospitalización desde el manejo ambulatorio si aparece:</strong>• Alteración del estado de conciencia, hipoactividad o convulsiones.<br>• Diarrea o vómito persistente con riesgo de deshidratación.<br>• FR aumentada: &lt;2m: &gt;60 rpm · 2-11m: &gt;50 rpm · 1-5a: &gt;40 rpm.<br>• Temperatura &lt;35.5°C o &gt;38°C.<br>• Hemoglobina &lt;4 g/dl o &lt;6 g/dl con dificultad respiratoria.<br>• Aparición o AUMENTO del edema.<br>• Lesiones ulcerativas en piel.<br>• Sin recuperación en el 3° o 4° control → <strong>remitir a PEDIATRÍA</strong> (Res. 115/2026).</div>
+
+<div class="rd-h1">6. Antibióticos y micronutrientes ambulatorios</div>
+<table class="rd-table">
+<tr><th>Medicamento</th><th>Indicación</th><th>Dosis</th><th>Observación</th></tr>
+<tr><td>Amoxicilina</td><td>DAS ambulatoria (no DAM)</td><td>90 mg/kg/día VO c/12h × 7 días</td><td>Iniciar el día 1 del manejo ambulatorio.</td></tr>
+<tr><td>Albendazol</td><td>Todos los niños ≥12 meses</td><td>200 mg dosis única (12-23m) / 400 mg (≥2a)</td><td>A los 15 días de inicio del tratamiento. Contraindicado en &lt;12m.</td></tr>
+<tr><td><strong>Hierro elemental</strong></td><td>Al terminar FTLC y Hb ≥11 g/dl</td><td>3-6 mg/kg/día VO</td><td><strong>⛔ NUNCA durante el tratamiento con FTLC.</strong></td></tr>
+<tr><td>Ácido fólico</td><td>Desde el día 1</td><td>5 mg día 1, luego 1 mg/día</td><td>Durante todo el tratamiento ambulatorio.</td></tr>
+</table>
+
+<div class="rd-h1">7. Criterios de egreso definitivo — Comparativa normativa</div>
+<table class="rd-table">
+<tr><th>Criterio</th><th>Res. 2350/2020</th><th>Res. 115/2026 (VIGENTE)</th></tr>
+<tr><td>P/T-L mínimo</td><td>≥ -2 DE</td><td><strong>≥ -1 DE (más exigente)</strong></td></tr>
+<tr><td>Edema</td><td>Sin edema × 2 controles consecutivos</td><td>Sin edema × 2 controles consecutivos</td></tr>
+<tr><td>Estado clínico</td><td>Clínicamente bien y estable</td><td>Clínicamente bien y estable</td></tr>
+<tr><td>Control post-egreso</td><td>No especificado</td><td><strong>Obligatorio dentro de los 15 días</strong></td></tr>
+<tr><td>Sin recuperación</td><td>No especificado</td><td><strong>Remisión a pediatría en 3°-4° control</strong></td></tr>
+</table>
+
+<div class="rd-h2">Manejo de la "falsa diarrea" por FTLC</div>
+<p class="rd-p">Al iniciar la FTLC pueden aumentar la frecuencia y disminuir la consistencia de las deposiciones sin ser verdadera diarrea. Se distingue porque: no hay fiebre, no hay vómito, el niño mantiene buen apetito y no hay signos de deshidratación. Conducta: continuar la FTLC en pequeñas cantidades con mayor frecuencia. Si persisten signos de alarma: remitir.</p>
+
+<div class="rd-h1">Referencias bibliográficas</div>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">1. MinSalud — UNICEF Colombia. Lineamiento MIDA. Res. 2350/2020. Bogotá: MinSalud; 2021.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">2. MinSalud. Resolución 0115 de 2026. Bogotá: MinSalud; 2026.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">3. WHO/WFP/UNSCN/UNICEF. Community-based management of severe acute malnutrition. 2007.</p>
+<p class="rd-p" style="font-size:12px;color:var(--muted);">4. Briend A, et al. Ready-to-use therapeutic food for treatment of marasmus. Lancet. 1999;353:1767-8.</p>
+
+          <div class="reading-confirm" id="conf-box-rd-4">
+            <input type="checkbox" id="confirm-rd-4" style="width:18px;height:18px;accent-color:var(--teal);cursor:pointer;" onchange="confirmReading('rd-4', 4)">
+            <label for="confirm-rd-4">Confirmo que leí el documento de este módulo y estoy listo para la evaluación.</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-box" id="quiz-4">
+        <div class="quiz-header">
+          <div class="quiz-title">🎯 Evaluación Final — LIMDA Edu</div>
+          <div class="quiz-counter" id="qcounter-4">Pregunta 1 de 10</div>
+        </div>
+        <div id="quiz-4-content"></div>
+      </div>
+
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 5 · Recuperación y egreso</div>
+        <button class="btn-continue" id="btn-continue-4" onclick="completeModule(4)">
+          Ir a la evaluación final
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CERTIFICATE ══════════════ -->
+<div class="screen" id="s-cert">
+  <div class="cert-wrapper">
+    <div class="cert-card" id="cert-card">
+      <div class="cert-corner tl"></div>
+      <div class="cert-corner tr"></div>
+      <div class="cert-corner bl"></div>
+      <div class="cert-corner br"></div>
+
+      <div class="cert-logo-row">
+        <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#00b4a6,#00d4c4);display:flex;align-items:center;justify-content:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="cert-brand">LIMDA <span>Edu</span></div>
+      </div>
+
+      <div class="cert-eyebrow">Certificado de aprobación</div>
+      <div class="cert-headline">Educación Continua en<br><em>Desnutrición Aguda Pediátrica</em></div>
+
+      <div class="cert-body">Se certifica que</div>
+      <div class="cert-name-line" id="cert-name">—</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">C.C. <span id="cert-cedula">—</span></div>
+
+      <div class="cert-course">ha completado satisfactoriamente el curso</div>
+      <div class="cert-sub">"Desnutrición Aguda en Pediatría: Identificación, Manejo y Seguimiento"</div>
+
+      <div class="cert-details">
+        <div class="cert-detail"><div class="cd-val" id="cert-date">—</div><div class="cd-label">Fecha</div></div>
+        <div class="cert-detail"><div class="cd-val">35 horas</div><div class="cd-label">Intensidad</div></div>
+        <div class="cert-detail"><div class="cd-val" id="cert-score">—</div><div class="cd-label">Calificación</div></div>
+        <div class="cert-detail"><div class="cd-val">Aprobado</div><div class="cd-label">Estado</div></div>
+      </div>
+
+      <div class="cert-sig">
+        <div style="width:80px;height:1px;background:var(--border);margin:0 auto 8px;"></div>
+        <div class="cert-sig-name">Dr. Eduardo Acuña De La Rosa</div>
+        <div class="cert-sig-role">Especialista en Pediatría · Profesor de Simulación Clínica</div>
+        <div class="cert-sig-inst">Centro MIDA — Hospital Regional de Zipaquirá</div>
+      </div>
+
+      <div class="cert-code" id="cert-code">Código de verificación: —</div>
+    </div>
+
+    <div class="cert-actions">
+      <button class="btn-cert primary" onclick="printCert()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Imprimir / Guardar PDF
+      </button>
+      <button class="btn-cert outline" onclick="goHome()">Volver al inicio</button>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--muted);">
+      © 2026 Dr. Eduardo Acuña De La Rosa · Todos los derechos reservados · LIMDA Edu v1.0
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ STATE ══
+// ══ FIREBASE CONFIG ══
+// Reemplaza estos valores con los de tu proyecto Firebase
+const FIREBASE_CONFIG = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  databaseURL: "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+  projectId: "TU_PROYECTO",
+};
+
+let db = null;
+try {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+} catch(e) {
+  console.warn('Firebase no configurado:', e.message);
+}
+
+// ══ CORREO ADMIN ══
+const ADMIN_EMAIL = 'melarylo@gmail.com';
+const EMAILJS_SERVICE = ''; // Configurar EmailJS para notificaciones
+
+// App version
+const APP_VERSION = 'limda-edu-v4';
+if (localStorage.getItem('limda_version') !== APP_VERSION) {
+  localStorage.clear();
+  localStorage.setItem('limda_version', APP_VERSION);
+}
+
+let state = {
+  name: '',
+  cedula: '',
+  currentModule: 0,
+  completedModules: [],
+  quizScores: {},
+  finalScore: 0,
+};
+
+// ══ QUIZ DATA ══
+const QUIZZES = [
+  // Module 1 — 5 questions
+  [
+    { q:"¿Cuánto reduce el Lineamiento MIDA la mortalidad intrahospitalaria por desnutrición aguda?", opts:["Del 59% usual al 8-16%","Del 30% usual al 5%","Del 45% usual al 20%","Del 25% usual al 10%"], correct:0, fb:"El lineamiento MIDA ha demostrado reducir la mortalidad intrahospitalaria del 59% usual a un 8-16% cuando se aplica correctamente." },
+    { q:"¿Qué departamento colombiano tiene prioridad máxima de intervención según la Resolución 115 de 2026?", opts:["Antioquia","Cundinamarca","La Guajira, Chocó y Vichada","Valle del Cauca"], correct:2, fb:"La Resolución 115/2026 prioriza explícitamente La Guajira, Chocó y Vichada para la identificación y manejo de la nueva categoría de 'riesgo de desnutrición aguda'." },
+    { q:"¿Qué proporción de niños de 6-59 meses con DAS pueden manejarse ambulatoriamente?", opts:["40%","60%","80%","95%"], correct:2, fb:"El 80% de los niños de 6-59 meses con DAS y el 95% con DAM pueden manejarse ambulatoriamente cuando se aplican correctamente los criterios del lineamiento." },
+    { q:"¿Cuál es la principal diferencia entre la Resolución 2350/2020 y la Resolución 115/2026?", opts:["La Res. 115 elimina la FTLC","La Res. 115 introduce la F-100, nuevo criterio de egreso y categoría de riesgo","La Res. 115 elimina el manejo ambulatorio","La Res. 115 solo aplica a menores de 2 años"], correct:1, fb:"La Resolución 115/2026 introduce la F-100 obligatoria, cambia el egreso de P/T ≥ -2 a ≥ -1 DE, crea la categoría de riesgo y declara la DA como urgencia sin autorización previa." },
+    { q:"¿Cuál de las siguientes prácticas está CONTRAINDICADA en el manejo de la desnutrición aguda?", opts:["Iniciar antibiótico empírico al ingreso","Usar diuréticos para tratar el edema nutricional","Realizar prueba de apetito con FTLC","Iniciar F-75 cuando se comprueba diuresis"], correct:1, fb:"Los diuréticos están CONTRAINDICADOS para tratar el edema nutricional. El edema en la DAS es de origen metabólico y se resuelve con el tratamiento nutricional correcto. La única indicación de diuréticos es antes y después de una transfusión de GRE." },
+  ],
+  // Module 2 — 5 questions
+  [
+    { q:"¿Cuál es el indicador antropométrico principal para clasificar la desnutrición aguda?", opts:["Perímetro cefálico","Índice de masa corporal","Peso para la talla/longitud (P/T-L)","Talla para la edad"], correct:2, fb:"El indicador Peso/Talla-Longitud (P/T-L) es el indicador principal. Se interpreta con los puntos de corte OMS adoptados en Colombia por la Resolución 2465 de 2016." },
+    { q:"¿En qué brazo se debe medir el PB?", opts:["Brazo dominante","Brazo no dominante","Cualquiera de los dos","El que tenga mayor circunferencia"], correct:1, fb:"El PB siempre se mide en el brazo NO dominante, en el punto medio entre el acromion y el olécranon, con el brazo caído naturalmente." },
+    { q:"Un niño tiene P/T-L de -2.5 DE y edema grado II. ¿Cuál es el diagnóstico?", opts:["DAM — por el P/T-L entre -2 y -3 DE","DAS — por la presencia de edema bilateral","DAM con complicaciones","Riesgo de desnutrición aguda"], correct:1, fb:"La presencia de edema bilateral nutricional de CUALQUIER grado clasifica automáticamente como DAS, independientemente del valor del P/T-L." },
+    { q:"¿Cuál es el valor de PB que se considera predictor de riesgo de muerte por desnutrición?", opts:["Menor a 13 cm","Menor a 12.5 cm","Menor a 11.5 cm","Menor a 10 cm"], correct:2, fb:"Un PB menor a 11.5 cm se considera predictor de riesgo de muerte por desnutrición aguda en niños de 6 a 59 meses." },
+    { q:"La prueba de apetito con FTLC es:", opts:["Una prueba de tolerancia a la vía oral","Una prueba diagnóstica que define el escenario de manejo","Una prueba opcional que puede omitirse","Solo se realiza en el primer contacto"], correct:1, fb:"La prueba de apetito es una prueba DIAGNÓSTICA, no de tolerancia. Es el criterio más importante para definir si el manejo es ambulatorio u hospitalario. Debe realizarse en CADA valoración." },
+  ],
+  // Module 3 — 5 questions
+  [
+    { q:"¿Cuántos criterios de los cuatro requeridos deben cumplirse para indicar manejo ambulatorio?", opts:["Al menos dos","Al menos tres","Los cuatro simultáneamente","Con cualquiera de los cuatro es suficiente"], correct:2, fb:"Para manejo ambulatorio deben cumplirse TODOS los criterios simultáneamente: activo/reactivo, sin complicaciones, prueba de apetito positiva, y edema ≤ grado II." },
+    { q:"¿Qué frecuencia respiratoria se considera aumentada en un niño de 18 meses?", opts:["Mayor de 60 rpm","Mayor de 50 rpm","Mayor de 40 rpm","Mayor de 30 rpm"], correct:2, fb:"Para niños de 12 meses a 5 años, la frecuencia respiratoria aumentada se define como mayor de 40 rpm. Esto es criterio de hospitalización en desnutrición aguda." },
+    { q:"¿En qué días aparece típicamente el síndrome de realimentación?", opts:["En las primeras 24 horas","Entre los días 1 y 7","Entre las semanas 2 y 4","Solo en la fase de rehabilitación"], correct:1, fb:"El síndrome de realimentación aparece típicamente en los primeros 5-7 días del inicio del manejo nutricional, cuando se reintroducen los carbohidratos en un organismo depletado de electrolitos." },
+    { q:"¿Qué electrolito es el más característico del síndrome de realimentación?", opts:["Sodio","Calcio","Fósforo","Cloro"], correct:2, fb:"La hipofosfatemia es el hallazgo más característico del síndrome de realimentación. Se produce cuando la insulina activa el anabolismo y el fósforo se desplaza masivamente al espacio intracelular." },
+    { q:"Un niño de 4 meses con DAS, ¿en qué escenario debe manejarse?", opts:["Ambulatorio si tiene prueba de apetito positiva","Hospitalario siempre","Ambulatorio si no tiene complicaciones","Depende del P/T-L"], correct:1, fb:"Todo niño MENOR de 6 meses con desnutrición aguda es SIEMPRE hospitalario, independientemente de otros criterios. Este grupo tiene mayor riesgo de mortalidad y el pilar del tratamiento es la relactancia." },
+  ],
+  // Module 4 — 5 questions
+  [
+    { q:"¿Cuándo se inicia la F-75 en la fase de estabilización?", opts:["Inmediatamente al ingreso","Cuando se comprueba diuresis","A las 24 horas del ingreso","Cuando el niño esté consciente y alerta"], correct:1, fb:"La F-75 se inicia SOLO cuando se comprueba diuresis. Esto confirma que hay perfusión renal adecuada y es seguro iniciar el soporte nutricional." },
+    { q:"¿Cuál es la dosis de F-75 para un niño con DAS con edema en las primeras 24 horas?", opts:["10 ml/kg/toma c/3h","7 ml/kg/toma c/3h","4 ml/kg/toma c/3h","14 ml/kg/toma c/3h"], correct:2, fb:"Para DAS con edema en las primeras 24 horas, la F-75 se da a 4 ml/kg/toma cada 3 horas. Este esquema más conservador evita sobrecargar el sistema cardiovascular comprometido." },
+    { q:"¿Cuál es la ÚNICA indicación de diuréticos en el manejo de la desnutrición aguda?", opts:["Edema nutricional grado III","Síndrome de realimentación con sobrecarga hídrica","Antes y después de transfusión de glóbulos rojos","Hipertensión arterial asociada"], correct:2, fb:"Los diuréticos (furosemida 1 mg/kg) están indicados EXCLUSIVAMENTE antes y después de una transfusión de glóbulos rojos en anemia grave. En ningún otro contexto de la desnutrición aguda." },
+    { q:"¿Cuándo se inicia el hierro en el tratamiento de la desnutrición aguda?", opts:["Al ingreso hospitalario","En la fase de transición","Solo cuando termina el tratamiento con FTLC y Hb ≥ 11 g/dl","Desde el primer día ambulatorio"], correct:2, fb:"El hierro está CONTRAINDICADO en las fases de estabilización y transición por riesgo de translocación bacteriana. Solo se inicia cuando termina el tratamiento con FTLC y la hemoglobina es ≥ 11 g/dl." },
+    { q:"¿Qué cambio introduce la Resolución 115/2026 respecto a las fórmulas terapéuticas?", opts:["Elimina la F-75 y la reemplaza por F-100","Incorpora la F-100 en transición y rehabilitación, obligando a las EPS a garantizar su suministro","Prohíbe la FTLC en menores de 12 meses","Reemplaza la FTLC por F-100 en ambulatorio"], correct:1, fb:"La Resolución 115/2026 incorpora formalmente la F-100 para las fases de transición y rehabilitación hospitalaria. Las EPS deben garantizar el suministro inmediato tanto de F-75 como de F-100 (antes solo se exigía F-75)." },
+  ],
+  // Module 5 / Final — 10 questions
+  [
+    { q:"¿Cuál es el criterio de egreso ambulatorio definitivo según la Resolución 115 de 2026?", opts:["P/T ≥ -2 DE","P/T ≥ -1.5 DE","P/T ≥ -1 DE","P/T ≥ 0 DE"], correct:2, fb:"La Resolución 115/2026 cambió el criterio de egreso de P/T ≥ -2 DE a P/T ≥ -1 DE. Este cambio busca asegurar una recuperación nutricional más completa y reducir el riesgo de recaída." },
+    { q:"¿En cuántos días debe realizarse el seguimiento post-egreso según la Resolución 115/2026?", opts:["7 días","15 días","30 días","5 días"], correct:1, fb:"La Resolución 115/2026 establece que el seguimiento post-egreso (hospitalario o ambulatorio) debe realizarse obligatoriamente dentro de los 15 días siguientes al alta." },
+    { q:"Un sobre de 92 g de FTLC aporta:", opts:["250 kcal","350 kcal","500 kcal","750 kcal"], correct:2, fb:"Un sobre de 92 g de FTLC aporta 500 kcal (aproximadamente 520-550 kcal/100 g). Este aporte calórico de alta densidad es lo que permite la recuperación nutricional acelerada." },
+    { q:"¿Cuándo debe iniciarse la alimentación complementaria en un niño con DAS ambulatorio?", opts:["Desde el día 1","Desde el día 4","Desde el día 8","Desde el día 15"], correct:2, fb:"En DAS ambulatoria, la alimentación complementaria se inicia desde el día 8. Durante los primeros 7 días, solo se ofrece FTLC y leche materna para evitar sobrecarga metabólica." },
+    { q:"¿Cuál es la meta mínima de ganancia de peso en un niño mayor de 3 meses en rehabilitación hospitalaria?", opts:["5 g/día","12 g/día","25 g/día","50 g/día"], correct:1, fb:"La meta mínima de ganancia de peso en niños mayores de 3 meses es 12 g/día (meta ideal: 16 g/día). Para menores de 3 meses la meta mínima es 25 g/día." },
+    { q:"La FTLC está contraindicada en:", opts:["Niños menores de 6 meses","Galactosemia y alergia al maní","Kwashiorkor con edema grado III","Síndrome de realimentación"], correct:1, fb:"La FTLC está contraindicada en galactosemia (por su contenido de lactosa) y en alergia al maní (por su contenido de mantequilla de maní). En menores de 6 meses se usa F-75, no FTLC." },
+    { q:"¿Qué debe hacerse si un niño no ha mostrado recuperación nutricional en el 3° o 4° control ambulatorio?", opts:["Duplicar la dosis de FTLC","Agregar F-100 al esquema","Remitir a pediatría","Hospitalizar de inmediato"], correct:2, fb:"La Resolución 115/2026 establece que si no hay recuperación nutricional entre el 3° y 4° control ambulatorio, debe realizarse remisión a pediatría para evaluación especializada." },
+    { q:"¿Cuál es la conducta correcta cuando un niño en manejo ambulatorio por DAS presenta aparición de edema en el control semanal?", opts:["Aumentar la dosis de FTLC y citar en 15 días","Agregar diuréticos y continuar manejo ambulatorio","Remitir a hospitalización de inmediato","Suspender la FTLC y observar por 48 horas"], correct:2, fb:"La aparición o el aumento del edema durante el manejo ambulatorio es una señal de alarma que obliga a remitir a hospitalización de inmediato, independientemente del estado general del niño." },
+    { q:"¿Cuál es la frecuencia de seguimiento recomendada para un niño en manejo ambulatorio?", opts:["Diario","Cada 3 días","Semanal","Quincenal"], correct:2, fb:"El seguimiento en manejo ambulatorio es SEMANAL hasta que el niño alcance los criterios de egreso definitivo (P/T ≥ -1 DE según Res. 115/2026). Puede incluir visita domiciliaria o punto de encuentro concertado." },
+    { q:"La desnutrición aguda moderada y severa según la Resolución 115/2026 es:", opts:["Una condición que puede esperar remisión programada","Una urgencia vital que no requiere autorización previa de la EPS","Una condición que solo manejan pediatras","Una urgencia solo en menores de 2 años"], correct:1, fb:"La Resolución 115/2026 declara explícitamente la desnutrición aguda moderada y severa como urgencia vital que debe atenderse sin autorización previa de la EPS, en cualquier nivel de complejidad." },
+  ]
+];
+
+// ══ QUIZ STATE ══
+let quizState = {};
+function initQuiz(modIdx) {
+  const qs = QUIZZES[modIdx];
+  quizState[modIdx] = { current:0, answers:[], score:0, done:false };
+  renderQuizQuestion(modIdx);
+}
+
+function renderQuizQuestion(modIdx) {
+  const qs = QUIZZES[modIdx];
+  const s = quizState[modIdx];
+  const q = qs[s.current];
+  const container = document.getElementById(`quiz-${modIdx}-content`);
+  const counter = document.getElementById(`qcounter-${modIdx}`);
+  const total = qs.length;
+  counter.textContent = `Pregunta ${s.current+1} de ${total}`;
+
+  const letters = ['A','B','C','D'];
+  container.innerHTML = `
+    <div class="quiz-question">${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o,i)=>`
+        <button class="quiz-option" data-idx="${i}" onclick="selectQuizOption(${modIdx},${i})">
+          <span class="opt-letter">${letters[i]}</span>${o}
+        </button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qfb-${modIdx}"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+      <button class="btn-quiz primary" id="qbtn-${modIdx}" onclick="confirmQuizAnswer(${modIdx})">Confirmar</button>
+    </div>
+  `;
+}
+
+function selectQuizOption(modIdx, optIdx) {
+  if (quizState[modIdx].answered) return;
+  document.querySelectorAll(`#quiz-${modIdx}-content .quiz-option`).forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll(`#quiz-${modIdx}-content .quiz-option`)[optIdx].classList.add('selected');
+  quizState[modIdx].selected = optIdx;
+  document.getElementById(`qbtn-${modIdx}`).disabled = false;
+}
+
+function confirmQuizAnswer(modIdx) {
+  const s = quizState[modIdx];
+  const q = QUIZZES[modIdx][s.current];
+  const selected = s.selected;
+  if (selected === undefined) return;
+  s.answered = true;
+
+  const opts = document.querySelectorAll(`#quiz-${modIdx}-content .quiz-option`);
+  opts.forEach((b,i) => {
+    b.classList.add('disabled');
+    if(i === q.correct) b.classList.add('correct');
+    else if(i === selected && selected !== q.correct) b.classList.add('wrong');
+  });
+
+  const isCorrect = selected === q.correct;
+  if(isCorrect) s.score++;
+  s.answers.push({ q: s.current, correct: isCorrect });
+
+  const fb = document.getElementById(`qfb-${modIdx}`);
+  fb.className = `quiz-feedback show ${isCorrect ? 'correct' : 'wrong'}`;
+  fb.innerHTML = `<strong>${isCorrect ? '✓ Correcto' : '✗ Incorrecto'}</strong>${q.fb}`;
+
+  const btn = document.getElementById(`qbtn-${modIdx}`);
+  const isLast = s.current >= QUIZZES[modIdx].length - 1;
+  btn.textContent = isLast ? 'Ver resultado' : 'Siguiente pregunta';
+  btn.className = 'btn-quiz teal';
+  btn.disabled = false;
+  btn.onclick = isLast ? () => finishQuiz(modIdx) : () => nextQuizQuestion(modIdx);
+}
+
+function nextQuizQuestion(modIdx) {
+  quizState[modIdx].current++;
+  quizState[modIdx].answered = false;
+  quizState[modIdx].selected = undefined;
+  renderQuizQuestion(modIdx);
+}
+
+function finishQuiz(modIdx) {
+  const s = quizState[modIdx];
+  const total = QUIZZES[modIdx].length;
+  const pct = Math.round(s.score / total * 100);
+  const pass = pct >= 80;
+  s.done = true;
+  s.pct = pct;
+
+  state.quizScores[modIdx] = pct;
+  localStorage.setItem('limda_scores', JSON.stringify(state.quizScores));
+  saveProgressToFirebase();
+
+  const container = document.getElementById(`quiz-${modIdx}-content`);
+  const isFinal = modIdx === 4;
+  container.innerHTML = `
+    <div class="quiz-result show">
+      <div class="result-score ${pass?'pass':'fail'}">${pct}%</div>
+      <div class="result-label">${s.score} de ${total} respuestas correctas</div>
+      <div class="result-msg">${pass ? (isFinal ? '🎉 ¡Felicitaciones! Has completado LIMDA Edu' : '✅ Módulo aprobado') : '📚 No alcanzaste el mínimo requerido'}</div>
+      <div class="result-sub">${pass
+        ? (isFinal ? 'Has demostrado dominio del manejo integral de la desnutrición aguda pediátrica. Tu certificado está listo.' : 'Continúa al siguiente módulo para avanzar en tu formación.')
+        : `Necesitas al menos 80% para aprobar. Obtuviste ${pct}%. Puedes repetir la evaluación.`
+      }</div>
+      ${pass
+        ? (isFinal
+          ? `<button class="btn-quiz teal" onclick="showCertificate()" style="margin:0 auto;display:block;padding:14px 32px;font-size:15px;">Ver mi certificado →</button>`
+          : `<button class="btn-quiz teal" onclick="unlockNext(${modIdx})" style="margin:0 auto;display:block;">Continuar al módulo ${modIdx+2} →</button>`)
+        : `<button class="btn-quiz primary" onclick="retryQuiz(${modIdx})" style="margin:0 auto;display:block;">Repetir evaluación</button>`
+      }
+    </div>
+  `;
+  document.getElementById(`qcounter-${modIdx}`).textContent = `Resultado: ${pct}%`;
+}
+
+function retryQuiz(modIdx) {
+  quizState[modIdx] = { current:0, answers:[], score:0, done:false };
+  renderQuizQuestion(modIdx);
+}
+
+function unlockNext(modIdx) {
+  const next = modIdx + 1;
+  // 1. Mark current as completed
+  if (!state.completedModules.includes(modIdx)) state.completedModules.push(modIdx);
+  localStorage.setItem('limda_progress', JSON.stringify(state.completedModules));
+  saveProgressToFirebase();
+  // 2. Visually mark completed
+  markCompleted(modIdx);
+  // 3. Unlock next module BEFORE navigating
+  if (next < 5) unlockModule(next);
+  // 4. Initialize next quiz if needed
+  if (next < 5 && !quizState[next]) initQuiz(next);
+  // 5. Navigate to next module
+  if (next < 5) showModule(next);
+  // 6. Update progress bar
+  updateProgressBar();
+}
+
+// ══ CASE ANSWERS ══
+function answerCase(btn, type, id) {
+  const parent = btn.closest('.case-options');
+  parent.querySelectorAll('.case-option').forEach(b => {
+    b.classList.add('disabled');
+    b.onclick = null;
+  });
+  btn.classList.add(type === 'correct' ? 'correct' : 'wrong');
+  const fb = document.getElementById(`${id}-fb-${type}`);
+  if (fb) { fb.classList.add('show'); }
+  // Enable continue button after answering case
+  const modIdx = parseInt(id.replace('mod','').split('-')[0]);
+  const btn_continue = document.getElementById(`btn-continue-${modIdx}`);
+  if (btn_continue) btn_continue.disabled = false;
+}
+
+// ══ MODULE NAVIGATION ══
+function showModule(idx) {
+  const navBtn = document.getElementById(`mnav-${idx}`);
+  if (navBtn && navBtn.classList.contains('locked')) return;
+
+  document.querySelectorAll('.module-content').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.mnav-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById(`mod-${idx}`).classList.add('active');
+  document.getElementById(`mnav-${idx}`).classList.add('active');
+
+  state.currentModule = idx;
+  updateProgressBar();
+
+  if (!quizState[idx]) initQuiz(idx);
+  // Scroll to top of course body
+  const body = document.querySelector('.course-body');
+  if (body) body.scrollTop = 0;
+  else window.scrollTo(0,0);
+}
+
+function completeModule(modIdx) {
+  // Check reading confirmed
+  const readingCb = document.getElementById(`confirm-rd-${modIdx}`);
+  const readingDone = readingCb && readingCb.checked;
+
+  // Module 2 also requires video
+  if (modIdx === 1) {
+    const videoDone = document.getElementById('confirm-video-m2')?.checked || false;
+    if (!videoDone || !readingDone) {
+      // Open sections and alert
+      if (!videoDone) {
+        const vs = document.getElementById('video-m2');
+        if (vs) vs.classList.add('open');
+      }
+      if (!readingDone) {
+        const rs = document.getElementById(`rd-${modIdx}`);
+        if (rs) rs.classList.add('open');
+      }
+      showReadingAlert(modIdx);
+      return;
+    }
+  } else if (!readingDone) {
+    const rs = document.getElementById(`rd-${modIdx}`);
+    if (rs) rs.classList.add('open');
+    showReadingAlert(modIdx);
+    return;
+  }
+
+  // All confirmed — show quiz
+  const quiz = document.getElementById(`quiz-${modIdx}`);
+  if (quiz) quiz.scrollIntoView({ behavior:'smooth', block:'start' });
+  if (!quizState[modIdx]) initQuiz(modIdx);
+  else if (!quizState[modIdx].done) renderQuizQuestion(modIdx);
+}
+
+function showReadingAlert(modIdx) {
+  // Show inline alert
+  const alertId = `reading-alert-${modIdx}`;
+  let alert = document.getElementById(alertId);
+  if (!alert) {
+    alert = document.createElement('div');
+    alert.id = alertId;
+    alert.style.cssText = `
+      position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
+      background:#0f2040; border:1px solid rgba(245,158,11,0.5);
+      color:#fcd34d; padding:12px 20px; border-radius:10px;
+      font-size:13px; font-weight:600; z-index:200;
+      box-shadow:0 4px 16px rgba(0,0,0,0.3); text-align:center;
+      max-width:340px; width:90%;
+    `;
+    document.body.appendChild(alert);
+  }
+  const msg = modIdx === 1
+    ? '⚠️ Debes ver el video y marcar ambas casillas antes de continuar.'
+    : '⚠️ Debes leer el documento y marcar la casilla antes de continuar.';
+  alert.textContent = msg;
+  alert.style.display = 'block';
+  setTimeout(() => { if (alert) alert.style.display = 'none'; }, 3500);
+  // Scroll to reading section
+  const rs = document.getElementById(`rd-${modIdx}`);
+  if (rs) rs.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function unlockModule(idx) {
+  const btn = document.getElementById(`mnav-${idx}`);
+  if (btn) btn.classList.remove('locked');
+}
+
+function markCompleted(idx) {
+  const btn = document.getElementById(`mnav-${idx}`);
+  if (btn && !btn.querySelector('.mnav-badge')) {
+    btn.classList.add('completed');
+    btn.classList.remove('locked');
+    const badge = document.createElement('span');
+    badge.className = 'mnav-badge';
+    badge.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+    btn.appendChild(badge);
+  }
+}
+
+function updateProgressBar() {
+  const pct = Math.round(state.completedModules.length / 5 * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${state.completedModules.length} / 5`;
+}
+
+// ══ SCREENS ══
+function startCourse() {
+  // Always ask for name/cedula on each session
+  showScreen('s-name');
+}
+
+// ══ GATE TAB SWITCHER ══
+function showGateTab(tab) {
+  const loginPanel = document.getElementById('panel-login');
+  const regPanel = document.getElementById('panel-register');
+  const loginBtn = document.getElementById('tab-login');
+  const regBtn = document.getElementById('tab-register');
+  if (tab === 'login') {
+    loginPanel.style.display = 'block';
+    regPanel.style.display = 'none';
+    loginBtn.style.background = 'rgba(0,180,166,0.25)';
+    loginBtn.style.color = 'white';
+    loginBtn.style.fontWeight = '700';
+    regBtn.style.background = 'transparent';
+    regBtn.style.color = 'rgba(255,255,255,0.5)';
+    regBtn.style.fontWeight = '500';
+  } else {
+    loginPanel.style.display = 'none';
+    regPanel.style.display = 'block';
+    regBtn.style.background = 'rgba(0,180,166,0.25)';
+    regBtn.style.color = 'white';
+    regBtn.style.fontWeight = '700';
+    loginBtn.style.background = 'transparent';
+    loginBtn.style.color = 'rgba(255,255,255,0.5)';
+    loginBtn.style.fontWeight = '500';
+  }
+}
+
+// ══ LOGIN WITH ACCESS CODE ══
+async function doLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  const cedula = document.getElementById('login-cedula').value.trim();
+  const code = document.getElementById('login-code').value.trim().toUpperCase();
+  const errEl = document.getElementById('login-error');
+  const loadEl = document.getElementById('login-loading');
+
+  errEl.style.display = 'none';
+  if (!name || name.length < 3) { showLoginError('Por favor ingresa tu nombre completo.'); return; }
+  if (!cedula || cedula.length < 5) { showLoginError('Por favor ingresa tu número de cédula.'); return; }
+  if (!code || code.length < 6) { showLoginError('Por favor ingresa el código de acceso.'); return; }
+
+  loadEl.style.display = 'block';
+
+  // ── Códigos temporales (sin Firebase) ──
+  const TEMP_CODES = ['LIMDA-2026-ZIPAQUIRA', 'LIMDA-MIDA-2026', 'LIMDA-TEST-HOSP'];
+  if (TEMP_CODES.includes(code)) {
+    loadEl.style.display = 'none';
+    proceedToCourse(name, cedula, code);
+    return;
+  }
+
+  if (!db) {
+    loadEl.style.display = 'none';
+    showLoginError('Código no válido. Si aún no tienes código, solicita acceso en la pestaña "Solicitar acceso".');
+    return;
+  }
+
+  try {
+    // Verify access code in Firebase
+    const snapshot = await db.ref('codigos/' + code).get();
+    loadEl.style.display = 'none';
+
+    if (!snapshot.exists()) {
+      showLoginError('Código de acceso inválido. Verifica que esté escrito correctamente.');
+      return;
+    }
+
+    const codeData = snapshot.val();
+    if (codeData.usado && codeData.cedula !== cedula) {
+      showLoginError('Este código ya fue usado por otro participante.');
+      return;
+    }
+    if (codeData.estado !== 'aprobado') {
+      showLoginError('Tu solicitud aún está pendiente de aprobación.');
+      return;
+    }
+
+    // Mark code as used
+    await db.ref('codigos/' + code).update({
+      usado: true, cedula, nombre: name,
+      ultimoAcceso: Date.now()
+    });
+
+    proceedToCourse(name, cedula, code);
+
+  } catch(e) {
+    loadEl.style.display = 'none';
+    showLoginError('Error de conexión. Verifica tu internet e intenta de nuevo.');
+  }
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function proceedToCourse(name, cedula, code) {
+  state.name = name;
+  state.cedula = cedula;
+  state.accessCode = code;
+
+  localStorage.setItem('limda_name', name);
+  localStorage.setItem('limda_cedula', cedula);
+  localStorage.setItem('limda_code', code);
+
+  // Load progress from Firebase
+  if (db) {
+    try {
+      const snap = await db.ref('progreso/' + cedula).get();
+      if (snap.exists()) {
+        const p = snap.val();
+        state.completedModules = p.completedModules || [];
+        state.quizScores = p.quizScores || {};
+      }
+    } catch(e) {
+      // Use local fallback
+      state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+      state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+    }
+  } else {
+    state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+    state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+  }
+
+  showScreen('s-course');
+  restoreProgress();
+}
+
+// ══ SAVE PROGRESS TO FIREBASE ══
+async function saveProgressToFirebase() {
+  if (!db || !state.cedula) return;
+  try {
+    await db.ref('progreso/' + state.cedula).set({
+      nombre: state.name,
+      cedula: state.cedula,
+      completedModules: state.completedModules,
+      quizScores: state.quizScores,
+      ultimaActividad: Date.now(),
+    });
+  } catch(e) {
+    // Silent fail — localStorage backup
+  }
+  // Always save locally too
+  localStorage.setItem('limda_progress', JSON.stringify(state.completedModules));
+  localStorage.setItem('limda_scores', JSON.stringify(state.quizScores));
+}
+
+// ══ REGISTRATION ══
+async function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const cedula = document.getElementById('reg-cedula').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const perfil = document.getElementById('reg-perfil').value;
+  const inst = document.getElementById('reg-institucion').value.trim();
+  const msgEl = document.getElementById('reg-msg');
+
+  if (!name || name.length < 3) { showRegMsg('Ingresa tu nombre completo.', false); return; }
+  if (!cedula || cedula.length < 5) { showRegMsg('Ingresa tu número de cédula.', false); return; }
+  if (!email || !email.includes('@')) { showRegMsg('Ingresa un correo válido.', false); return; }
+  if (!perfil) { showRegMsg('Selecciona tu perfil profesional.', false); return; }
+  if (!inst) { showRegMsg('Ingresa tu institución.', false); return; }
+
+  const regData = {
+    nombre: name, cedula, email, perfil, institucion: inst,
+    fecha: Date.now(), estado: 'pendiente',
+  };
+
+  if (db) {
+    try {
+      await db.ref('solicitudes/' + cedula).set(regData);
+      showRegMsg('✅ Solicitud enviada exitosamente. Recibirás tu código de acceso en tu correo una vez sea aprobada. Tiempo estimado: 24-48 horas hábiles.', true);
+    } catch(e) {
+      showRegMsg('Error al enviar. Verifica tu conexión.', false);
+    }
+  } else {
+    // Offline — show instructions
+    showRegMsg('⚠️ Firebase no configurado. Contacta al administrador directamente: melarylo@gmail.com', false);
+  }
+}
+
+function showRegMsg(msg, success) {
+  const el = document.getElementById('reg-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = success ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+  el.style.border = success ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(239,68,68,0.3)';
+  el.style.color = success ? '#86efac' : '#fca5a5';
+}
+
+function prefillNameScreen() {
+  const savedName = localStorage.getItem('limda_name') || '';
+  const savedCedula = localStorage.getItem('limda_cedula') || '';
+  const nameInput = document.getElementById('participant-name');
+  const cedulaInput = document.getElementById('participant-cedula');
+  if (nameInput && savedName) nameInput.value = savedName;
+  if (cedulaInput && savedCedula) cedulaInput.value = savedCedula;
+}
+
+function saveName() {
+  const input = document.getElementById('participant-name');
+  const cedulaInput = document.getElementById('participant-cedula');
+  const name = input.value.trim();
+  const cedula = cedulaInput ? cedulaInput.value.trim() : '';
+  if (!name || name.length < 3) {
+    input.style.borderColor = '#ef4444';
+    input.placeholder = 'Por favor ingresa tu nombre completo';
+    return;
+  }
+  if (!cedula || cedula.length < 5) {
+    cedulaInput.style.borderColor = '#ef4444';
+    cedulaInput.placeholder = 'Por favor ingresa tu número de cédula';
+    return;
+  }
+  state.name = name;
+  state.cedula = cedula;
+  // Restore saved progress
+  state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+  state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+  localStorage.setItem('limda_name', name);
+  localStorage.setItem('limda_cedula', cedula);
+  showScreen('s-course');
+  restoreProgress();
+}
+
+function restoreProgress() {
+  state.completedModules.forEach(idx => {
+    markCompleted(idx);
+    if (idx + 1 < 5) unlockModule(idx + 1);
+  });
+  updateProgressBar();
+  // Init quiz for current module
+  const currentMod = state.completedModules.length < 5 ? state.completedModules.length : 4;
+  for (let i = 0; i <= currentMod; i++) {
+    if (!quizState[i]) initQuiz(i);
+  }
+}
+
+function goHome() {
+  showScreen('s-home');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = '';
+  });
+  const target = document.getElementById(id);
+  target.classList.add('active');
+  window.scrollTo(0,0);
+  if (id === 's-name') setTimeout(prefillNameScreen, 50);
+}
+
+function showCertificate() {
+  // Calculate final score (average of all modules)
+  const scores = Object.values(state.quizScores);
+  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 80;
+  state.finalScore = avg;
+
+  document.getElementById('cert-name').textContent = state.name || 'Participante';
+  const cedulaEl = document.getElementById('cert-cedula');
+  if (cedulaEl) cedulaEl.textContent = state.cedula || '—';
+  document.getElementById('cert-date').textContent = new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('cert-score').textContent = avg + '%';
+
+  // Generate unique verification code
+  const code = 'LIMDA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+  document.getElementById('cert-code').textContent = 'Código de verificación: ' + code;
+
+  showScreen('s-cert');
+}
+
+function printCert() {
+  const btn = document.querySelector('.btn-cert.primary');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Generando PDF...';
+  btn.disabled = true;
+
+  const cert = document.getElementById('cert-card');
+  html2canvas(cert, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+  }).then(canvas => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = pageW - 20;
+    const imgH = (canvas.height * imgW) / canvas.width;
+    const y = (pageH - imgH) / 2;
+
+    const imgData = canvas.toDataURL('image/png');
+    pdf.addImage(imgData, 'PNG', 10, y, imgW, imgH);
+
+    const safeName = (state.name || 'certificado').replace(/[^a-zA-Z0-9]/g, '_');
+    pdf.save(`LIMDA_Edu_Certificado_${safeName}.pdf`);
+
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }).catch(err => {
+    console.error('PDF error:', err);
+    // Fallback to print dialog
+    window.print();
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  });
+}
+
+// ══ INIT ══
+window.addEventListener('DOMContentLoaded', () => {
+  // Only init quiz 0 on load — restoreProgress called after login
+  initQuiz(0);
+});
+
+// Print styles
+const printStyle = document.createElement('style');
+printStyle.textContent = `
+  @media print {
+    #s-home, #s-course, #s-name { display:none!important; }
+    #s-cert { display:flex!important; background:white!important; }
+    .cert-actions { display:none!important; }
+    .cert-card { box-shadow:none!important; border:2px solid #00b4a6!important; }
+    body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+`;
+document.head.appendChild(printStyle);
+
+// ══ READING & VIDEO SECTIONS ══
+function toggleReading(id) {
+  const sec = document.getElementById(id);
+  sec.classList.toggle('open');
+}
+
+function confirmReading(id, modIdx) {
+  const cb = document.getElementById('confirm-' + id);
+  const conf = document.getElementById('conf-box-' + id);
+  if (cb && conf) {
+    conf.classList.toggle('reading-confirmed', cb.checked);
+  }
+  // Módulo 2 requiere TANTO video COMO lectura
+  if (modIdx === 1) {
+    checkMod1Unlock();
+  } else {
+    const btn = document.getElementById('btn-continue-' + modIdx);
+    if (btn) btn.disabled = !(cb && cb.checked);
+  }
+}
+
+function confirmVideo() {
+  const cb = document.getElementById('confirm-video-m2');
+  const conf = document.getElementById('conf-box-video-m2');
+  if (cb && conf) {
+    conf.classList.toggle('reading-confirmed', cb.checked);
+  }
+  checkMod1Unlock();
+}
+
+function checkMod1Unlock() {
+  const videoDone = document.getElementById('confirm-video-m2')?.checked || false;
+  const readingDone = document.getElementById('confirm-rd-1')?.checked || false;
+  const btn = document.getElementById('btn-continue-1');
+  if (btn) btn.disabled = !(videoDone && readingDone);
+}
+
+</script>
+</body>
+</html>
