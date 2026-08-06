@@ -632,9 +632,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .reading-confirmed label { color: #15803d; }
 
 </style>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<!-- Firebase SDK: descomentar cuando se configure -->
+<!-- <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script> -->
+<!-- <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script> -->
 <!-- PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -2124,10 +2124,13 @@ const FIREBASE_CONFIG = {
 
 let db = null;
 try {
-  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-  db = firebase.database();
+  if (typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+  }
 } catch(e) {
   console.warn('Firebase no configurado:', e.message);
+  db = null;
 }
 
 // ══ CORREO ADMIN ══
@@ -2499,8 +2502,8 @@ async function doLogin() {
   const loadEl = document.getElementById('login-loading');
 
   errEl.style.display = 'none';
-  if (!name || name.length < 3) { showLoginError('Por favor ingresa tu nombre completo.'); return; }
-  if (!cedula || cedula.length < 5) { showLoginError('Por favor ingresa tu número de cédula.'); return; }
+  if (!name || name.length < 2) { showLoginError('Por favor ingresa tu nombre completo.'); return; }
+  if (!cedula || cedula.length < 4) { showLoginError('Por favor ingresa tu número de cédula.'); return; }
   if (!code || code.length < 6) { showLoginError('Por favor ingresa el código de acceso.'); return; }
 
   loadEl.style.display = 'block';
