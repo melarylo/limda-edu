@@ -187,8 +187,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
   flex-direction:column;
 }
 #s-course.active { display:flex; }
-#s-course.active .continue-bar { display:flex; }
 #s-course.active .continue-bar { display:none; }
+#s-course.active .continue-bar { display:flex; }
 
 /* COURSE HEADER */
 .course-header {
@@ -457,7 +457,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
   padding:12px 24px; border:none; border-radius:var(--r-sm); cursor:pointer;
   transition:all .18s; display:flex; align-items:center; gap:8px;
 }
-.btn-continue:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,180,166,0.35); }
+.btn-continue:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,180,166,0.35); }
+.btn-continue:disabled { background:var(--border); color:var(--muted); box-shadow:none; cursor:not-allowed; }
+.btn-continue:disabled svg { stroke:var(--muted); }
 .btn-continue svg { width:16px; height:16px; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; }
 
 /* ══ CERTIFICATE ══ */
@@ -868,6 +870,20 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
           <strong>✓ Correcto</strong>
           La desnutrición aguda es una urgencia vital. El médico debe iniciar la evaluación y estabilización en el mismo sitio de captación. La Resolución 115/2026 establece explícitamente que no se requiere autorización previa. Remitir sin estabilizar es una práctica que el lineamiento prohíbe por asociarse a mortalidad.
         </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Quien detecta el caso, inicia el protocolo</h3>
+        <p>Uno de los errores más frecuentes y graves en la práctica clínica colombiana es identificar un niño con desnutrición aguda y escribir en la historia clínica <em>"pendiente concepto de nutrición"</em> sin haber iniciado ninguna intervención.</p>
+        <p>El Lineamiento MIDA es claro: <strong>cualquier profesional de la salud que identifique un caso de desnutrición aguda tiene la obligación inmediata de iniciar la estabilización</strong>, independientemente de su especialidad, del nivel de la IPS o de si hay un nutricionista disponible. La interconsulta a nutrición es un complemento, nunca un requisito previo para actuar.</p>
+        <div class="callout danger">
+          <div class="callout-icon">⛔</div>
+          <div class="callout-body">
+            <div class="callout-title">Práctica prohibida</div>
+            <div class="callout-text">Registrar "pendiente concepto de nutrición" sin haber iniciado el manejo es contrario al lineamiento y puede costar la vida del niño. La interconsulta y el trabajo interdisciplinario son importantes, pero <strong>nunca justifican retrasar la estabilización</strong>.</div>
+          </div>
+        </div>
+      </div>
         <div class="case-feedback wrong-fb" id="mod0-q1-fb-wrong">
           <strong>✗ Incorrecto</strong>
           El lineamiento MIDA y la Resolución 115/2026 son claros: la desnutrición aguda es una urgencia vital que debe atenderse en el sitio de captación, sin importar el nivel de complejidad y sin autorización previa de la EPS. Remitir sin estabilizar o esperar autorización son prácticas que se asocian a mayor mortalidad.
@@ -934,6 +950,28 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 <tr><td><strong>Res. 2350/2020</strong></td><td>Adopta el Lineamiento MIDA como norma de obligatorio cumplimiento para todas las IPS y EPS del país.</td><td>Vigente (con modificaciones)</td></tr>
 <tr><td><strong>Res. 115/2026</strong></td><td>Modifica parcialmente la Res. 2350/2020. Introduce F-100 obligatoria, nuevo criterio de egreso (P/T ≥ -1 DE), categoría "riesgo DA", atención sin autorización previa.</td><td><strong>Vigente — más reciente</strong></td></tr>
 </table>
+<div style="background:var(--teal-light);border:1px solid rgba(0,180,166,0.3);border-radius:var(--r-sm);padding:14px;margin:14px 0;">
+  <div style="font-size:12px;font-weight:700;color:var(--teal);margin-bottom:10px;">📊 Guías de alimentación complementaria — ICBF Colombia</div>
+  <p class="rd-p" style="margin-bottom:12px;">Las Guías Alimentarias Basadas en Alimentos (GABA) del ICBF son el referente nacional para orientar la alimentación complementaria durante la recuperación nutricional. Consulta la guía correspondiente según la edad del niño:</p>
+
+  <div style="background:white;border:1px solid rgba(0,180,166,0.2);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;">
+    <div style="background:var(--teal);color:white;font-size:11px;font-weight:700;padding:4px 8px;border-radius:4px;white-space:nowrap;margin-top:2px;">0 – 24 meses</div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">GABA para Mujeres Gestantes, Madres en Lactancia y Niños Menores de 2 Años</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:5px;">Referente principal para alimentación complementaria en desnutrición aguda. Incluye recomendaciones por edad, textura, frecuencia y cantidad.</div>
+      <a href="https://www.icbf.gov.co/system/files/guias_alimentarias_basadas_en_alimentos_para_mujeres_gestantes_madres_en_periodo_de_lactancia_y_ninos_y_ninas_menores_de_2_anos_para_colombia_0_0.pdf" target="_blank" style="font-size:11px;color:var(--teal);font-weight:600;text-decoration:none;">📄 Descargar PDF oficial ICBF →</a>
+    </div>
+  </div>
+
+  <div style="background:white;border:1px solid rgba(0,180,166,0.2);border-radius:8px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
+    <div style="background:var(--navy);color:white;font-size:11px;font-weight:700;padding:4px 8px;border-radius:4px;white-space:nowrap;margin-top:2px;">2 – 5 años</div>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:3px;">GABA para la Población Colombiana Mayor de 2 Años</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:5px;">Para niños de 2 a 5 años en fase de recuperación tardía. Incluye los 6 grupos de alimentos y recomendaciones de plato saludable.</div>
+      <a href="https://www.icbf.gov.co/sites/default/files/guias_alimentarias_para_poblacion_colombiana_mayor_de_2_anos_.pdf" target="_blank" style="font-size:11px;color:var(--teal);font-weight:600;text-decoration:none;">📄 Descargar PDF oficial ICBF →</a>
+    </div>
+  </div>
+</div>
 
 <div class="rd-h2">2.2 Propósito del Lineamiento MIDA</div>
 <p class="rd-p">El lineamiento es "una herramienta de trabajo dirigida a los profesionales de la salud para la adecuada identificación, tratamiento y seguimiento de la desnutrición aguda moderada y severa en niños de cero (0) a 59 meses de edad." Su objetivo central es reducir la mortalidad asociada a la desnutrición aguda, garantizando un abordaje integral que incluya identificación oportuna, estabilización cautelosa, tratamiento basado en evidencia y seguimiento sistemático.</p>
@@ -1008,8 +1046,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
       <div class="continue-bar">
-        <div class="mod-name">Módulo 1 · Epidemiología y marco normativo</div>
-        <button class="btn-continue" id="btn-continue-0" onclick="completeModule(0)">
+        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
+          <span>Módulo 1 · Epidemiología y marco normativo</span>
+          <span id="bar-status-0" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
+        </div>
+        <button class="btn-continue" id="btn-continue-0" onclick="completeModule(0)" disabled>
           Ir a la evaluación
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -1021,11 +1062,25 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       <div class="mod-eyebrow">Módulo 2 de 5</div>
       <div class="mod-title">Reconocer:<br>Diagnóstico y clasificación</div>
       <div class="mod-sub">Aprende a identificar y clasificar correctamente la desnutrición aguda usando los indicadores antropométricos y clínicos del lineamiento.</div>
+      <div class="callout info">
+        <div class="callout-icon">📋</div>
+        <div class="callout-body">
+          <div class="callout-title">Terminología oficial</div>
+          <div class="callout-text">El Lineamiento MIDA usa los términos <strong>Desnutrición Aguda Moderada (DAM)</strong> y <strong>Desnutrición Aguda Severa (DAS)</strong>. También es correcto usar <strong>DNT aguda moderada</strong> y <strong>DNT aguda severa</strong>. El indicador principal es el <strong>Z-score P/T-L</strong> (puntuación Z del indicador Peso para la Talla/Longitud), <em>no los percentiles</em>. La Resolución 2465/2016 establece los puntos de corte en desviaciones estándar (DE), no en percentiles.</div>
+        </div>
+      </div>
       <div class="mod-divider"></div>
 
       <div class="content-section">
         <h3>Indicadores antropométricos</h3>
         <p>El diagnóstico de la desnutrición aguda se basa en tres indicadores complementarios. Ninguno por sí solo es suficiente — deben interpretarse en conjunto.</p>
+        <div class="callout warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body">
+            <div class="callout-title">Z-score, no percentiles</div>
+            <div class="callout-text">La clasificación de la desnutrición aguda se hace con el <strong>puntaje Z (desviaciones estándar)</strong>, no con percentiles. La Resolución 2465/2016 establece los puntos de corte en DE. El percentil 3 equivale aproximadamente a -1.88 DE y el percentil 1 a -2.33 DE — pero estas equivalencias no son exactas ni se usan en el lineamiento. Use siempre el Z-score.</div>
+          </div>
+        </div>
         <table class="comp-table">
           <tr><th>Indicador</th><th>¿Qué mide?</th><th>Puntos de corte</th><th>Nota clave</th></tr>
           <tr><td><strong>P/T-L</strong></td><td>Peso para la talla/longitud</td><td>DAM: -2 a -3 DE<br>DAS: &lt; -3 DE</td><td class="highlight">Indicador principal</td></tr>
@@ -1325,8 +1380,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
       <div class="continue-bar">
-        <div class="mod-name">Módulo 2 · Diagnóstico y clasificación</div>
-        <button class="btn-continue" id="btn-continue-1" onclick="completeModule(1)">
+        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
+          <span>Módulo 2 · Diagnóstico y clasificación</span>
+          <span id="bar-status-1" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
+        </div>
+        <button class="btn-continue" id="btn-continue-1" onclick="completeModule(1)" disabled>
           Ir a la evaluación
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -1539,8 +1597,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
       <div class="continue-bar">
-        <div class="mod-name">Módulo 3 · Decisión clínica</div>
-        <button class="btn-continue" id="btn-continue-2" onclick="completeModule(2)">
+        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
+          <span>Módulo 3 · Decisión clínica</span>
+          <span id="bar-status-2" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
+        </div>
+        <button class="btn-continue" id="btn-continue-2" onclick="completeModule(2)" disabled>
           Ir a la evaluación
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -1552,6 +1613,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       <div class="mod-eyebrow">Módulo 4 de 5</div>
       <div class="mod-title">Tratar:<br>Protocolo hospitalario ABCDARIO</div>
       <div class="mod-sub">Domina el protocolo de manejo hospitalario: estabilización, transición y rehabilitación, con las fórmulas y dosis exactas.</div>
+      <div class="callout danger">
+        <div class="callout-icon">⛔</div>
+        <div class="callout-body">
+          <div class="callout-title">Principio fundamental del ABCDARIO</div>
+          <div class="callout-text"><strong>Quien detecta el caso, inicia el protocolo.</strong> No espere la interconsulta de nutrición para actuar. El médico que identifica al niño con desnutrición aguda inicia de inmediato la estabilización con el ABCDARIO. La interconsulta es un complemento, nunca un requisito previo.</div>
+        </div>
+      </div>
       <div class="mod-divider"></div>
 
       <div class="content-section">
@@ -1775,8 +1843,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
       <div class="continue-bar">
-        <div class="mod-name">Módulo 4 · Protocolo hospitalario</div>
-        <button class="btn-continue" id="btn-continue-3" onclick="completeModule(3)">
+        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
+          <span>Módulo 4 · Protocolo hospitalario</span>
+          <span id="bar-status-3" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
+        </div>
+        <button class="btn-continue" id="btn-continue-3" onclick="completeModule(3)" disabled>
           Ir a la evaluación
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -2044,8 +2115,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
       <div class="continue-bar">
-        <div class="mod-name">Módulo 5 · Recuperación y egreso</div>
-        <button class="btn-continue" id="btn-continue-4" onclick="completeModule(4)">
+        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
+          <span>Módulo 5 · Recuperación y egreso</span>
+          <span id="bar-status-4" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
+        </div>
+        <button class="btn-continue" id="btn-continue-4" onclick="completeModule(4)" disabled>
           Ir a la evaluación final
           <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -2138,7 +2212,7 @@ const ADMIN_EMAIL = 'melarylo@gmail.com';
 const EMAILJS_SERVICE = ''; // Configurar EmailJS para notificaciones
 
 // App version
-const APP_VERSION = 'limda-edu-v4';
+const APP_VERSION = 'limda-edu-v5';
 if (localStorage.getItem('limda_version') !== APP_VERSION) {
   localStorage.clear();
   localStorage.setItem('limda_version', APP_VERSION);
@@ -2358,20 +2432,30 @@ function showModule(idx) {
   const navBtn = document.getElementById(`mnav-${idx}`);
   if (navBtn && navBtn.classList.contains('locked')) return;
 
-  document.querySelectorAll('.module-content').forEach(m => m.classList.remove('active'));
+  // Hide ALL modules explicitly
+  document.querySelectorAll('.module-content').forEach(m => {
+    m.classList.remove('active');
+    m.style.display = 'none';
+  });
   document.querySelectorAll('.mnav-btn').forEach(b => b.classList.remove('active'));
 
-  document.getElementById(`mod-${idx}`).classList.add('active');
+  // Show only target module
+  const targetMod = document.getElementById(`mod-${idx}`);
+  if (targetMod) {
+    targetMod.classList.add('active');
+    targetMod.style.display = 'block';
+  }
   document.getElementById(`mnav-${idx}`).classList.add('active');
 
   state.currentModule = idx;
   updateProgressBar();
 
   if (!quizState[idx]) initQuiz(idx);
-  // Scroll to top of course body
+  // Scroll to top — both course body and window
   const body = document.querySelector('.course-body');
   if (body) body.scrollTop = 0;
-  else window.scrollTo(0,0);
+  window.scrollTo(0, 0);
+  document.querySelector('#s-course').scrollTop = 0;
 }
 
 function completeModule(modIdx) {
@@ -2816,7 +2900,13 @@ function confirmReading(id, modIdx) {
     checkMod1Unlock();
   } else {
     const btn = document.getElementById('btn-continue-' + modIdx);
-    if (btn) btn.disabled = !(cb && cb.checked);
+    const status = document.getElementById('bar-status-' + modIdx);
+    const done = cb && cb.checked;
+    if (btn) btn.disabled = !done;
+    if (status) {
+      status.textContent = done ? '✅ Listo para la evaluación' : '📖 Lee el documento y marca la casilla para continuar';
+      status.style.color = done ? 'var(--green)' : 'var(--amber)';
+    }
   }
 }
 
@@ -2832,8 +2922,25 @@ function confirmVideo() {
 function checkMod1Unlock() {
   const videoDone = document.getElementById('confirm-video-m2')?.checked || false;
   const readingDone = document.getElementById('confirm-rd-1')?.checked || false;
+  const done = videoDone && readingDone;
   const btn = document.getElementById('btn-continue-1');
-  if (btn) btn.disabled = !(videoDone && readingDone);
+  const status = document.getElementById('bar-status-1');
+  if (btn) btn.disabled = !done;
+  if (status) {
+    if (done) {
+      status.textContent = '✅ Listo para la evaluación';
+      status.style.color = 'var(--green)';
+    } else if (!videoDone && !readingDone) {
+      status.textContent = '📖 Ve el video y lee el documento para continuar';
+      status.style.color = 'var(--amber)';
+    } else if (!videoDone) {
+      status.textContent = '▶️ Falta confirmar el video';
+      status.style.color = 'var(--amber)';
+    } else {
+      status.textContent = '📖 Falta confirmar la lectura';
+      status.style.color = 'var(--amber)';
+    }
+  }
 }
 
 </script>
