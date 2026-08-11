@@ -187,8 +187,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
   flex-direction:column;
 }
 #s-course.active { display:flex; }
-#s-course.active .continue-bar { display:none; }
-#s-course.active .continue-bar { display:flex; }
+#s-course.active /* continue-bar is now inline in module flow */
 
 /* COURSE HEADER */
 .course-header {
@@ -240,7 +239,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .mnav-badge svg { width:9px; height:9px; fill:none; stroke:white; stroke-width:3; stroke-linecap:round; }
 
 /* MODULE CONTENT */
-.module-content { display:none; max-width:720px; margin:0 auto; padding:28px 20px 80px; }
+.module-content { display:none; max-width:720px; margin:0 auto; padding:28px 20px 60px; }
 .module-content.active { display:block; animation:fadeUp .25s ease; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
@@ -382,7 +381,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .case-feedback strong { display:block; margin-bottom:4px; font-size:14px; }
 
 /* QUIZ */
-.quiz-box { background:white; border:1px solid var(--border); border-radius:var(--r); padding:24px; margin:20px 0; box-shadow:var(--shadow); }
+.quiz-box { background:white; border:1px solid var(--border); border-radius:var(--r); padding:24px; margin:20px 0 80px; box-shadow:var(--shadow); display:none; }
+.quiz-box.visible { display:block; }
 .quiz-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
 .quiz-title { font-family:'Sora',sans-serif; font-size:16px; font-weight:700; color:var(--navy); }
 .quiz-counter { font-family:'DM Mono',monospace; font-size:12px; color:var(--muted); }
@@ -443,24 +443,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .result-sub { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:20px; }
 
 /* CONTINUE BUTTON */
-.continue-bar {
-  position:fixed; bottom:0; left:0; right:0; z-index:50;
-  display:none;
-  background:white; border-top:1px solid var(--border);
-  padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
-  box-shadow:0 -4px 16px rgba(0,0,0,0.06);
-}
-.continue-bar .mod-name { font-size:12px; color:var(--muted); }
-.btn-continue {
-  background:linear-gradient(135deg,var(--teal),#009e92);
-  color:white; font-family:'Sora',sans-serif; font-size:14px; font-weight:700;
-  padding:12px 24px; border:none; border-radius:var(--r-sm); cursor:pointer;
-  transition:all .18s; display:flex; align-items:center; gap:8px;
-}
-.btn-continue:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,180,166,0.35); }
-.btn-continue:disabled { background:var(--border); color:var(--muted); box-shadow:none; cursor:not-allowed; }
-.btn-continue:disabled svg { stroke:var(--muted); }
-.btn-continue svg { width:16px; height:16px; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; }
+/* continue-bar removed */
+.continue-bar .mod-name { font-size:12px; color:var(--text2); font-weight:500; }
+
+
+
+
+
 
 /* ══ CERTIFICATE ══ */
 #s-cert {
@@ -896,7 +885,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       <!-- QUIZ M1 -->
       
       <!-- READING M0 -->
-      <div class="reading-section" id="rd-0">
+      <div class="reading-section open" id="rd-0">
         <div class="reading-header" onclick="toggleReading('rd-0')">
           <h3>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -1045,17 +1034,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-0-content"></div>
       </div>
 
-      <div class="continue-bar">
-        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
-          <span>Módulo 1 · Epidemiología y marco normativo</span>
-          <span id="bar-status-0" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
-        </div>
-        <button class="btn-continue" id="btn-continue-0" onclick="completeModule(0)" disabled>
-          Ir a la evaluación
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
+      
 
     <!-- ═══ MODULE 2 ═══ -->
     <div class="module-content" id="mod-1">
@@ -1179,7 +1158,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       
       
       <!-- VIDEO OMS M2 -->
-      <div class="reading-section" id="video-m2" style="border-color:rgba(0,180,166,0.3);">
+      <div class="reading-section open" id="video-m2" style="border-color:rgba(0,180,166,0.3);">
         <div class="reading-header" onclick="toggleReading('video-m2')" style="background:linear-gradient(135deg,#0d3028,#0a1628);">
           <h3>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
@@ -1221,7 +1200,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
 <!-- READING M1 -->
-      <div class="reading-section" id="rd-1">
+      <div class="reading-section open" id="rd-1">
         <div class="reading-header" onclick="toggleReading('rd-1')">
           <h3>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -1379,17 +1358,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-1-content"></div>
       </div>
 
-      <div class="continue-bar">
-        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
-          <span>Módulo 2 · Diagnóstico y clasificación</span>
-          <span id="bar-status-1" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
-        </div>
-        <button class="btn-continue" id="btn-continue-1" onclick="completeModule(1)" disabled>
-          Ir a la evaluación
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
+      
 
     <!-- ═══ MODULE 3 ═══ -->
     <div class="module-content" id="mod-2">
@@ -1485,7 +1454,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 
       
       <!-- READING M2 -->
-      <div class="reading-section" id="rd-2">
+      <div class="reading-section open" id="rd-2">
         <div class="reading-header" onclick="toggleReading('rd-2')">
           <h3>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -1596,17 +1565,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-2-content"></div>
       </div>
 
-      <div class="continue-bar">
-        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
-          <span>Módulo 3 · Decisión clínica</span>
-          <span id="bar-status-2" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
-        </div>
-        <button class="btn-continue" id="btn-continue-2" onclick="completeModule(2)" disabled>
-          Ir a la evaluación
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
+      
 
     <!-- ═══ MODULE 4 ═══ -->
     <div class="module-content" id="mod-3">
@@ -1701,7 +1660,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 
       
       <!-- READING M3 -->
-      <div class="reading-section" id="rd-3">
+      <div class="reading-section open" id="rd-3">
         <div class="reading-header" onclick="toggleReading('rd-3')">
           <h3>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -1842,17 +1801,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-3-content"></div>
       </div>
 
-      <div class="continue-bar">
-        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
-          <span>Módulo 4 · Protocolo hospitalario</span>
-          <span id="bar-status-3" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
-        </div>
-        <button class="btn-continue" id="btn-continue-3" onclick="completeModule(3)" disabled>
-          Ir a la evaluación
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
+      
 
     <!-- ═══ MODULE 5 ═══ -->
     <div class="module-content" id="mod-4">
@@ -1976,7 +1925,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       <!-- FINAL QUIZ -->
       
       <!-- READING M4 -->
-      <div class="reading-section" id="rd-4">
+      <div class="reading-section open" id="rd-4">
         <div class="reading-header" onclick="toggleReading('rd-4')">
           <h3>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
@@ -2114,17 +2063,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-4-content"></div>
       </div>
 
-      <div class="continue-bar">
-        <div class="mod-name" style="display:flex;flex-direction:column;gap:2px;">
-          <span>Módulo 5 · Recuperación y egreso</span>
-          <span id="bar-status-4" style="font-size:10px;color:var(--amber);font-weight:600;">📖 Lee el documento y marca la casilla para continuar</span>
-        </div>
-        <button class="btn-continue" id="btn-continue-4" onclick="completeModule(4)" disabled>
-          Ir a la evaluación final
-          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-    </div>
+      
   </div>
 </div>
 
@@ -2391,6 +2330,7 @@ function finishQuiz(modIdx) {
 function retryQuiz(modIdx) {
   quizState[modIdx] = { current:0, answers:[], score:0, done:false };
   renderQuizQuestion(modIdx);
+  // Don't show continue-bar again on retry — quiz is already visible
 }
 
 function unlockNext(modIdx) {
@@ -2432,20 +2372,21 @@ function showModule(idx) {
   const navBtn = document.getElementById(`mnav-${idx}`);
   if (navBtn && navBtn.classList.contains('locked')) return;
 
-  // Hide ALL modules explicitly
+  // Hide ALL modules explicitly — force with both class and inline style
   document.querySelectorAll('.module-content').forEach(m => {
     m.classList.remove('active');
-    m.style.display = 'none';
+    m.style.cssText = 'display:none !important';
   });
   document.querySelectorAll('.mnav-btn').forEach(b => b.classList.remove('active'));
 
   // Show only target module
   const targetMod = document.getElementById(`mod-${idx}`);
   if (targetMod) {
+    targetMod.style.cssText = '';
     targetMod.classList.add('active');
-    targetMod.style.display = 'block';
   }
-  document.getElementById(`mnav-${idx}`).classList.add('active');
+  const targetNav = document.getElementById(`mnav-${idx}`);
+  if (targetNav) targetNav.classList.add('active');
 
   state.currentModule = idx;
   updateProgressBar();
@@ -2463,35 +2404,26 @@ function completeModule(modIdx) {
   const readingCb = document.getElementById(`confirm-rd-${modIdx}`);
   const readingDone = readingCb && readingCb.checked;
 
-  // Module 2 also requires video
   if (modIdx === 1) {
     const videoDone = document.getElementById('confirm-video-m2')?.checked || false;
     if (!videoDone || !readingDone) {
-      // Open sections and alert
-      if (!videoDone) {
-        const vs = document.getElementById('video-m2');
-        if (vs) vs.classList.add('open');
-      }
-      if (!readingDone) {
-        const rs = document.getElementById(`rd-${modIdx}`);
-        if (rs) rs.classList.add('open');
-      }
       showReadingAlert(modIdx);
       return;
     }
   } else if (!readingDone) {
-    const rs = document.getElementById(`rd-${modIdx}`);
-    if (rs) rs.classList.add('open');
     showReadingAlert(modIdx);
     return;
   }
 
-  // All confirmed — show quiz
   const quiz = document.getElementById(`quiz-${modIdx}`);
-  if (quiz) quiz.scrollIntoView({ behavior:'smooth', block:'start' });
+  if (quiz) {
+    quiz.classList.add('visible');
+    quiz.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
   if (!quizState[modIdx]) initQuiz(modIdx);
   else if (!quizState[modIdx].done) renderQuizQuestion(modIdx);
 }
+
 
 function showReadingAlert(modIdx) {
   // Show inline alert
@@ -2778,12 +2710,15 @@ function restoreProgress() {
   state.completedModules.forEach(idx => {
     markCompleted(idx);
     if (idx + 1 < 5) unlockModule(idx + 1);
+    // Show quiz for completed modules
+    const quiz = document.getElementById('quiz-' + idx);
+    if (quiz) quiz.classList.add('visible');
   });
   updateProgressBar();
-  // Init quiz for current module
+  // Init quiz only for current (active) module if it was previously completed
   const currentMod = state.completedModules.length < 5 ? state.completedModules.length : 4;
   for (let i = 0; i <= currentMod; i++) {
-    if (!quizState[i]) initQuiz(i);
+    if (state.completedModules.includes(i) && !quizState[i]) initQuiz(i);
   }
 }
 
@@ -2866,8 +2801,8 @@ function printCert() {
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
-  // Only init quiz 0 on load — restoreProgress called after login
-  initQuiz(0);
+  // Don't init quiz on load — only after reading is confirmed
+  // initQuiz called from completeModule or restoreProgress
 });
 
 // Print styles
@@ -2892,20 +2827,19 @@ function toggleReading(id) {
 function confirmReading(id, modIdx) {
   const cb = document.getElementById('confirm-' + id);
   const conf = document.getElementById('conf-box-' + id);
-  if (cb && conf) {
-    conf.classList.toggle('reading-confirmed', cb.checked);
-  }
-  // Módulo 2 requiere TANTO video COMO lectura
+  if (cb && conf) conf.classList.toggle('reading-confirmed', cb.checked);
+
   if (modIdx === 1) {
     checkMod1Unlock();
   } else {
-    const btn = document.getElementById('btn-continue-' + modIdx);
-    const status = document.getElementById('bar-status-' + modIdx);
     const done = cb && cb.checked;
-    if (btn) btn.disabled = !done;
-    if (status) {
-      status.textContent = done ? '✅ Listo para la evaluación' : '📖 Lee el documento y marca la casilla para continuar';
-      status.style.color = done ? 'var(--green)' : 'var(--amber)';
+    const quiz = document.getElementById('quiz-' + modIdx);
+    if (quiz) {
+      quiz.classList.toggle('visible', done);
+      if (done) {
+        setTimeout(() => quiz.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+        if (!quizState[modIdx]) initQuiz(modIdx);
+      }
     }
   }
 }
@@ -2913,9 +2847,7 @@ function confirmReading(id, modIdx) {
 function confirmVideo() {
   const cb = document.getElementById('confirm-video-m2');
   const conf = document.getElementById('conf-box-video-m2');
-  if (cb && conf) {
-    conf.classList.toggle('reading-confirmed', cb.checked);
-  }
+  if (cb && conf) conf.classList.toggle('reading-confirmed', cb.checked);
   checkMod1Unlock();
 }
 
@@ -2923,26 +2855,13 @@ function checkMod1Unlock() {
   const videoDone = document.getElementById('confirm-video-m2')?.checked || false;
   const readingDone = document.getElementById('confirm-rd-1')?.checked || false;
   const done = videoDone && readingDone;
-  const btn = document.getElementById('btn-continue-1');
-  const status = document.getElementById('bar-status-1');
-  if (btn) btn.disabled = !done;
-  if (status) {
+  const quiz = document.getElementById('quiz-1');
+  if (quiz) {
+    quiz.classList.toggle('visible', done);
     if (done) {
-      status.textContent = '✅ Listo para la evaluación';
-      status.style.color = 'var(--green)';
-    } else if (!videoDone && !readingDone) {
-      status.textContent = '📖 Ve el video y lee el documento para continuar';
-      status.style.color = 'var(--amber)';
-    } else if (!videoDone) {
-      status.textContent = '▶️ Falta confirmar el video';
-      status.style.color = 'var(--amber)';
-    } else {
-      status.textContent = '📖 Falta confirmar la lectura';
-      status.style.color = 'var(--amber)';
+      setTimeout(() => quiz.scrollIntoView({ behavior:'smooth', block:'start' }), 100);
+      if (!quizState[1]) initQuiz(1);
     }
   }
 }
 
-</script>
-</body>
-</html>
