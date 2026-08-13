@@ -187,7 +187,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
   flex-direction:column;
 }
 #s-course.active { display:flex; }
-#s-course.active /* continue-bar is now inline in module flow */
+#s-course.active .continue-bar { display:flex; }
+#s-course.active .continue-bar { display:none; }
 
 /* COURSE HEADER */
 .course-header {
@@ -239,7 +240,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .mnav-badge svg { width:9px; height:9px; fill:none; stroke:white; stroke-width:3; stroke-linecap:round; }
 
 /* MODULE CONTENT */
-.module-content { display:none; max-width:720px; margin:0 auto; padding:28px 20px 60px; }
+.module-content { display:none; max-width:720px; margin:0 auto; padding:28px 20px 40px; }
 .module-content.active { display:block; animation:fadeUp .25s ease; }
 @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
@@ -443,13 +444,22 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .result-sub { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:20px; }
 
 /* CONTINUE BUTTON */
-/* continue-bar removed */
-.continue-bar .mod-name { font-size:12px; color:var(--text2); font-weight:500; }
-
-
-
-
-
+.continue-bar {
+  position:fixed; bottom:0; left:0; right:0; z-index:50;
+  display:none;
+  background:white; border-top:1px solid var(--border);
+  padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+  box-shadow:0 -4px 16px rgba(0,0,0,0.06);
+}
+.continue-bar .mod-name { font-size:12px; color:var(--muted); }
+.btn-continue {
+  background:linear-gradient(135deg,var(--teal),#009e92);
+  color:white; font-family:'Sora',sans-serif; font-size:14px; font-weight:700;
+  padding:12px 24px; border:none; border-radius:var(--r-sm); cursor:pointer;
+  transition:all .18s; display:flex; align-items:center; gap:8px;
+}
+.btn-continue:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,180,166,0.35); }
+.btn-continue svg { width:16px; height:16px; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; }
 
 /* ══ CERTIFICATE ══ */
 #s-cert {
@@ -623,9 +633,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
 .reading-confirmed label { color: #15803d; }
 
 </style>
-<!-- Firebase SDK: descomentar cuando se configure -->
-<!-- <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script> -->
-<!-- <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script> -->
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <!-- PDF libs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -836,6 +846,19 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
       <!-- CASE 1 -->
+      <div class="content-section">
+        <h3>Quien detecta el caso, inicia el protocolo</h3>
+        <p>Uno de los errores más frecuentes en la práctica clínica es identificar un niño con desnutrición aguda y escribir en la historia clínica <em>"pendiente concepto de nutrición"</em> sin haber iniciado ninguna intervención.</p>
+        <p>El Lineamiento MIDA es claro: <strong>cualquier profesional de la salud que identifique un caso tiene la obligación inmediata de iniciar la estabilización</strong>, sin importar su especialidad ni el nivel de la IPS. La interconsulta a nutrición es un complemento, nunca un requisito previo para actuar.</p>
+        <div class="callout danger">
+          <div class="callout-icon">⛔</div>
+          <div class="callout-body">
+            <div class="callout-title">Práctica prohibida</div>
+            <div class="callout-text">Registrar "pendiente concepto de nutrición" sin haber iniciado el manejo es contrario al lineamiento y puede costar la vida del niño. La interconsulta es importante, pero <strong>nunca justifica retrasar la estabilización</strong>.</div>
+          </div>
+        </div>
+      </div>
+
       <div class="case-box">
         <div class="case-label">Caso clínico 1</div>
         <div class="case-patient">
@@ -859,20 +882,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
           <strong>✓ Correcto</strong>
           La desnutrición aguda es una urgencia vital. El médico debe iniciar la evaluación y estabilización en el mismo sitio de captación. La Resolución 115/2026 establece explícitamente que no se requiere autorización previa. Remitir sin estabilizar es una práctica que el lineamiento prohíbe por asociarse a mortalidad.
         </div>
-      </div>
-
-      <div class="content-section">
-        <h3>Quien detecta el caso, inicia el protocolo</h3>
-        <p>Uno de los errores más frecuentes y graves en la práctica clínica colombiana es identificar un niño con desnutrición aguda y escribir en la historia clínica <em>"pendiente concepto de nutrición"</em> sin haber iniciado ninguna intervención.</p>
-        <p>El Lineamiento MIDA es claro: <strong>cualquier profesional de la salud que identifique un caso de desnutrición aguda tiene la obligación inmediata de iniciar la estabilización</strong>, independientemente de su especialidad, del nivel de la IPS o de si hay un nutricionista disponible. La interconsulta a nutrición es un complemento, nunca un requisito previo para actuar.</p>
-        <div class="callout danger">
-          <div class="callout-icon">⛔</div>
-          <div class="callout-body">
-            <div class="callout-title">Práctica prohibida</div>
-            <div class="callout-text">Registrar "pendiente concepto de nutrición" sin haber iniciado el manejo es contrario al lineamiento y puede costar la vida del niño. La interconsulta y el trabajo interdisciplinario son importantes, pero <strong>nunca justifican retrasar la estabilización</strong>.</div>
-          </div>
-        </div>
-      </div>
         <div class="case-feedback wrong-fb" id="mod0-q1-fb-wrong">
           <strong>✗ Incorrecto</strong>
           El lineamiento MIDA y la Resolución 115/2026 son claros: la desnutrición aguda es una urgencia vital que debe atenderse en el sitio de captación, sin importar el nivel de complejidad y sin autorización previa de la EPS. Remitir sin estabilizar o esperar autorización son prácticas que se asocian a mayor mortalidad.
@@ -1034,7 +1043,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-0-content"></div>
       </div>
 
-      
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 1 · Epidemiología y marco normativo</div>
+        <button class="btn-continue" id="btn-continue-0" onclick="completeModule(0)" disabled>
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
 
     <!-- ═══ MODULE 2 ═══ -->
     <div class="module-content" id="mod-1">
@@ -1045,7 +1061,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div class="callout-icon">📋</div>
         <div class="callout-body">
           <div class="callout-title">Terminología oficial</div>
-          <div class="callout-text">El Lineamiento MIDA usa los términos <strong>Desnutrición Aguda Moderada (DAM)</strong> y <strong>Desnutrición Aguda Severa (DAS)</strong>. También es correcto usar <strong>DNT aguda moderada</strong> y <strong>DNT aguda severa</strong>. El indicador principal es el <strong>Z-score P/T-L</strong> (puntuación Z del indicador Peso para la Talla/Longitud), <em>no los percentiles</em>. La Resolución 2465/2016 establece los puntos de corte en desviaciones estándar (DE), no en percentiles.</div>
+          <div class="callout-text">El Lineamiento MIDA usa los términos <strong>Desnutrición Aguda Moderada (DAM)</strong> y <strong>Desnutrición Aguda Severa (DAS)</strong>. También es correcto: <strong>DNT aguda moderada</strong> y <strong>DNT aguda severa</strong>. El indicador principal es el <strong>Z-score P/T-L</strong> (puntaje Z), <em>no los percentiles</em>. La Resolución 2465/2016 establece los puntos de corte en desviaciones estándar (DE).</div>
         </div>
       </div>
       <div class="mod-divider"></div>
@@ -1057,7 +1073,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
           <div class="callout-icon">⚠️</div>
           <div class="callout-body">
             <div class="callout-title">Z-score, no percentiles</div>
-            <div class="callout-text">La clasificación de la desnutrición aguda se hace con el <strong>puntaje Z (desviaciones estándar)</strong>, no con percentiles. La Resolución 2465/2016 establece los puntos de corte en DE. El percentil 3 equivale aproximadamente a -1.88 DE y el percentil 1 a -2.33 DE — pero estas equivalencias no son exactas ni se usan en el lineamiento. Use siempre el Z-score.</div>
+            <div class="callout-text">La clasificación se hace con el <strong>puntaje Z (desviaciones estándar)</strong>, no con percentiles. El percentil 3 equivale aproximadamente a -1.88 DE y el percentil 1 a -2.33 DE — pero estas equivalencias no son exactas ni se usan en el lineamiento. Use siempre el Z-score.</div>
           </div>
         </div>
         <table class="comp-table">
@@ -1156,8 +1172,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
       </div>
 
       
-      
-      <!-- VIDEO OMS M2 -->
+      <!-- READING M1 -->
+      <!-- VIDEO M2 -->
       <div class="reading-section open" id="video-m2" style="border-color:rgba(0,180,166,0.3);">
         <div class="reading-header" onclick="toggleReading('video-m2')" style="background:linear-gradient(135deg,#0d3028,#0a1628);">
           <h3>
@@ -1199,7 +1215,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         </div>
       </div>
 
-<!-- READING M1 -->
       <div class="reading-section open" id="rd-1">
         <div class="reading-header" onclick="toggleReading('rd-1')">
           <h3>
@@ -1358,7 +1373,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-1-content"></div>
       </div>
 
-      
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 2 · Diagnóstico y clasificación</div>
+        <button class="btn-continue" id="btn-continue-1" onclick="completeModule(1)" disabled>
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
 
     <!-- ═══ MODULE 3 ═══ -->
     <div class="module-content" id="mod-2">
@@ -1565,7 +1587,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-2-content"></div>
       </div>
 
-      
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 3 · Decisión clínica</div>
+        <button class="btn-continue" id="btn-continue-2" onclick="completeModule(2)" disabled>
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
 
     <!-- ═══ MODULE 4 ═══ -->
     <div class="module-content" id="mod-3">
@@ -1801,7 +1830,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-3-content"></div>
       </div>
 
-      
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 4 · Protocolo hospitalario</div>
+        <button class="btn-continue" id="btn-continue-3" onclick="completeModule(3)" disabled>
+          Ir a la evaluación
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
 
     <!-- ═══ MODULE 5 ═══ -->
     <div class="module-content" id="mod-4">
@@ -2063,7 +2099,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--white); color:var(--te
         <div id="quiz-4-content"></div>
       </div>
 
-      
+      <div class="continue-bar">
+        <div class="mod-name">Módulo 5 · Recuperación y egreso</div>
+        <button class="btn-continue" id="btn-continue-4" onclick="completeModule(4)" disabled>
+          Ir a la evaluación final
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2151,7 +2194,7 @@ const ADMIN_EMAIL = 'melarylo@gmail.com';
 const EMAILJS_SERVICE = ''; // Configurar EmailJS para notificaciones
 
 // App version
-const APP_VERSION = 'limda-edu-v5';
+const APP_VERSION = 'limda-edu-v6';
 if (localStorage.getItem('limda_version') !== APP_VERSION) {
   localStorage.clear();
   localStorage.setItem('limda_version', APP_VERSION);
@@ -2209,7 +2252,7 @@ const QUIZZES = [
     { q:"¿Cuál es la meta mínima de ganancia de peso en un niño mayor de 3 meses en rehabilitación hospitalaria?", opts:["5 g/día","12 g/día","25 g/día","50 g/día"], correct:1, fb:"La meta mínima de ganancia de peso en niños mayores de 3 meses es 12 g/día (meta ideal: 16 g/día). Para menores de 3 meses la meta mínima es 25 g/día." },
     { q:"La FTLC está contraindicada en:", opts:["Niños menores de 6 meses","Galactosemia y alergia al maní","Kwashiorkor con edema grado III","Síndrome de realimentación"], correct:1, fb:"La FTLC está contraindicada en galactosemia (por su contenido de lactosa) y en alergia al maní (por su contenido de mantequilla de maní). En menores de 6 meses se usa F-75, no FTLC." },
     { q:"¿Qué debe hacerse si un niño no ha mostrado recuperación nutricional en el 3° o 4° control ambulatorio?", opts:["Duplicar la dosis de FTLC","Agregar F-100 al esquema","Remitir a pediatría","Hospitalizar de inmediato"], correct:2, fb:"La Resolución 115/2026 establece que si no hay recuperación nutricional entre el 3° y 4° control ambulatorio, debe realizarse remisión a pediatría para evaluación especializada." },
-    { q:"¿Cuál es la conducta correcta cuando un niño en manejo ambulatorio por DAS presenta aparición de edema en el control semanal?", opts:["Aumentar la dosis de FTLC y citar en 15 días","Agregar diuréticos y continuar manejo ambulatorio","Remitir a hospitalización de inmediato","Suspender la FTLC y observar por 48 horas"], correct:2, fb:"La aparición o el aumento del edema durante el manejo ambulatorio es una señal de alarma que obliga a remitir a hospitalización de inmediato, independientemente del estado general del niño." },
+    { q:"¿Cuántas horas de educación continua acredita LIMDA Edu?", opts:["20 horas","25 horas","35 horas","40 horas"], correct:2, fb:"LIMDA Edu acredita 35 horas de educación continua, distribuidas entre contenidos, casos clínicos interactivos, evaluaciones por módulo y la evaluación final." },
     { q:"¿Cuál es la frecuencia de seguimiento recomendada para un niño en manejo ambulatorio?", opts:["Diario","Cada 3 días","Semanal","Quincenal"], correct:2, fb:"El seguimiento en manejo ambulatorio es SEMANAL hasta que el niño alcance los criterios de egreso definitivo (P/T ≥ -1 DE según Res. 115/2026). Puede incluir visita domiciliaria o punto de encuentro concertado." },
     { q:"La desnutrición aguda moderada y severa según la Resolución 115/2026 es:", opts:["Una condición que puede esperar remisión programada","Una urgencia vital que no requiere autorización previa de la EPS","Una condición que solo manejan pediatras","Una urgencia solo en menores de 2 años"], correct:1, fb:"La Resolución 115/2026 declara explícitamente la desnutrición aguda moderada y severa como urgencia vital que debe atenderse sin autorización previa de la EPS, en cualquier nivel de complejidad." },
   ]
@@ -2243,7 +2286,7 @@ function renderQuizQuestion(modIdx) {
     </div>
     <div class="quiz-feedback" id="qfb-${modIdx}"></div>
     <div style="display:flex;justify-content:flex-end;margin-top:8px;">
-      <button class="btn-quiz primary" id="qbtn-${modIdx}" onclick="confirmQuizAnswer(${modIdx})">Confirmar</button>
+      <button class="btn-quiz primary" id="qbtn-${modIdx}" onclick="confirmQuizAnswer(${modIdx})" disabled>Confirmar</button>
     </div>
   `;
 }
@@ -2330,7 +2373,6 @@ function finishQuiz(modIdx) {
 function retryQuiz(modIdx) {
   quizState[modIdx] = { current:0, answers:[], score:0, done:false };
   renderQuizQuestion(modIdx);
-  // Don't show continue-bar again on retry — quiz is already visible
 }
 
 function unlockNext(modIdx) {
@@ -2372,19 +2414,13 @@ function showModule(idx) {
   const navBtn = document.getElementById(`mnav-${idx}`);
   if (navBtn && navBtn.classList.contains('locked')) return;
 
-  // Hide ALL modules explicitly — force with both class and inline style
   document.querySelectorAll('.module-content').forEach(m => {
     m.classList.remove('active');
     m.style.cssText = 'display:none !important';
   });
   document.querySelectorAll('.mnav-btn').forEach(b => b.classList.remove('active'));
-
-  // Show only target module
   const targetMod = document.getElementById(`mod-${idx}`);
-  if (targetMod) {
-    targetMod.style.cssText = '';
-    targetMod.classList.add('active');
-  }
+  if (targetMod) { targetMod.style.cssText = ''; targetMod.classList.add('active'); }
   const targetNav = document.getElementById(`mnav-${idx}`);
   if (targetNav) targetNav.classList.add('active');
 
@@ -2392,65 +2428,18 @@ function showModule(idx) {
   updateProgressBar();
 
   if (!quizState[idx]) initQuiz(idx);
-  // Scroll to top — both course body and window
+  // Scroll to top of course body
   const body = document.querySelector('.course-body');
   if (body) body.scrollTop = 0;
-  window.scrollTo(0, 0);
-  document.querySelector('#s-course').scrollTop = 0;
+  else window.scrollTo(0,0);
 }
 
 function completeModule(modIdx) {
-  // Check reading confirmed
-  const readingCb = document.getElementById(`confirm-rd-${modIdx}`);
-  const readingDone = readingCb && readingCb.checked;
-
-  if (modIdx === 1) {
-    const videoDone = document.getElementById('confirm-video-m2')?.checked || false;
-    if (!videoDone || !readingDone) {
-      showReadingAlert(modIdx);
-      return;
-    }
-  } else if (!readingDone) {
-    showReadingAlert(modIdx);
-    return;
-  }
-
+  // Scroll to quiz
   const quiz = document.getElementById(`quiz-${modIdx}`);
-  if (quiz) {
-    quiz.classList.add('visible');
-    quiz.scrollIntoView({ behavior:'smooth', block:'start' });
-  }
+  if (quiz) quiz.scrollIntoView({ behavior:'smooth', block:'start' });
   if (!quizState[modIdx]) initQuiz(modIdx);
   else if (!quizState[modIdx].done) renderQuizQuestion(modIdx);
-}
-
-
-function showReadingAlert(modIdx) {
-  // Show inline alert
-  const alertId = `reading-alert-${modIdx}`;
-  let alert = document.getElementById(alertId);
-  if (!alert) {
-    alert = document.createElement('div');
-    alert.id = alertId;
-    alert.style.cssText = `
-      position:fixed; bottom:90px; left:50%; transform:translateX(-50%);
-      background:#0f2040; border:1px solid rgba(245,158,11,0.5);
-      color:#fcd34d; padding:12px 20px; border-radius:10px;
-      font-size:13px; font-weight:600; z-index:200;
-      box-shadow:0 4px 16px rgba(0,0,0,0.3); text-align:center;
-      max-width:340px; width:90%;
-    `;
-    document.body.appendChild(alert);
-  }
-  const msg = modIdx === 1
-    ? '⚠️ Debes ver el video y marcar ambas casillas antes de continuar.'
-    : '⚠️ Debes leer el documento y marcar la casilla antes de continuar.';
-  alert.textContent = msg;
-  alert.style.display = 'block';
-  setTimeout(() => { if (alert) alert.style.display = 'none'; }, 3500);
-  // Scroll to reading section
-  const rs = document.getElementById(`rd-${modIdx}`);
-  if (rs) rs.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 function unlockModule(idx) {
@@ -2518,8 +2507,8 @@ async function doLogin() {
   const loadEl = document.getElementById('login-loading');
 
   errEl.style.display = 'none';
-  if (!name || name.length < 2) { showLoginError('Por favor ingresa tu nombre completo.'); return; }
-  if (!cedula || cedula.length < 4) { showLoginError('Por favor ingresa tu número de cédula.'); return; }
+  if (!name || name.length < 3) { showLoginError('Por favor ingresa tu nombre completo.'); return; }
+  if (!cedula || cedula.length < 5) { showLoginError('Por favor ingresa tu número de cédula.'); return; }
   if (!code || code.length < 6) { showLoginError('Por favor ingresa el código de acceso.'); return; }
 
   loadEl.style.display = 'block';
@@ -2710,15 +2699,12 @@ function restoreProgress() {
   state.completedModules.forEach(idx => {
     markCompleted(idx);
     if (idx + 1 < 5) unlockModule(idx + 1);
-    // Show quiz for completed modules
-    const quiz = document.getElementById('quiz-' + idx);
-    if (quiz) quiz.classList.add('visible');
   });
   updateProgressBar();
-  // Init quiz only for current (active) module if it was previously completed
+  // Init quiz for current module
   const currentMod = state.completedModules.length < 5 ? state.completedModules.length : 4;
   for (let i = 0; i <= currentMod; i++) {
-    if (state.completedModules.includes(i) && !quizState[i]) initQuiz(i);
+    if (!quizState[i]) initQuiz(i);
   }
 }
 
@@ -2801,8 +2787,8 @@ function printCert() {
 
 // ══ INIT ══
 window.addEventListener('DOMContentLoaded', () => {
-  // Don't init quiz on load — only after reading is confirmed
-  // initQuiz called from completeModule or restoreProgress
+  // Only init quiz 0 on load — restoreProgress called after login
+  initQuiz(0);
 });
 
 // Print styles
@@ -2818,17 +2804,16 @@ printStyle.textContent = `
 `;
 document.head.appendChild(printStyle);
 
-// ══ READING & VIDEO SECTIONS ══
+// ══ READING SECTIONS ══
 function toggleReading(id) {
   const sec = document.getElementById(id);
-  sec.classList.toggle('open');
+  if (sec) sec.classList.toggle('open');
 }
 
 function confirmReading(id, modIdx) {
   const cb = document.getElementById('confirm-' + id);
   const conf = document.getElementById('conf-box-' + id);
   if (cb && conf) conf.classList.toggle('reading-confirmed', cb.checked);
-
   if (modIdx === 1) {
     checkMod1Unlock();
   } else {
@@ -2865,3 +2850,435 @@ function checkMod1Unlock() {
   }
 }
 
+
+function unlockNext(modIdx) {
+  const next = modIdx + 1;
+  // 1. Mark current as completed
+  if (!state.completedModules.includes(modIdx)) state.completedModules.push(modIdx);
+  localStorage.setItem('limda_progress', JSON.stringify(state.completedModules));
+  saveProgressToFirebase();
+  // 2. Visually mark completed
+  markCompleted(modIdx);
+  // 3. Unlock next module BEFORE navigating
+  if (next < 5) unlockModule(next);
+  // 4. Initialize next quiz if needed
+  if (next < 5 && !quizState[next]) initQuiz(next);
+  // 5. Navigate to next module
+  if (next < 5) showModule(next);
+  // 6. Update progress bar
+  updateProgressBar();
+}
+
+// ══ CASE ANSWERS ══
+function answerCase(btn, type, id) {
+  const parent = btn.closest('.case-options');
+  parent.querySelectorAll('.case-option').forEach(b => {
+    b.classList.add('disabled');
+    b.onclick = null;
+  });
+  btn.classList.add(type === 'correct' ? 'correct' : 'wrong');
+  const fb = document.getElementById(`${id}-fb-${type}`);
+  if (fb) { fb.classList.add('show'); }
+  // Enable continue button after answering case
+  const modIdx = parseInt(id.replace('mod','').split('-')[0]);
+  const btn_continue = document.getElementById(`btn-continue-${modIdx}`);
+  if (btn_continue) btn_continue.disabled = false;
+}
+
+// ══ MODULE NAVIGATION ══
+function showModule(idx) {
+  const navBtn = document.getElementById(`mnav-${idx}`);
+  if (navBtn && navBtn.classList.contains('locked')) return;
+
+  document.querySelectorAll('.module-content').forEach(m => {
+    m.classList.remove('active');
+    m.style.cssText = 'display:none !important';
+  });
+  document.querySelectorAll('.mnav-btn').forEach(b => b.classList.remove('active'));
+  const targetMod = document.getElementById(`mod-${idx}`);
+  if (targetMod) { targetMod.style.cssText = ''; targetMod.classList.add('active'); }
+  const targetNav = document.getElementById(`mnav-${idx}`);
+  if (targetNav) targetNav.classList.add('active');
+
+  state.currentModule = idx;
+  updateProgressBar();
+
+  if (!quizState[idx]) initQuiz(idx);
+  // Scroll to top of course body
+  const body = document.querySelector('.course-body');
+  if (body) body.scrollTop = 0;
+  else window.scrollTo(0,0);
+}
+
+function completeModule(modIdx) {
+  // Scroll to quiz
+  const quiz = document.getElementById(`quiz-${modIdx}`);
+  if (quiz) quiz.scrollIntoView({ behavior:'smooth', block:'start' });
+  if (!quizState[modIdx]) initQuiz(modIdx);
+  else if (!quizState[modIdx].done) renderQuizQuestion(modIdx);
+}
+
+function unlockModule(idx) {
+  const btn = document.getElementById(`mnav-${idx}`);
+  if (btn) btn.classList.remove('locked');
+}
+
+function markCompleted(idx) {
+  const btn = document.getElementById(`mnav-${idx}`);
+  if (btn && !btn.querySelector('.mnav-badge')) {
+    btn.classList.add('completed');
+    btn.classList.remove('locked');
+    const badge = document.createElement('span');
+    badge.className = 'mnav-badge';
+    badge.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+    btn.appendChild(badge);
+  }
+}
+
+function updateProgressBar() {
+  const pct = Math.round(state.completedModules.length / 5 * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${state.completedModules.length} / 5`;
+}
+
+// ══ SCREENS ══
+function startCourse() {
+  // Always ask for name/cedula on each session
+  showScreen('s-name');
+}
+
+// ══ GATE TAB SWITCHER ══
+function showGateTab(tab) {
+  const loginPanel = document.getElementById('panel-login');
+  const regPanel = document.getElementById('panel-register');
+  const loginBtn = document.getElementById('tab-login');
+  const regBtn = document.getElementById('tab-register');
+  if (tab === 'login') {
+    loginPanel.style.display = 'block';
+    regPanel.style.display = 'none';
+    loginBtn.style.background = 'rgba(0,180,166,0.25)';
+    loginBtn.style.color = 'white';
+    loginBtn.style.fontWeight = '700';
+    regBtn.style.background = 'transparent';
+    regBtn.style.color = 'rgba(255,255,255,0.5)';
+    regBtn.style.fontWeight = '500';
+  } else {
+    loginPanel.style.display = 'none';
+    regPanel.style.display = 'block';
+    regBtn.style.background = 'rgba(0,180,166,0.25)';
+    regBtn.style.color = 'white';
+    regBtn.style.fontWeight = '700';
+    loginBtn.style.background = 'transparent';
+    loginBtn.style.color = 'rgba(255,255,255,0.5)';
+    loginBtn.style.fontWeight = '500';
+  }
+}
+
+// ══ LOGIN WITH ACCESS CODE ══
+async function doLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  const cedula = document.getElementById('login-cedula').value.trim();
+  const code = document.getElementById('login-code').value.trim().toUpperCase();
+  const errEl = document.getElementById('login-error');
+  const loadEl = document.getElementById('login-loading');
+
+  errEl.style.display = 'none';
+  if (!name || name.length < 3) { showLoginError('Por favor ingresa tu nombre completo.'); return; }
+  if (!cedula || cedula.length < 5) { showLoginError('Por favor ingresa tu número de cédula.'); return; }
+  if (!code || code.length < 6) { showLoginError('Por favor ingresa el código de acceso.'); return; }
+
+  loadEl.style.display = 'block';
+
+  // ── Códigos temporales (sin Firebase) ──
+  const TEMP_CODES = ['LIMDA-2026-ZIPAQUIRA', 'LIMDA-MIDA-2026', 'LIMDA-TEST-HOSP'];
+  if (TEMP_CODES.includes(code)) {
+    loadEl.style.display = 'none';
+    proceedToCourse(name, cedula, code);
+    return;
+  }
+
+  if (!db) {
+    loadEl.style.display = 'none';
+    showLoginError('Código no válido. Si aún no tienes código, solicita acceso en la pestaña "Solicitar acceso".');
+    return;
+  }
+
+  try {
+    // Verify access code in Firebase
+    const snapshot = await db.ref('codigos/' + code).get();
+    loadEl.style.display = 'none';
+
+    if (!snapshot.exists()) {
+      showLoginError('Código de acceso inválido. Verifica que esté escrito correctamente.');
+      return;
+    }
+
+    const codeData = snapshot.val();
+    if (codeData.usado && codeData.cedula !== cedula) {
+      showLoginError('Este código ya fue usado por otro participante.');
+      return;
+    }
+    if (codeData.estado !== 'aprobado') {
+      showLoginError('Tu solicitud aún está pendiente de aprobación.');
+      return;
+    }
+
+    // Mark code as used
+    await db.ref('codigos/' + code).update({
+      usado: true, cedula, nombre: name,
+      ultimoAcceso: Date.now()
+    });
+
+    proceedToCourse(name, cedula, code);
+
+  } catch(e) {
+    loadEl.style.display = 'none';
+    showLoginError('Error de conexión. Verifica tu internet e intenta de nuevo.');
+  }
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function proceedToCourse(name, cedula, code) {
+  state.name = name;
+  state.cedula = cedula;
+  state.accessCode = code;
+
+  localStorage.setItem('limda_name', name);
+  localStorage.setItem('limda_cedula', cedula);
+  localStorage.setItem('limda_code', code);
+
+  // Load progress from Firebase
+  if (db) {
+    try {
+      const snap = await db.ref('progreso/' + cedula).get();
+      if (snap.exists()) {
+        const p = snap.val();
+        state.completedModules = p.completedModules || [];
+        state.quizScores = p.quizScores || {};
+      }
+    } catch(e) {
+      // Use local fallback
+      state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+      state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+    }
+  } else {
+    state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+    state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+  }
+
+  showScreen('s-course');
+  restoreProgress();
+}
+
+// ══ SAVE PROGRESS TO FIREBASE ══
+async function saveProgressToFirebase() {
+  if (!db || !state.cedula) return;
+  try {
+    await db.ref('progreso/' + state.cedula).set({
+      nombre: state.name,
+      cedula: state.cedula,
+      completedModules: state.completedModules,
+      quizScores: state.quizScores,
+      ultimaActividad: Date.now(),
+    });
+  } catch(e) {
+    // Silent fail — localStorage backup
+  }
+  // Always save locally too
+  localStorage.setItem('limda_progress', JSON.stringify(state.completedModules));
+  localStorage.setItem('limda_scores', JSON.stringify(state.quizScores));
+}
+
+// ══ REGISTRATION ══
+async function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const cedula = document.getElementById('reg-cedula').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const perfil = document.getElementById('reg-perfil').value;
+  const inst = document.getElementById('reg-institucion').value.trim();
+  const msgEl = document.getElementById('reg-msg');
+
+  if (!name || name.length < 3) { showRegMsg('Ingresa tu nombre completo.', false); return; }
+  if (!cedula || cedula.length < 5) { showRegMsg('Ingresa tu número de cédula.', false); return; }
+  if (!email || !email.includes('@')) { showRegMsg('Ingresa un correo válido.', false); return; }
+  if (!perfil) { showRegMsg('Selecciona tu perfil profesional.', false); return; }
+  if (!inst) { showRegMsg('Ingresa tu institución.', false); return; }
+
+  const regData = {
+    nombre: name, cedula, email, perfil, institucion: inst,
+    fecha: Date.now(), estado: 'pendiente',
+  };
+
+  if (db) {
+    try {
+      await db.ref('solicitudes/' + cedula).set(regData);
+      showRegMsg('✅ Solicitud enviada exitosamente. Recibirás tu código de acceso en tu correo una vez sea aprobada. Tiempo estimado: 24-48 horas hábiles.', true);
+    } catch(e) {
+      showRegMsg('Error al enviar. Verifica tu conexión.', false);
+    }
+  } else {
+    // Offline — show instructions
+    showRegMsg('⚠️ Firebase no configurado. Contacta al administrador directamente: melarylo@gmail.com', false);
+  }
+}
+
+function showRegMsg(msg, success) {
+  const el = document.getElementById('reg-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = success ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+  el.style.border = success ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(239,68,68,0.3)';
+  el.style.color = success ? '#86efac' : '#fca5a5';
+}
+
+function prefillNameScreen() {
+  const savedName = localStorage.getItem('limda_name') || '';
+  const savedCedula = localStorage.getItem('limda_cedula') || '';
+  const nameInput = document.getElementById('participant-name');
+  const cedulaInput = document.getElementById('participant-cedula');
+  if (nameInput && savedName) nameInput.value = savedName;
+  if (cedulaInput && savedCedula) cedulaInput.value = savedCedula;
+}
+
+function saveName() {
+  const input = document.getElementById('participant-name');
+  const cedulaInput = document.getElementById('participant-cedula');
+  const name = input.value.trim();
+  const cedula = cedulaInput ? cedulaInput.value.trim() : '';
+  if (!name || name.length < 3) {
+    input.style.borderColor = '#ef4444';
+    input.placeholder = 'Por favor ingresa tu nombre completo';
+    return;
+  }
+  if (!cedula || cedula.length < 5) {
+    cedulaInput.style.borderColor = '#ef4444';
+    cedulaInput.placeholder = 'Por favor ingresa tu número de cédula';
+    return;
+  }
+  state.name = name;
+  state.cedula = cedula;
+  // Restore saved progress
+  state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+  state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+  localStorage.setItem('limda_name', name);
+  localStorage.setItem('limda_cedula', cedula);
+  showScreen('s-course');
+  restoreProgress();
+}
+
+function restoreProgress() {
+  state.completedModules.forEach(idx => {
+    markCompleted(idx);
+    if (idx + 1 < 5) unlockModule(idx + 1);
+  });
+  updateProgressBar();
+  // Init quiz for current module
+  const currentMod = state.completedModules.length < 5 ? state.completedModules.length : 4;
+  for (let i = 0; i <= currentMod; i++) {
+    if (!quizState[i]) initQuiz(i);
+  }
+}
+
+function goHome() {
+  showScreen('s-home');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = '';
+  });
+  const target = document.getElementById(id);
+  target.classList.add('active');
+  window.scrollTo(0,0);
+  if (id === 's-name') setTimeout(prefillNameScreen, 50);
+}
+
+function showCertificate() {
+  // Calculate final score (average of all modules)
+  const scores = Object.values(state.quizScores);
+  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 80;
+  state.finalScore = avg;
+
+  document.getElementById('cert-name').textContent = state.name || 'Participante';
+  const cedulaEl = document.getElementById('cert-cedula');
+  if (cedulaEl) cedulaEl.textContent = state.cedula || '—';
+  document.getElementById('cert-date').textContent = new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('cert-score').textContent = avg + '%';
+
+  // Generate unique verification code
+  const code = 'LIMDA-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+  document.getElementById('cert-code').textContent = 'Código de verificación: ' + code;
+
+  showScreen('s-cert');
+}
+
+function printCert() {
+  const btn = document.querySelector('.btn-cert.primary');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ Generando PDF...';
+  btn.disabled = true;
+
+  const cert = document.getElementById('cert-card');
+  html2canvas(cert, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+    logging: false,
+  }).then(canvas => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgW = pageW - 20;
+    const imgH = (canvas.height * imgW) / canvas.width;
+    const y = (pageH - imgH) / 2;
+
+    const imgData = canvas.toDataURL('image/png');
+    pdf.addImage(imgData, 'PNG', 10, y, imgW, imgH);
+
+    const safeName = (state.name || 'certificado').replace(/[^a-zA-Z0-9]/g, '_');
+    pdf.save(`LIMDA_Edu_Certificado_${safeName}.pdf`);
+
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  }).catch(err => {
+    console.error('PDF error:', err);
+    // Fallback to print dialog
+    window.print();
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  });
+}
+
+// ══ INIT ══
+window.addEventListener('DOMContentLoaded', () => {
+  // Only init quiz 0 on load — restoreProgress called after login
+  initQuiz(0);
+});
+
+// Print styles
+const printStyle = document.createElement('style');
+printStyle.textContent = `
+  @media print {
+    #s-home, #s-course, #s-name { display:none!important; }
+    #s-cert { display:flex!important; background:white!important; }
+    .cert-actions { display:none!important; }
+    .cert-card { box-shadow:none!important; border:2px solid #00b4a6!important; }
+    body { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+`;
+document.head.appendChild(printStyle);
+</script>
+</body>
+</html>
