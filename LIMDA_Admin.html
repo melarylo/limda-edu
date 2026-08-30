@@ -155,6 +155,7 @@ tr:hover td{background:#f8fafc;}
   </div>
 </div>
 
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
@@ -245,8 +246,8 @@ function loadSolicitudes() {
         '<td>'+s.institucion+'</td>'+
         '<td>'+fecha+'</td>'+
         '<td style="display:flex;gap:6px;">'+
-          '<button class="btn approve" onclick="aprobar(''+k+'',''+s.nombre+'',''+s.cedula+'',''+s.email+'')">✓ Aprobar</button>'+
-          '<button class="btn reject" onclick="rechazar(''+k+'')">✗ Rechazar</button>'+
+          '<button class="btn approve" data-key="'+k+'" data-nombre="'+s.nombre+'" data-cedula="'+s.cedula+'" data-email="'+s.email+'" onclick="aprobarBtn(this)">✓ Aprobar</button>'+
+          '<button class="btn reject" data-key="'+k+'" onclick="rechazarBtn(this)">✗ Rechazar</button>'+
         '</td>'+
       '</tr>';
     }).join('');
@@ -330,8 +331,8 @@ function loadCodigos() {
         '<td class="mono" style="color:var(--teal);font-weight:600;letter-spacing:.06em;">'+c.codigo+'</td>'+
         '<td>'+fecha+'</td>'+
         '<td style="display:flex;gap:6px;">'+
-          '<button class="btn copy" onclick="navigator.clipboard.writeText(''+c.codigo+'').then(function(){alert('Copiado: '+c.codigo+'');})">📋 Copiar</button>'+
-          '<button class="btn revoke" onclick="revocar(''+k+'',''+c.nombre+'')">✗ Revocar</button>'+
+          '<button class="btn copy" data-code="'+c.codigo+'" onclick="copiarCodigo(this)">📋 Copiar</button>'+
+          '<button class="btn revoke" data-key="'+k+'" data-nombre="'+c.nombre+'" onclick="revocarBtn(this)">✗ Revocar</button>'+
         '</td></tr>';
     }).join('');
     el.innerHTML = '<div style="overflow-x:auto"><table><thead><tr><th>Nombre</th><th>Cédula</th><th>Código</th><th>Generado</th><th>Acción</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
