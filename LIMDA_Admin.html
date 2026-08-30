@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIMDA Edu — Panel de Administrador</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --navy:#0a1628;--navy2:#0f2040;--teal:#00b4a6;--teal2:#00d4c4;--teal-light:#e0faf8;
+  --amber:#f59e0b;--amber-light:#fef3c7;--red:#ef4444;--red-light:#fee2e2;
+  --green:#22c55e;--green-light:#dcfce7;--white:#f8fafc;
+  --text:#1e293b;--text2:#475569;--muted:#94a3b8;--border:#e2e8f0;
+  --r:14px;--r-sm:8px;--shadow:0 2px 8px rgba(0,0,0,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#f1f5f9;color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--navy);}
+.login-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r);padding:40px 32px;max-width:380px;width:100%;text-align:center;}
+.login-box h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:white;margin-bottom:6px;}
+.login-box p{font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:24px;}
+.admin-input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:var(--r-sm);padding:13px 16px;font-size:14px;color:white;font-family:'DM Sans',sans-serif;outline:none;text-align:center;margin-bottom:10px;}
+.admin-input:focus{border-color:var(--teal2);}
+.admin-input::placeholder{color:rgba(255,255,255,0.3);}
+.btn-admin{width:100%;background:linear-gradient(135deg,var(--teal),#009e92);color:white;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;padding:13px;border-radius:var(--r-sm);border:none;cursor:pointer;transition:all .18s;}
+.btn-admin:hover{transform:translateY(-1px);}
+.login-err{display:none;margin-top:10px;font-size:12px;color:#fca5a5;padding:8px;background:rgba(239,68,68,0.1);border-radius:6px;}
+
+/* MAIN */
+#main-screen{display:none;flex-direction:column;min-height:100vh;}
+.admin-header{background:var(--navy);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.admin-brand{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:white;display:flex;align-items:center;gap:10px;}
+.admin-brand span{color:var(--teal2);}
+.admin-badge{background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.logout-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);font-size:12px;padding:6px 14px;border-radius:var(--r-sm);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.admin-body{padding:28px;max-width:1100px;margin:0 auto;width:100%;}
+
+/* TABS */
+.tab-bar{display:flex;gap:4px;margin-bottom:24px;background:white;border:1px solid var(--border);border-radius:var(--r);padding:6px;}
+.tab-item{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border-radius:var(--r-sm);color:var(--muted);transition:all .15s;border:none;background:none;font-family:'DM Sans',sans-serif;}
+.tab-item.active{background:var(--navy);color:white;}
+
+/* CARDS */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.summary-card{background:white;border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;box-shadow:var(--shadow);}
+.summary-card .sc-num{font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:var(--navy);}
+.summary-card .sc-label{font-size:12px;color:var(--muted);margin-top:4px;}
+.summary-card.teal .sc-num{color:var(--teal);}
+.summary-card.green .sc-num{color:var(--green);}
+.summary-card.amber .sc-num{color:var(--amber);}
+.summary-card.red .sc-num{color:var(--red);}
+
+/* SECTIONS */
+.section-card{background:white;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden;}
+.section-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.section-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--navy);}
+.section-count{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);background:var(--border);padding:3px 10px;border-radius:20px;}
+
+/* TABLE */
+.admin-table{width:100%;border-collapse:collapse;font-size:13px;}
+.admin-table th{background:#f8fafc;padding:10px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+.admin-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:middle;}
+.admin-table tr:last-child td{border-bottom:none;}
+.admin-table tr:hover td{background:#f8fafc;}
+.mono{font-family:'DM Mono',monospace;font-size:12px;color:var(--navy);}
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.status-badge.pending{background:var(--amber-light);color:#92400e;}
+.status-badge.approved{background:var(--green-light);color:#15803d;}
+.status-badge.active{background:var(--teal-light);color:#0f766e;}
+.status-badge.completed{background:var(--green-light);color:#15803d;}
+
+/* BUTTONS */
+.btn-sm{padding:6px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:700;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-sm.approve{background:var(--green);color:white;}
+.btn-sm.approve:hover{background:#16a34a;}
+.btn-sm.reject{background:var(--red-light);color:var(--red);}
+.btn-sm.reject:hover{background:var(--red);color:white;}
+.btn-sm.copy{background:var(--teal-light);color:var(--teal);}
+.btn-sm.copy:hover{background:var(--teal);color:white;}
+.btn-sm.primary{background:var(--navy);color:white;}
+.btn-sm.danger{background:var(--red-light);color:var(--red);border:1px solid rgba(239,68,68,0.3);}
+
+/* PROGRESS BAR */
+.prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;width:120px;}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--teal2));}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:white;border-radius:var(--r);padding:28px;max-width:440px;width:90%;text-align:center;}
+.modal-box h3{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.modal-box p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;}
+.modal-code{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--teal);background:var(--teal-light);border:2px solid var(--teal);border-radius:var(--r-sm);padding:14px;margin-bottom:20px;letter-spacing:.1em;}
+.modal-actions{display:flex;gap:10px;justify-content:center;}
+
+/* EMPTY */
+.empty-state{padding:40px;text-align:center;color:var(--muted);}
+.empty-state .es-icon{font-size:36px;margin-bottom:12px;}
+.empty-state p{font-size:13px;}
+
+/* FIREBASE STATUS */
+.firebase-status{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.5);}
+.fb-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+.fb-dot.connected{background:var(--green);}
+
+/* REFRESH */
+.refresh-btn{background:none;border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 12px;font-size:12px;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;}
+.refresh-btn:hover{background:var(--border);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div style="font-size:32px;margin-bottom:12px;">🔐</div>
+    <h1>LIMDA <span style="color:var(--teal2);">Admin</span></h1>
+    <p>Panel de administración del curso.<br>Acceso restringido al coordinador.</p>
+    <input type="password" class="admin-input" id="admin-pass" placeholder="Contraseña de administrador" onkeydown="if(event.key==='Enter')doAdminLogin()">
+    <button class="btn-admin" onclick="doAdminLogin()">Ingresar</button>
+    <div class="login-err" id="admin-err">Contraseña incorrecta.</div>
+    <p style="margin-top:16px;font-size:11px;color:rgba(255,255,255,0.2);">LIMDA Edu · Centro MIDA · © 2026</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main-screen">
+  <div class="admin-header">
+    <div class="admin-brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal2)" stroke-width="2.2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      LIMDA <span>Admin</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="firebase-status">
+        <div class="fb-dot" id="fb-dot"></div>
+        <span id="fb-status-text">Conectando...</span>
+      </div>
+      <div class="admin-badge">Administrador</div>
+      <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-item active" id="tab-solicitudes" onclick="showTab('solicitudes')">📋 Solicitudes de acceso</button>
+      <button class="tab-item" id="tab-participantes" onclick="showTab('participantes')">👥 Participantes</button>
+      <button class="tab-item" id="tab-certificados" onclick="showTab('certificados')">🎓 Certificados</button>
+      <button class="tab-item" id="tab-codigos" onclick="showTab('codigos')">🔑 Códigos activos</button>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary-grid">
+      <div class="summary-card teal"><div class="sc-num" id="sum-solicitudes">—</div><div class="sc-label">Solicitudes pendientes</div></div>
+      <div class="summary-card"><div class="sc-num" id="sum-participantes">—</div><div class="sc-label">Participantes activos</div></div>
+      <div class="summary-card green"><div class="sc-num" id="sum-completados">—</div><div class="sc-label">Cursos completados</div></div>
+      <div class="summary-card amber"><div class="sc-num" id="sum-codigos">—</div><div class="sc-label">Códigos generados</div></div>
+    </div>
+
+    <!-- TAB: SOLICITUDES -->
+    <div id="panel-solicitudes">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Solicitudes de acceso pendientes</div>
+          <button class="refresh-btn" onclick="loadAll()">↻ Actualizar</button>
+        </div>
+        <div id="tabla-solicitudes">
+          <div class="empty-state"><div class="es-icon">📭</div><p>Cargando solicitudes...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: PARTICIPANTES -->
+    <div id="panel-participantes" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Progreso de participantes</div>
+          <button class="refresh-btn" onclick="loadAll()">↻ Actualizar</button>
+        </div>
+        <div id="tabla-participantes">
+          <div class="empty-state"><div class="es-icon">👥</div><p>Cargando participantes...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: CERTIFICADOS -->
+    <div id="panel-certificados" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Certificados emitidos</div>
+          <button class="refresh-btn" onclick="loadAll()">↻ Actualizar</button>
+        </div>
+        <div id="tabla-certificados">
+          <div class="empty-state"><div class="es-icon">🎓</div><p>Cargando certificados...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: CODIGOS -->
+    <div id="panel-codigos" style="display:none;">
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-title">Códigos de acceso activos</div>
+          <div style="display:flex;gap:8px;">
+            <button class="refresh-btn" onclick="loadAll()">↻ Actualizar</button>
+          </div>
+        </div>
+        <div id="tabla-codigos">
+          <div class="empty-state"><div class="es-icon">🔑</div><p>Cargando códigos...</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Código aprobado -->
+<div class="modal-overlay" id="modal-aprobado">
+  <div class="modal-box">
+    <div style="font-size:36px;margin-bottom:12px;">✅</div>
+    <h3>Acceso aprobado</h3>
+    <p>El código de acceso generado para <strong id="modal-nombre">—</strong> (C.C. <span id="modal-cedula">—</span>) es:</p>
+    <div class="modal-code" id="modal-codigo">—</div>
+    <p style="font-size:12px;color:var(--muted);margin-top:-10px;margin-bottom:20px;">Este código solo funciona con la cédula registrada.</p>
+    <div class="modal-actions">
+      <button class="btn-sm copy" onclick="copyCode()">📋 Copiar código</button>
+      <button class="btn-sm primary" onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ FIREBASE ══
+var FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAX7001jefl_voJ1xfBrNu1rna-wBZ6vhI",
+  authDomain: "limda-edu.firebaseapp.com",
+  databaseURL: "https://limda-edu-default-rtdb.firebaseio.com",
+  projectId: "limda-edu",
+  storageBucket: "limda-edu.firebasestorage.app",
+  messagingSenderId: "693698643166",
+  appId: "1:693698643166:web:5ad0274ef4b3d352b26e4f"
+};
+
+var db = null;
+try {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+  document.getElementById('fb-dot').classList.add('connected');
+  document.getElementById('fb-status-text').textContent = 'Firebase conectado';
+} catch(e) {
+  document.getElementById('fb-status-text').textContent = 'Sin conexión';
+}
+
+// ══ AUTH ══
+var ADMIN_PASSWORD = 'MIDA2026admin';
+var isLoggedIn = false;
+
+function doAdminLogin() {
+  var pass = document.getElementById('admin-pass').value;
+  if (pass === ADMIN_PASSWORD) {
+    isLoggedIn = true;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-screen').style.display = 'flex';
+    loadAll();
+  } else {
+    document.getElementById('admin-err').style.display = 'block';
+  }
+}
+
+function doLogout() {
+  isLoggedIn = false;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-screen').style.display = 'none';
+  document.getElementById('admin-pass').value = '';
+}
+
+// ══ TABS ══
+var currentTab = 'solicitudes';
+function showTab(tab) {
+  ['solicitudes','participantes','certificados','codigos'].forEach(function(t) {
+    document.getElementById('panel-'+t).style.display = t === tab ? 'block' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t === tab);
+  });
+  currentTab = tab;
+}
+
+// ══ LOAD ALL DATA ══
+function loadAll() {
+  if (!db) return;
+  loadSolicitudes();
+  loadParticipantes();
+  loadCertificados();
+  loadCodigos();
+}
+
+// ══ SOLICITUDES ══
+function loadSolicitudes() {
+  db.ref('solicitudes').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    var items = Object.entries(data).filter(function(e){ return e[1].estado === 'pendiente'; });
+    document.getElementById('sum-solicitudes').textContent = items.length;
+    var container = document.getElementById('tabla-solicitudes');
+    if (items.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="es-icon">✅</div><p>No hay solicitudes pendientes.</p></div>';
+      return;
+    }
+    var rows = items.map(function(e) {
+      var k = e[0]; var s = e[1];
+      var fecha = s.fecha ? new Date(s.fecha).toLocaleDateString('es-CO') : '—';
+      return '<tr>'+
+        '<td><strong>'+s.nombre+'</strong></td>'+
+        '<td class="mono">'+s.cedula+'</td>'+
+        '<td>'+s.email+'</td>'+
+        '<td>'+s.perfil+'</td>'+
+        '<td>'+s.institucion+'</td>'+
+        '<td><span class="status-badge pending">⏳ Pendiente</span></td>'+
+        '<td>'+fecha+'</td>'+
+        '<td style="display:flex;gap:6px;">'+
+          '<button class="btn-sm approve" onclick="aprobarSolicitud(''+k+'',''+s.nombre+'',''+s.cedula+'',''+s.email+'')">✓ Aprobar</button>'+
+          '<button class="btn-sm reject" onclick="rechazarSolicitud(''+k+'')">✗ Rechazar</button>'+
+        '</td>'+
+      '</tr>';
+    }).join('');
+    container.innerHTML = '<div style="overflow-x:auto;"><table class="admin-table">'+
+      '<thead><tr><th>Nombre</th><th>Cédula</th><th>Correo</th><th>Perfil</th><th>Institución</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>';
+  });
+}
+
+function aprobarSolicitud(key, nombre, cedula, email) {
+  if (!confirm('¿Aprobar acceso para ' + nombre + '?')) return;
+  var code = generarCodigo(cedula);
+  var cedulaKey = cedula.replace(/[.#$[\]]/g, '_');
+
+  // Guardar código vinculado a la cédula
+  db.ref('codigos_acceso/' + cedulaKey).set({
+    nombre: nombre,
+    cedula: cedula,
+    email: email,
+    codigo: code,
+    usado: false,
+    fechaGeneracion: new Date().toISOString()
+  });
+
+  // Actualizar estado de la solicitud
+  db.ref('solicitudes/' + key).update({
+    estado: 'aprobado',
+    codigoGenerado: code,
+    fechaAprobacion: new Date().toISOString()
+  });
+
+  // Mostrar modal con el código
+  document.getElementById('modal-nombre').textContent = nombre;
+  document.getElementById('modal-cedula').textContent = cedula;
+  document.getElementById('modal-codigo').textContent = code;
+  document.getElementById('modal-aprobado').classList.add('show');
+  loadAll();
+}
+
+function rechazarSolicitud(key) {
+  if (!confirm('¿Rechazar esta solicitud?')) return;
+  db.ref('solicitudes/' + key).update({ estado: 'rechazado' });
+  loadAll();
+}
+
+function generarCodigo(cedula) {
+  var sufijo = cedula.toString().slice(-4);
+  var aleatorio = Math.random().toString(36).substr(2,4).toUpperCase();
+  return 'LIMDA-' + aleatorio + '-' + sufijo;
+}
+
+function copyCode() {
+  var code = document.getElementById('modal-codigo').textContent;
+  navigator.clipboard.writeText(code).then(function(){
+    alert('Código copiado: ' + code);
+  });
+}
+
+function closeModal() {
+  document.getElementById('modal-aprobado').classList.remove('show');
+}
+
+// ══ PARTICIPANTES ══
+function loadParticipantes() {
+  db.ref('progreso').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    var items = Object.values(data);
+    document.getElementById('sum-participantes').textContent = items.length;
+    var completados = items.filter(function(p){ return p.completedModules && p.completedModules.length === 5; }).length;
+    document.getElementById('sum-completados').textContent = completados;
+    var container = document.getElementById('tabla-participantes');
+    if (items.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="es-icon">👥</div><p>Aún no hay participantes registrados.</p></div>';
+      return;
+    }
+    var rows = items.map(function(p) {
+      var modulos = (p.completedModules || []).length;
+      var pct = Math.round(modulos / 5 * 100);
+      var scores = Object.values(p.quizScores || {});
+      var avg = scores.length ? Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length) : 0;
+      var fecha = p.ultimaConexion ? new Date(p.ultimaConexion).toLocaleDateString('es-CO') : '—';
+      var statusLabel = modulos === 5 ? '<span class="status-badge completed">✅ Completado</span>' :
+                        modulos > 0 ? '<span class="status-badge active">▶ En curso</span>' :
+                        '<span class="status-badge pending">⏳ Iniciado</span>';
+      return '<tr>'+
+        '<td><strong>'+p.nombre+'</strong></td>'+
+        '<td class="mono">'+p.cedula+'</td>'+
+        '<td>'+statusLabel+'</td>'+
+        '<td>'+
+          '<div style="display:flex;align-items:center;gap:8px;">'+
+            '<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
+            '<span class="mono">'+modulos+'/5</span>'+
+          '</div>'+
+        '</td>'+
+        '<td class="mono">'+(avg > 0 ? avg+'%' : '—')+'</td>'+
+        '<td>'+fecha+'</td>'+
+      '</tr>';
+    }).join('');
+    container.innerHTML = '<div style="overflow-x:auto;"><table class="admin-table">'+
+      '<thead><tr><th>Nombre</th><th>Cédula</th><th>Estado</th><th>Progreso</th><th>Promedio</th><th>Última conexión</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>';
+  });
+}
+
+// ══ CERTIFICADOS ══
+function loadCertificados() {
+  db.ref('certificados').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    var items = Object.values(data);
+    var container = document.getElementById('tabla-certificados');
+    if (items.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="es-icon">🎓</div><p>Aún no se han emitido certificados.</p></div>';
+      return;
+    }
+    var rows = items.map(function(c) {
+      var fecha = c.fecha ? new Date(c.fecha).toLocaleDateString('es-CO') : '—';
+      return '<tr>'+
+        '<td><strong>'+c.nombre+'</strong></td>'+
+        '<td class="mono">'+c.cedula+'</td>'+
+        '<td class="mono" style="color:var(--green);font-weight:700;">'+c.calificacion+'%</td>'+
+        '<td>'+fecha+'</td>'+
+        '<td><span class="status-badge completed">✅ Certificado</span></td>'+
+      '</tr>';
+    }).join('');
+    container.innerHTML = '<div style="overflow-x:auto;"><table class="admin-table">'+
+      '<thead><tr><th>Nombre</th><th>Cédula</th><th>Calificación</th><th>Fecha</th><th>Estado</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>';
+  });
+}
+
+// ══ CODIGOS ══
+function loadCodigos() {
+  db.ref('codigos_acceso').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    var items = Object.entries(data);
+    document.getElementById('sum-codigos').textContent = items.length;
+    var container = document.getElementById('tabla-codigos');
+    if (items.length === 0) {
+      container.innerHTML = '<div class="empty-state"><div class="es-icon">🔑</div><p>No hay códigos generados aún.</p></div>';
+      return;
+    }
+    var rows = items.map(function(e) {
+      var k = e[0]; var c = e[1];
+      var fecha = c.fechaGeneracion ? new Date(c.fechaGeneracion).toLocaleDateString('es-CO') : '—';
+      return '<tr>'+
+        '<td><strong>'+c.nombre+'</strong></td>'+
+        '<td class="mono">'+c.cedula+'</td>'+
+        '<td class="mono" style="color:var(--teal);font-weight:600;letter-spacing:.06em;">'+c.codigo+'</td>'+
+        '<td>'+fecha+'</td>'+
+        '<td>'+
+          '<button class="btn-sm copy" onclick="navigator.clipboard.writeText(''+c.codigo+'')">📋 Copiar</button>'+
+          '<button class="btn-sm danger" style="margin-left:6px;" onclick="revocarCodigo(''+k+'',''+c.nombre+'')">✗ Revocar</button>'+
+        '</td>'+
+      '</tr>';
+    }).join('');
+    container.innerHTML = '<div style="overflow-x:auto;"><table class="admin-table">'+
+      '<thead><tr><th>Nombre</th><th>Cédula</th><th>Código</th><th>Generado</th><th>Acción</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>';
+  });
+}
+
+function revocarCodigo(key, nombre) {
+  if (!confirm('¿Revocar el acceso de ' + nombre + '? No podrá ingresar más con este código.')) return;
+  db.ref('codigos_acceso/' + key).remove();
+  loadAll();
+}
+</script>
+</body>
+</html>
