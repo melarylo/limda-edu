@@ -6,8 +6,6 @@
 <title>LIMDA Edu — Desnutrición Aguda en Pediatría</title>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap');
 :root{
@@ -233,7 +231,7 @@ select.name-input option{background:#0a1628;}
 .cert-headline{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.2;}
 .cert-headline em{font-style:normal;color:var(--teal);}
 .cert-body{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;}
-.cert-name-line{font-family:'Sora',sans-serif;font-size:30px;font-weight:800;color:var(--navy);padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:20px 0 8px;}
+.cert-name-line{font-family:'Sora',sans-serif;font-size:clamp(18px,3.5vw,30px);font-weight:800;color:var(--navy);padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:20px 0 8px;word-break:break-word;}
 .cert-cc{font-size:13px;color:var(--muted);margin-bottom:20px;}
 .cert-course{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
 .cert-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
@@ -1179,9 +1177,15 @@ function restoreProgress() {
   });
   updateProgressBar();
 
-  // 2. Navegar automáticamente al módulo donde debe continuar
+  // 2. Navegar automáticamente al módulo correcto
+  if (state.completedModules.length === 5) {
+    // Curso completado — ir directo al certificado
+    showCertificate();
+    return;
+  }
+
   var currentMod = 0;
-  if (state.completedModules.length > 0 && state.completedModules.length < 5) {
+  if (state.completedModules.length > 0) {
     // Ir al primer módulo no completado
     for (var i = 0; i < 5; i++) {
       if (state.completedModules.indexOf(i) === -1) {
@@ -1189,8 +1193,6 @@ function restoreProgress() {
         break;
       }
     }
-  } else if (state.completedModules.length === 5) {
-    currentMod = 4; // Todos completados
   }
 
   // 3. Mostrar el módulo correcto
@@ -1364,7 +1366,10 @@ function showCertificate() {
   }
   document.getElementById('cert-name').textContent = state.name || 'Participante';
   document.getElementById('cert-cedula').textContent = state.cedula || '—';
-  document.getElementById('cert-date').textContent = new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
+  var now = new Date();
+  var months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var fechaStr = now.getDate() + ' de ' + months[now.getMonth()] + ' de ' + now.getFullYear();
+  document.getElementById('cert-date').textContent = fechaStr;
   document.getElementById('cert-score').textContent = avg + '%';
   var code = 'LIMDA-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substr(2,4).toUpperCase();
   document.getElementById('cert-code').textContent = 'Código de verificación: '+code;
@@ -1372,24 +1377,7 @@ function showCertificate() {
 }
 
 function printCert() {
-  var btn = document.querySelector('.btn-cert.primary');
-  if (!btn) { window.print(); return; }
-  var orig = btn.innerHTML; btn.innerHTML = '⏳ Generando PDF...'; btn.disabled = true;
-  var cert = document.getElementById('cert-card');
-  html2canvas(cert, {scale:2,useCORS:true,backgroundColor:'#ffffff'}).then(function(canvas){
-    var jsPDF = window.jspdf ? window.jspdf.jsPDF : null;
-    if (!jsPDF) { window.print(); btn.innerHTML=orig; btn.disabled=false; return; }
-    var pdf = new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-    var pw = pdf.internal.pageSize.getWidth();
-    var ph = pdf.internal.pageSize.getHeight();
-    var iw = pw - 20;
-    var ih = canvas.height * iw / canvas.width;
-    var y = (ph - ih) / 2;
-    pdf.addImage(canvas.toDataURL('image/png'),'PNG',10,y,iw,ih);
-    var sn = (state.name||'certificado').replace(/[^a-zA-Z0-9]/g,'_');
-    pdf.save('LIMDA_Edu_Certificado_'+sn+'.pdf');
-    btn.innerHTML=orig; btn.disabled=false;
-  }).catch(function(){ window.print(); btn.innerHTML=orig; btn.disabled=false; });
+  window.print();
 }
 </script>
 </body>
