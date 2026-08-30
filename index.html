@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIMDA Edu — Desnutrición Aguda en Pediatría</title>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -854,6 +856,27 @@ select.name-input option{background:#0a1628;}
 
 
 <script>
+// ══ FIREBASE ══
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAX7001jefl_voJ1xfBrNu1rna-wBZ6vhI",
+  authDomain: "limda-edu.firebaseapp.com",
+  databaseURL: "https://limda-edu-default-rtdb.firebaseio.com",
+  projectId: "limda-edu",
+  storageBucket: "limda-edu.firebasestorage.app",
+  messagingSenderId: "693698643166",
+  appId: "1:693698643166:web:5ad0274ef4b3d352b26e4f"
+};
+
+var db = null;
+try {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+  console.log('Firebase conectado ✓');
+} catch(e) {
+  console.warn('Firebase error:', e.message);
+  db = null;
+}
+
 const APP_VERSION = 'limda-edu-v6';
 if (localStorage.getItem('limda_version') !== APP_VERSION) {
   localStorage.clear();
@@ -1015,6 +1038,19 @@ function unlockNext(modIdx) {
   if (state.completedModules.indexOf(modIdx) === -1) state.completedModules.push(modIdx);
   localStorage.setItem('limda_progress', JSON.stringify(state.completedModules));
   markCompleted(modIdx);
+
+  // Guardar en Firebase
+  if (db && state.cedula) {
+    var cedulaKey = state.cedula.replace(/[.#$[\]]/g, '_');
+    db.ref('progreso/' + cedulaKey).set({
+      nombre: state.name,
+      cedula: state.cedula,
+      completedModules: state.completedModules,
+      quizScores: state.quizScores,
+      ultimaConexion: new Date().toISOString()
+    }).catch(function(e){ console.warn('Firebase save error:', e); });
+  }
+
   var next = modIdx + 1;
   if (next < 5) { unlockModule(next); showModule(next); }
   updateProgressBar();
@@ -1189,12 +1225,34 @@ function showLoginError(msg) {
 
 function proceedToCourse(name, cedula, code) {
   state.name = name; state.cedula = cedula;
-  state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
-  state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
   localStorage.setItem('limda_name', name);
   localStorage.setItem('limda_cedula', cedula);
-  showScreen('s-course');
-  restoreProgress();
+
+  if (db) {
+    var cedulaKey = cedula.replace(/[.#$[\]]/g, '_');
+    db.ref('progreso/' + cedulaKey).once('value').then(function(snap) {
+      if (snap.exists()) {
+        var p = snap.val();
+        state.completedModules = p.completedModules || [];
+        state.quizScores = p.quizScores || {};
+      } else {
+        state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+        state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+      }
+      showScreen('s-course');
+      restoreProgress();
+    }).catch(function() {
+      state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+      state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+      showScreen('s-course');
+      restoreProgress();
+    });
+  } else {
+    state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
+    state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+    showScreen('s-course');
+    restoreProgress();
+  }
 }
 
 function doRegister() {
@@ -1217,6 +1275,18 @@ function doRegister() {
 function showCertificate() {
   var scores = Object.values(state.quizScores);
   var avg = scores.length ? Math.round(scores.reduce(function(a,b){return a+b;},0)/scores.length) : 80;
+
+  // Guardar registro de certificado en Firebase
+  if (db && state.cedula) {
+    var cedulaKey = state.cedula.replace(/[.#$[\]]/g, '_');
+    db.ref('certificados/' + cedulaKey).set({
+      nombre: state.name,
+      cedula: state.cedula,
+      calificacion: avg,
+      fecha: new Date().toISOString(),
+      curso: 'LIMDA Edu v6 — Desnutrición Aguda en Pediatría'
+    }).catch(function(e){ console.warn('Firebase cert error:', e); });
+  }
   document.getElementById('cert-name').textContent = state.name || 'Participante';
   document.getElementById('cert-cedula').textContent = state.cedula || '—';
   document.getElementById('cert-date').textContent = new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
