@@ -121,7 +121,7 @@ body{font-family:'DM Sans',sans-serif;background:#f1f5f9;color:var(--text);min-h
     <h1>LIMDA <span style="color:var(--teal2);">Admin</span></h1>
     <p>Panel de administración del curso.<br>Acceso restringido al coordinador.</p>
     <input type="password" class="admin-input" id="admin-pass" placeholder="Contraseña de administrador" onkeydown="if(event.key==='Enter')doAdminLogin()">
-    <button class="btn-admin" onclick="doAdminLogin()">Ingresar</button>
+    <button class="btn-admin" onclick="doAdminLogin()">Ingresar →</button>
     <div class="login-err" id="admin-err">Contraseña incorrecta.</div>
     <p style="margin-top:16px;font-size:11px;color:rgba(255,255,255,0.2);">LIMDA Edu · Centro MIDA · © 2026</p>
   </div>
@@ -245,18 +245,26 @@ var FIREBASE_CONFIG = {
 };
 
 var db = null;
-try {
-  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-  db = firebase.database();
-  document.getElementById('fb-dot').classList.add('connected');
-  document.getElementById('fb-status-text').textContent = 'Firebase conectado';
-} catch(e) {
-  document.getElementById('fb-status-text').textContent = 'Sin conexión';
-}
-
-// ══ AUTH ══
 var ADMIN_PASSWORD = 'MIDA2026admin';
 var isLoggedIn = false;
+
+// Inicializar Firebase cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    if (typeof firebase !== 'undefined') {
+      if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.database();
+      var dot = document.getElementById('fb-dot');
+      var txt = document.getElementById('fb-status-text');
+      if (dot) dot.classList.add('connected');
+      if (txt) txt.textContent = 'Firebase conectado';
+    }
+  } catch(e) {
+    var txt = document.getElementById('fb-status-text');
+    if (txt) txt.textContent = 'Sin conexión';
+    console.warn('Firebase error:', e.message);
+  }
+});
 
 function doAdminLogin() {
   var pass = document.getElementById('admin-pass').value;
