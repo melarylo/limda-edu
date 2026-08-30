@@ -877,7 +877,7 @@ try {
   db = null;
 }
 
-const APP_VERSION = 'limda-edu-v6';
+const APP_VERSION = 'limda-edu-v7';
 if (localStorage.getItem('limda_version') !== APP_VERSION) {
   localStorage.clear();
   localStorage.setItem('limda_version', APP_VERSION);
@@ -1156,16 +1156,47 @@ function updateProgressBar() {
 }
 
 function restoreProgress() {
+  // 1. Marcar módulos completados y desbloquear los siguientes
   state.completedModules.forEach(function(idx){
     markCompleted(idx);
     if (idx + 1 < 5) unlockModule(idx+1);
+    // Mostrar resultado del quiz (no reiniciar — mostrar como completado)
     var quiz = document.getElementById('quiz-'+idx);
-    if (quiz) quiz.classList.add('visible');
+    if (quiz) {
+      quiz.classList.add('visible');
+      var score = state.quizScores[idx] || 0;
+      var container = document.getElementById('quiz-'+idx+'-content');
+      var counter = document.getElementById('qcounter-'+idx);
+      if (container) {
+        container.innerHTML = '<div class="quiz-result show">'+
+          '<div class="result-score pass">'+score+'%</div>'+
+          '<div class="result-label">Módulo completado</div>'+
+          '<div class="result-msg">✅ Evaluación aprobada</div>'+
+          '</div>';
+      }
+      if (counter) counter.textContent = 'Completado: '+score+'%';
+    }
   });
   updateProgressBar();
-  state.completedModules.forEach(function(idx){
-    if (!quizState[idx]) initQuiz(idx);
-  });
+
+  // 2. Navegar automáticamente al módulo donde debe continuar
+  var currentMod = 0;
+  if (state.completedModules.length > 0 && state.completedModules.length < 5) {
+    // Ir al primer módulo no completado
+    for (var i = 0; i < 5; i++) {
+      if (state.completedModules.indexOf(i) === -1) {
+        currentMod = i;
+        break;
+      }
+    }
+  } else if (state.completedModules.length === 5) {
+    currentMod = 4; // Todos completados
+  }
+
+  // 3. Mostrar el módulo correcto
+  if (currentMod > 0) {
+    showModule(currentMod);
+  }
 }
 
 function startCourse() { showScreen('s-name'); }
