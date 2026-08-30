@@ -1242,11 +1242,33 @@ function doLogin() {
   if (!name || name.length < 2) { showLoginError('Por favor ingresa tu nombre completo.'); return; }
   if (!cedula || cedula.length < 4) { showLoginError('Por favor ingresa tu número de cédula.'); return; }
   if (!code) { showLoginError('Por favor ingresa el código de acceso.'); return; }
+
+  // Verificar códigos temporales (no requieren cédula específica)
   if (TEMP_CODES.indexOf(code) !== -1) {
     proceedToCourse(name, cedula, code);
     return;
   }
-  showLoginError('Código no válido. Si no tienes código, usa "Solicitar acceso".');
+
+  // Verificar código personalizado vinculado a la cédula en Firebase
+  if (db) {
+    var cedulaKey = cedula.replace(/[.#$[\]]/g, '_');
+    db.ref('codigos_acceso/' + cedulaKey).once('value').then(function(snap) {
+      if (snap.exists()) {
+        var data = snap.val();
+        if (data.codigo === code) {
+          proceedToCourse(name, cedula, code);
+        } else {
+          showLoginError('El código no corresponde a esta cédula. Verifica el código recibido.');
+        }
+      } else {
+        showLoginError('Código no válido para esta cédula. Si no tienes código, usa "Solicitar acceso".');
+      }
+    }).catch(function() {
+      showLoginError('Error de conexión. Intenta de nuevo.');
+    });
+  } else {
+    showLoginError('Código no válido. Si no tienes código, usa "Solicitar acceso".');
+  }
 }
 
 function showLoginError(msg) {
@@ -1298,9 +1320,31 @@ function doRegister() {
     msgEl.style.background = 'rgba(239,68,68,0.15)'; msgEl.style.color = '#fca5a5';
     msgEl.style.display = 'block'; return;
   }
-  msgEl.textContent = '✅ Solicitud enviada. Contacta al administrador en melarylo@gmail.com para recibir tu código.';
-  msgEl.style.background = 'rgba(34,197,94,0.15)'; msgEl.style.color = '#86efac';
-  msgEl.style.display = 'block';
+  // Guardar solicitud en Firebase
+  if (db) {
+    var cedulaKey = cedula.replace(/[.#$[\]]/g, '_');
+    db.ref('solicitudes/' + cedulaKey).set({
+      nombre: name,
+      cedula: cedula,
+      email: email,
+      perfil: perfil,
+      institucion: inst,
+      estado: 'pendiente',
+      fecha: new Date().toISOString()
+    }).then(function() {
+      msgEl.textContent = '✅ Solicitud enviada. El coordinador revisará tu solicitud y te enviará el código de acceso.';
+      msgEl.style.background = 'rgba(34,197,94,0.15)'; msgEl.style.color = '#86efac';
+      msgEl.style.display = 'block';
+    }).catch(function() {
+      msgEl.textContent = '⚠️ Error al enviar. Escribe a melarylo@gmail.com para solicitar acceso.';
+      msgEl.style.background = 'rgba(245,158,11,0.15)'; msgEl.style.color = '#fcd34d';
+      msgEl.style.display = 'block';
+    });
+  } else {
+    msgEl.textContent = '✅ Solicitud registrada. El coordinador te enviará el código de acceso.';
+    msgEl.style.background = 'rgba(34,197,94,0.15)'; msgEl.style.color = '#86efac';
+    msgEl.style.display = 'block';
+  }
 }
 
 function showCertificate() {
