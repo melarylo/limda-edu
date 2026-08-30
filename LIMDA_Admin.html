@@ -59,6 +59,23 @@ tr:hover td{background:#f8fafc;}
 .pb{height:6px;background:var(--border);border-radius:3px;width:100px;overflow:hidden;}
 .pbf{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal2));border-radius:3px;}
 .empty{padding:36px;text-align:center;color:var(--muted);font-size:13px;}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:20px;}
+.dash-card{background:white;border:1px solid var(--border);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);}
+.dash-card h4{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.dash-card h4::before{content:'';width:3px;height:16px;background:var(--teal);border-radius:2px;display:inline-block;}
+.dash-full{grid-column:1/-1;}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
+.kpi{background:white;border:1px solid var(--border);border-radius:var(--r);padding:20px;text-align:center;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.k1::after{background:var(--teal);}
+.kpi.k2::after{background:var(--green);}
+.kpi.k3::after{background:var(--amber);}
+.kpi.k4::after{background:var(--red);}
+.kpi.k5::after{background:#8b5cf6;}
+.kpi .kn{font-family:'Sora',sans-serif;font-size:36px;font-weight:800;color:var(--navy);}
+.kpi .kl{font-size:12px;color:var(--muted);margin-top:4px;}
+.kpi .ks{font-size:11px;color:var(--green);margin-top:2px;font-weight:600;}
+canvas{max-height:220px;}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
 .modal.show{display:flex;}
 .modal-box{background:white;border-radius:var(--r);padding:28px;max-width:420px;width:90%;text-align:center;}
@@ -98,6 +115,7 @@ tr:hover td{background:#f8fafc;}
   <div class="body">
     <div class="tabs">
       <button class="tab on" data-tab="solicitudes">📋 Solicitudes</button>
+      <button class="tab" data-tab="dashboard">📊 Dashboard</button>
       <button class="tab" data-tab="participantes">👥 Participantes</button>
       <button class="tab" data-tab="certificados">🎓 Certificados</button>
       <button class="tab" data-tab="codigos">🔑 Códigos</button>
@@ -131,7 +149,39 @@ tr:hover td{background:#f8fafc;}
       </div>
     </div>
 
-    <div id="tab-codigos" style="display:none;">
+    <div id="tab-dashboard" style="display:none;">
+  <div class="kpi-grid">
+    <div class="kpi k1"><div class="kn" id="d-total">—</div><div class="kl">Total inscritos</div></div>
+    <div class="kpi k2"><div class="kn" id="d-completados">—</div><div class="kl">Cursos completados</div></div>
+    <div class="kpi k3"><div class="kn" id="d-encurso">—</div><div class="kl">En curso</div></div>
+    <div class="kpi k4"><div class="kn" id="d-tasa">—</div><div class="kl">Tasa de aprobación</div></div>
+    <div class="kpi k5"><div class="kn" id="d-promedio">—</div><div class="kl">Promedio general</div></div>
+  </div>
+  <div class="dash-grid">
+    <div class="dash-card">
+      <h4>Progreso por módulo</h4>
+      <canvas id="chart-modulos"></canvas>
+    </div>
+    <div class="dash-card">
+      <h4>Distribución por perfil profesional</h4>
+      <canvas id="chart-perfiles"></canvas>
+    </div>
+    <div class="dash-card">
+      <h4>Calificación promedio por módulo</h4>
+      <canvas id="chart-calificaciones"></canvas>
+    </div>
+    <div class="dash-card">
+      <h4>Estado de participantes</h4>
+      <canvas id="chart-estado"></canvas>
+    </div>
+    <div class="dash-card dash-full">
+      <h4>Inscripciones por fecha</h4>
+      <canvas id="chart-fechas"></canvas>
+    </div>
+  </div>
+</div>
+
+<div id="tab-codigos" style="display:none;">
       <div class="card">
         <div class="card-header"><div class="card-title">Códigos de acceso activos</div><button class="refresh" onclick="loadAll()">↻ Actualizar</button></div>
         <div id="body-codigos"><div class="empty">Cargando...</div></div>
@@ -156,6 +206,7 @@ tr:hover td{background:#f8fafc;}
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -229,6 +280,7 @@ document.querySelectorAll('.tab').forEach(function(btn) {
     document.querySelectorAll('[id^="tab-"]').forEach(function(p){ p.style.display='none'; });
     btn.classList.add('on');
     document.getElementById('tab-' + btn.dataset.tab).style.display = 'block';
+    if (btn.dataset.tab === 'dashboard') loadDashboard();
   });
 });
 
@@ -378,6 +430,155 @@ function revocar(key, nombre) {
   if (!confirm('¿Revocar el acceso de ' + nombre + '?')) return;
   db.ref('codigos_acceso/'+key).remove();
   loadAll();
+}
+
+// ── DASHBOARD ──
+var charts = {};
+
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function loadDashboard() {
+  if (!db) return;
+  db.ref('progreso').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    var participantes = Object.values(data);
+    var total = participantes.length;
+    var completados = participantes.filter(function(p){ return (p.completedModules||[]).length === 5; }).length;
+    var enCurso = participantes.filter(function(p){ var m=(p.completedModules||[]).length; return m>0&&m<5; }).length;
+    var tasa = total > 0 ? Math.round(completados/total*100) : 0;
+
+    // Calificacion promedio general
+    var allScores = [];
+    participantes.forEach(function(p){
+      Object.values(p.quizScores||{}).forEach(function(s){ allScores.push(s); });
+    });
+    var promedio = allScores.length ? Math.round(allScores.reduce(function(a,b){return a+b;},0)/allScores.length) : 0;
+
+    document.getElementById('d-total').textContent = total;
+    document.getElementById('d-completados').textContent = completados;
+    document.getElementById('d-encurso').textContent = enCurso;
+    document.getElementById('d-tasa').textContent = tasa + '%';
+    document.getElementById('d-promedio').textContent = promedio + '%';
+
+    // Chart 1: Progreso por módulo
+    var modCount = [0,0,0,0,0];
+    participantes.forEach(function(p){
+      (p.completedModules||[]).forEach(function(m){ if(m>=0&&m<5) modCount[m]++; });
+    });
+    destroyChart('chart-modulos');
+    charts['chart-modulos'] = new Chart(document.getElementById('chart-modulos'), {
+      type: 'bar',
+      data: {
+        labels: ['M1 · Epidemiología','M2 · Diagnóstico','M3 · Decisión','M4 · Tratamiento','M5 · Recuperación'],
+        datasets: [{
+          label: 'Participantes que completaron',
+          data: modCount,
+          backgroundColor: ['#00b4a6','#00b4a6','#00b4a6','#00b4a6','#00b4a6'],
+          borderRadius: 6,
+        }]
+      },
+      options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, ticks:{stepSize:1} } } }
+    });
+
+    // Chart 2: Estado de participantes (dona)
+    var sinIniciar = total - completados - enCurso;
+    destroyChart('chart-estado');
+    charts['chart-estado'] = new Chart(document.getElementById('chart-estado'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Completado','En curso','Sin iniciar'],
+        datasets: [{ data: [completados, enCurso, sinIniciar], backgroundColor: ['#22c55e','#00b4a6','#e2e8f0'], borderWidth: 0 }]
+      },
+      options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
+    });
+
+    // Chart 3: Calificacion por modulo
+    var modScores = [[],[],[],[],[]];
+    participantes.forEach(function(p){
+      Object.entries(p.quizScores||{}).forEach(function(e){
+        var idx = parseInt(e[0]);
+        if(idx>=0&&idx<5) modScores[idx].push(e[1]);
+      });
+    });
+    var modAvg = modScores.map(function(arr){
+      return arr.length ? Math.round(arr.reduce(function(a,b){return a+b;},0)/arr.length) : 0;
+    });
+    destroyChart('chart-calificaciones');
+    charts['chart-calificaciones'] = new Chart(document.getElementById('chart-calificaciones'), {
+      type: 'bar',
+      data: {
+        labels: ['M1','M2','M3','M4','M5'],
+        datasets: [{
+          label: 'Promedio (%)',
+          data: modAvg,
+          backgroundColor: modAvg.map(function(v){ return v>=80?'#22c55e':v>=60?'#f59e0b':'#ef4444'; }),
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive:true,
+        plugins:{ legend:{display:false} },
+        scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:function(v){return v+'%';} } } }
+      }
+    });
+
+    // Chart 4: Inscripciones por fecha (línea)
+    var fechas = {};
+    participantes.forEach(function(p){
+      if(p.ultimaConexion){
+        var d = new Date(p.ultimaConexion).toLocaleDateString('es-CO');
+        fechas[d] = (fechas[d]||0) + 1;
+      }
+    });
+    var fechaKeys = Object.keys(fechas).sort();
+    destroyChart('chart-fechas');
+    charts['chart-fechas'] = new Chart(document.getElementById('chart-fechas'), {
+      type: 'line',
+      data: {
+        labels: fechaKeys.length ? fechaKeys : ['Sin datos'],
+        datasets: [{
+          label: 'Conexiones',
+          data: fechaKeys.map(function(k){ return fechas[k]; }),
+          borderColor: '#00b4a6',
+          backgroundColor: 'rgba(0,180,166,0.1)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#00b4a6',
+        }]
+      },
+      options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, ticks:{stepSize:1} } } }
+    });
+
+  }).catch(function(e){
+    console.warn('Dashboard error:', e);
+  });
+
+  // Chart perfiles desde solicitudes aprobadas
+  db.ref('solicitudes').once('value').then(function(snap){
+    var data = snap.val() || {};
+    var perfiles = {};
+    Object.values(data).forEach(function(s){
+      if(s.perfil) perfiles[s.perfil] = (perfiles[s.perfil]||0)+1;
+    });
+    var labels = Object.keys(perfiles);
+    var vals = labels.map(function(k){ return perfiles[k]; });
+    var colors = ['#00b4a6','#22c55e','#f59e0b','#ef4444','#8b5cf6','#0ea5e9','#f97316','#ec4899','#10b981'];
+    destroyChart('chart-perfiles');
+    if(labels.length > 0) {
+      charts['chart-perfiles'] = new Chart(document.getElementById('chart-perfiles'), {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{ data: vals, backgroundColor: colors.slice(0,labels.length), borderWidth: 0 }]
+        },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{font:{size:11}} } } }
+      });
+    } else {
+      document.getElementById('chart-perfiles').parentElement.innerHTML += '<p style="text-align:center;color:var(--muted);font-size:13px;">Sin datos de perfiles aún.</p>';
+    }
+  });
 }
 
 // ── HELPER BUTTON HANDLERS ──
