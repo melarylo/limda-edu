@@ -344,6 +344,25 @@ function revocar(key, nombre) {
   loadAll();
 }
 
+// ── HELPER BUTTON HANDLERS ──
+function aprobarBtn(btn) {
+  var key = btn.dataset.key;
+  var nombre = btn.dataset.nombre;
+  var cedula = btn.dataset.cedula;
+  var email = btn.dataset.email;
+  aprobar(key, nombre, cedula, email);
+}
+function rechazarBtn(btn) {
+  rechazar(btn.dataset.key);
+}
+function copiarCodigo(btn) {
+  var code = btn.dataset.code;
+  navigator.clipboard.writeText(code).then(function(){ alert('Copiado: ' + code); });
+}
+function revocarBtn(btn) {
+  revocar(btn.dataset.key, btn.dataset.nombre);
+}
+
 // ── MODAL ──
 function copyModalCode() {
   var code = document.getElementById('m-code').textContent;
