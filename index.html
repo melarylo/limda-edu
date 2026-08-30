@@ -1015,7 +1015,7 @@ function finishQuiz(modIdx) {
   var container = document.getElementById('quiz-'+modIdx+'-content');
   var actionBtn = pass
     ? (isFinal
-        ? '<button class="btn-quiz teal" onclick="showCertificate()" style="margin:0 auto;display:block;padding:14px 32px;">Ver mi certificado →</button>'
+        ? '<button class="btn-quiz teal" onclick="completarCurso()" style="margin:0 auto;display:block;padding:14px 32px;">Ver mi certificado →</button>'
         : '<button class="btn-quiz teal" onclick="unlockNext('+modIdx+')" style="margin:0 auto;display:block;">Continuar al módulo '+(modIdx+2)+' →</button>')
     : '<button class="btn-quiz primary" onclick="retryQuiz('+modIdx+')" style="margin:0 auto;display:block;">Repetir evaluación</button>';
   container.innerHTML = '<div class="quiz-result show">'+
@@ -1349,6 +1349,30 @@ function doRegister() {
     msgEl.style.background = 'rgba(34,197,94,0.15)'; msgEl.style.color = '#86efac';
     msgEl.style.display = 'block';
   }
+}
+
+function completarCurso() {
+  // Guardar módulo 4 como completado antes de mostrar el certificado
+  if (state.completedModules.indexOf(4) === -1) {
+    state.completedModules.push(4);
+  }
+  localStorage.setItem('limda_progress', JSON.stringify(state.completedModules));
+  markCompleted(4);
+  updateProgressBar();
+
+  // Guardar en Firebase
+  if (db && state.cedula) {
+    var cedulaKey = state.cedula.replace(/[.#$[\]]/g, '_');
+    db.ref('progreso/' + cedulaKey).set({
+      nombre: state.name,
+      cedula: state.cedula,
+      completedModules: state.completedModules,
+      quizScores: state.quizScores,
+      ultimaConexion: new Date().toISOString()
+    }).catch(function(e){ console.warn('Firebase save error:', e); });
+  }
+
+  showCertificate();
 }
 
 function showCertificate() {
