@@ -875,7 +875,7 @@ try {
   db = null;
 }
 
-const APP_VERSION = 'limda-edu-v7';
+const APP_VERSION = 'limda-edu-v8';
 if (localStorage.getItem('limda_version') !== APP_VERSION) {
   localStorage.clear();
   localStorage.setItem('limda_version', APP_VERSION);
@@ -1281,12 +1281,16 @@ function proceedToCourse(name, cedula, code) {
     var cedulaKey = cedula.replace(/[.#$[\]]/g, '_');
     db.ref('progreso/' + cedulaKey).once('value').then(function(snap) {
       if (snap.exists()) {
+        // Usuario encontrado en Firebase — cargar su progreso real
         var p = snap.val();
         state.completedModules = p.completedModules || [];
         state.quizScores = p.quizScores || {};
       } else {
-        state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
-        state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+        // Usuario nuevo — empezar desde cero (ignorar localStorage)
+        state.completedModules = [];
+        state.quizScores = {};
+        localStorage.removeItem('limda_progress');
+        localStorage.removeItem('limda_scores');
       }
       if (state.completedModules.length === 5) {
         showCertificate();
@@ -1295,18 +1299,16 @@ function proceedToCourse(name, cedula, code) {
         restoreProgress();
       }
     }).catch(function() {
-      state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
-      state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
-      if (state.completedModules.length === 5) {
-        showCertificate();
-      } else {
-        showScreen('s-course');
-        restoreProgress();
-      }
+      // Error de conexión — empezar desde cero por seguridad
+      state.completedModules = [];
+      state.quizScores = {};
+      showScreen('s-course');
+      restoreProgress();
     });
   } else {
-    state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
-    state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
+    // Sin Firebase — empezar desde cero por seguridad
+    state.completedModules = [];
+    state.quizScores = {};
     showScreen('s-course');
     restoreProgress();
   }
