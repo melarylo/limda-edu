@@ -145,7 +145,7 @@ tr:hover td{background:#f8fafc;}
   <div class="modal-box">
     <div style="font-size:36px;margin-bottom:10px;">✅</div>
     <h3>Acceso aprobado</h3>
-    <p>Código generado para <strong id="m-nombre">—</strong><br>C.C. <span id="m-cedula">—</span></p>
+    <p>✅ Correo enviado automáticamente a <strong id="m-nombre">—</strong><br>C.C. <span id="m-cedula">—</span></p>
     <div class="code-display" id="m-code">—</div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:16px;">Este código solo funciona con la cédula registrada.</p>
     <div class="modal-actions">
@@ -158,9 +158,15 @@ tr:hover td{background:#f8fafc;}
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 var ADMIN_PASSWORD = 'MIDA2026admin';
 var db = null;
+
+// ── EMAILJS CONFIG ──
+var EMAILJS_SERVICE_ID = 'limda-service';
+var EMAILJS_TEMPLATE_ID = 'template_rrr1yp6';
+var EMAILJS_PUBLIC_KEY = 'Lg6awfJtSfQSONeNQ';
 
 // ── LOGIN ──
 document.getElementById('login-btn').addEventListener('click', function() {
@@ -188,6 +194,14 @@ document.getElementById('logout-btn').addEventListener('click', function() {
 
 // ── FIREBASE ──
 function initFirebase() {
+  // Inicializar EmailJS
+  try {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+    console.log('EmailJS inicializado ✓');
+  } catch(e) {
+    console.warn('EmailJS error:', e);
+  }
+
   try {
     var config = {
       apiKey: "AIzaSyAX7001jefl_voJ1xfBrNu1rna-wBZ6vhI",
@@ -259,12 +273,33 @@ function aprobar(key, nombre, cedula, email) {
   if (!confirm('¿Aprobar acceso para ' + nombre + '?')) return;
   var code = 'LIMDA-' + Math.random().toString(36).substr(2,4).toUpperCase() + '-' + cedula.toString().slice(-4);
   var cKey = cedula.replace(/[.#$[\]]/g, '_');
+  
+  // Guardar en Firebase
   db.ref('codigos_acceso/'+cKey).set({ nombre:nombre, cedula:cedula, email:email, codigo:code, fechaGeneracion:new Date().toISOString() });
   db.ref('solicitudes/'+key).update({ estado:'aprobado', codigoGenerado:code, fechaAprobacion:new Date().toISOString() });
-  document.getElementById('m-nombre').textContent = nombre;
-  document.getElementById('m-cedula').textContent = cedula;
-  document.getElementById('m-code').textContent = code;
-  document.getElementById('modal').classList.add('show');
+  
+  // Enviar correo automáticamente con EmailJS
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    nombre: nombre,
+    cedula: cedula,
+    codigo: code,
+    email: email
+  }).then(function() {
+    console.log('Correo enviado ✓');
+    document.getElementById('m-nombre').textContent = nombre;
+    document.getElementById('m-cedula').textContent = cedula;
+    document.getElementById('m-code').textContent = code;
+    document.getElementById('modal').classList.add('show');
+  }).catch(function(err) {
+    console.warn('Error correo:', err);
+    // Mostrar modal aunque falle el correo
+    document.getElementById('m-nombre').textContent = nombre;
+    document.getElementById('m-cedula').textContent = cedula;
+    document.getElementById('m-code').textContent = code;
+    document.getElementById('modal').classList.add('show');
+    alert('⚠️ El código fue generado pero el correo no se envió automáticamente. Cópialo y envíalo manualmente.');
+  });
+  
   loadAll();
 }
 
