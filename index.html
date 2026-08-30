@@ -1178,12 +1178,6 @@ function restoreProgress() {
   updateProgressBar();
 
   // 2. Navegar automáticamente al módulo correcto
-  if (state.completedModules.length === 5) {
-    // Curso completado — ir directo al certificado
-    showCertificate();
-    return;
-  }
-
   var currentMod = 0;
   if (state.completedModules.length > 0) {
     // Ir al primer módulo no completado
@@ -1294,13 +1288,21 @@ function proceedToCourse(name, cedula, code) {
         state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
         state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
       }
-      showScreen('s-course');
-      restoreProgress();
+      if (state.completedModules.length === 5) {
+        showCertificate();
+      } else {
+        showScreen('s-course');
+        restoreProgress();
+      }
     }).catch(function() {
       state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
       state.quizScores = JSON.parse(localStorage.getItem('limda_scores') || '{}');
-      showScreen('s-course');
-      restoreProgress();
+      if (state.completedModules.length === 5) {
+        showCertificate();
+      } else {
+        showScreen('s-course');
+        restoreProgress();
+      }
     });
   } else {
     state.completedModules = JSON.parse(localStorage.getItem('limda_progress') || '[]');
